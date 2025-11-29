@@ -49,5 +49,6 @@ scp -r root@134.199.134.61:/root/tianyi/FlowTS/FMTS/metrics_results.jsonl /Users
 
 
 
-scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean root@134.199.134.61:/root/tianyi/
+scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/CGATSPretrainPipeline.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly
+scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/Trainers/CGAT_trainer/cgat_trainer.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/Trainers/CGAT_trainer
 

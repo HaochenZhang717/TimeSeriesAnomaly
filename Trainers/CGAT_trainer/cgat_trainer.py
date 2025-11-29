@@ -73,7 +73,7 @@ class CGATPretrain(object):
                 # ====== 每 1000 step 评估 ======
 
             """evaluation"""
-            self.eval()
+            self.model.eval()
             with torch.no_grad():
                 val_total, val_recon, val_kl, val_seen = 0, 0, 0, 0
                 for batch in self.val_loader:

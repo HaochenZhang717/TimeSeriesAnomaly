@@ -4,9 +4,18 @@ from dataset_utils import ECGDataset
 import argparse
 import torch
 import json
+import time
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 
+def save_args_to_jsonl(args, output_path):
+    args_dict = vars(args)
+
+    with open(output_path, "w") as f:
+        json.dump(args_dict, f)
+        f.write("\n")  # JSONL 一行一个 JSON
 
 
 def get_pretrain_args():
@@ -25,7 +34,7 @@ def get_pretrain_args():
 
 
     """data parameters"""
-    parser.add_argument("--max_anomaly_ratio", type=int, required=True)
+    parser.add_argument("--max_anomaly_ratio", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--indices_paths_train", type=str, required=True)
@@ -51,6 +60,10 @@ def get_pretrain_args():
 
 def pretrain():
     args = get_pretrain_args()
+    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d %H:%M:%S")
+    args.ckpt_dir = f"{args.ckpt_dir}-{timestamp}"
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
     model = TimeVAECGATS(
         hidden_layer_sizes=args.hidden_layer_sizes,
         trend_poly=args.trend_poly,
