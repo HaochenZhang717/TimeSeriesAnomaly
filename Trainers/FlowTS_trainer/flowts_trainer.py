@@ -173,8 +173,6 @@ class FlowTSFinetune(object):
             tr_loss_normal += loss_on_normal.item()
             tr_loss_anomaly += loss_on_anomaly.item()
             tr_seen += 1
-
-            breakpoint()
             """evaluate every 250 steps"""
             if step % 250 == 0:
                 # calculate and log training statistics
