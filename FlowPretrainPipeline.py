@@ -6,10 +6,11 @@ import torch
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
+import os
 
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
-
+    os.makedirs(output_path, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(args_dict, f)
         f.write("\n")  # JSONL 一行一个 JSON
@@ -56,8 +57,8 @@ def get_pretrain_args():
 def pretrain():
     args = get_pretrain_args()
 
-    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d %H:%M:%S")
-    args.ckpt_dir = f"{args.ckpt_dir}-{timestamp}"
+    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
+    args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
     model = FM_TS(
