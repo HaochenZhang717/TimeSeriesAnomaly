@@ -10,7 +10,6 @@ import os
 
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
-    os.makedirs(output_path, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(args_dict, f)
         f.write("\n")  # JSONL 一行一个 JSON
@@ -59,6 +58,7 @@ def pretrain():
 
     timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
     args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
+    os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
     model = FM_TS(
