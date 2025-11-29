@@ -130,3 +130,6 @@ def finetune():
         pretrained_ckpt=args.pretrained_ckpt,
     )
     trainer.finetune(config=vars(args))
+
+if __name__ == "__main__":
+    finetune()
