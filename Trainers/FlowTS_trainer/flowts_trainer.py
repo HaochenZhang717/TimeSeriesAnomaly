@@ -160,6 +160,7 @@ class FlowTSFinetune(object):
             anomaly_batch = next(anomaly_train_iterator)
             anomaly_signal = anomaly_batch["orig_signal"].to(self.device)
             anomaly_label = anomaly_batch["anomaly_label"].to(device=self.device, dtype=torch.long)
+            print(torch.unique(anomaly_signal))
             anomaly_label = (anomaly_label > 0).to(dtype=torch.long)#for now, we use this
 
             loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
@@ -204,6 +205,7 @@ class FlowTSFinetune(object):
                 for anomaly_batch in self.val_anomaly_loader:
                     anomaly_signal = anomaly_batch["orig_signal"].to(self.device)
                     anomaly_label = anomaly_batch["anomaly_label"].to(device=self.device, dtype=torch.long)
+                    anomaly_label = (anomaly_label > 0).to(dtype=torch.long)  # for now, we use this
                     with torch.no_grad():
                         loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
                     bs = anomaly_signal.shape[0]
