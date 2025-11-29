@@ -1,4 +1,4 @@
-python FlowPretrainPipeline.py \
+python FlowFinetunePipeline.py \
   --seq_len 800 \
   --feature_size 2 \
   --n_layer_enc 4 \
