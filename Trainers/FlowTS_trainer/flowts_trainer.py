@@ -150,7 +150,7 @@ class FlowTSFinetune(object):
         normal_train_iterator = iter(self.train_normal_loader)
         anomaly_train_iterator = iter(self.train_anomaly_loader)
         self.model.train()
-        for step in range(self.max_iters):
+        for step in tqdm(range(self.max_iters), desc=f"Training"):
             self.optimizer.zero_grad()
             normal_batch = next(normal_train_iterator)
             normal_signal = normal_batch["orig_signal"].to(self.device)
