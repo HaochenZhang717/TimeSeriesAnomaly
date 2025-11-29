@@ -7,10 +7,10 @@ python FlowPretrainPipeline.py \
   --n_heads 4 \
   \
   --max_anomaly_ratio 0.2 \
-  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/100.npz" \
+    --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/100.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/100.npz" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/train/normal.jsonl" \
-  --indices_paths_val "./dataset_utils/ECG_datasets/indices/validation/normal.jsonl" \
+  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_100npz/train/normal.jsonl" \
+  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_100npz/validation/normal.jsonl" \
   \
   --lr 1e-5 \
   --batch_size 128 \

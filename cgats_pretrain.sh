@@ -22,5 +22,5 @@ python CGATSPretrainPipeline.py \
   --wandb_project cgats_pretrain \
   --wandb_run cgats_pretrain \
   \
-  --ckpt_dir flow_normal_pretrain_ckpt \
+  --ckpt_dir cgats_normal_pretrain_ckpt \
   --gpu_id 0

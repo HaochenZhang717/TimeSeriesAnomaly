@@ -3,6 +3,16 @@ from Trainers import FlowTSPretrain
 from dataset_utils import ECGDataset
 import argparse
 import torch
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import json
+
+def save_args_to_jsonl(args, output_path):
+    args_dict = vars(args)
+
+    with open(output_path, "w") as f:
+        json.dump(args_dict, f)
+        f.write("\n")  # JSONL 一行一个 JSON
 
 
 def get_pretrain_args():
@@ -45,6 +55,11 @@ def get_pretrain_args():
 
 def pretrain():
     args = get_pretrain_args()
+
+    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d %H:%M:%S")
+    args.ckpt_dir = f"{args.ckpt_dir}-{timestamp}"
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
     model = FM_TS(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
