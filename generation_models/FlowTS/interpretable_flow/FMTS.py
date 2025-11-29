@@ -121,10 +121,7 @@ class FM_TS(nn.Module):
 
         model_out = self.output(z_t, t.squeeze() * self.time_scalar, anomaly_label, None)
         train_loss = F.mse_loss(model_out, target, reduction='none') # (B, T, dim)
-        breakpoint()
-        train_loss = train_loss * (1- anomaly_label)
-
-
+        train_loss = train_loss * (1- anomaly_label.float().unsqueeze(-1)) # only look at normal part
         train_loss = reduce(train_loss, 'b ... -> b (...)', 'mean')
         train_loss = train_loss.mean()
         return train_loss.mean()
