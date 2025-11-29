@@ -1,54 +1,8 @@
-export PYTHONPATH=/Users/zhc/Documents/PhD/projects/anomalous_TS:$PYTHONPATH
-export PYTHONPATH=/root/icml/anomalous_TS/anomalous_TS:$PYTHONPATH
-python src/GenIAS/trainer.py
-
-
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src root@134.199.134.187:/root/icml/anomalous_TS/
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/GenIAS/trainer.py root@134.199.134.187:/root/icml/anomalous_TS/src/GenIAS
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/run_end_to_end_baseline.sh root@134.199.134.187:/root/icml/anomalous_TS/
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/CARLA_original root@134.199.134.187:/root/icml/anomalous_TS/src/
-
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/CARLA_original/carla_classification.py root@134.199.134.187:/root/icml/anomalous_TS/src/CARLA_original
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/CARLA_original/utils/evaluate_utils.py root@134.199.134.187:/root/icml/anomalous_TS/src/CARLA_original/utils
-
-scp -r root@134.199.134.187:/root/icml/anomalous_TS/saved_models /Users/zhc/Documents/PhD/projects/anomalous_TS/
-source /root/icml/miniconda3/etc/profile.d/conda.sh
-
-scp -r root@134.199.134.187:/root/icml/anomalous_TS/results /Users/zhc/Documents/PhD/projects/anomalous_TS/
-
-
-# move rf code to server
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/rf root@134.199.134.187:/root/icml/anomalous_TS/src/
-python src/rf/pretrain.py
-
-
-
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/MITDB_dataset root@134.199.134.187:/root/icml/anomalous_TS/src/
-scp -r /Users/zhc/Documents/PhD/projects/anomalous_TS/src/rf root@134.199.134.187:/root/icml/anomalous_TS/src/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-scp -r /Users/zhc/Documents/PhD/projects/FlowTS root@134.199.134.61:/root/tianyi/
-
-scp -r root@134.199.134.61:/root/tianyi/FlowTS/FMTS/metrics_results.jsonl /Users/zhc/Documents/PhD/projects/FlowTS
-
-
 
 
 scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/CGATSPretrainPipeline.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly
 scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/Trainers/CGAT_trainer/cgat_trainer.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/Trainers/CGAT_trainer
 
+
+
+scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/Trainers/FlowTS_trainer/flowts_trainer.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/Trainers/FlowTS_trainer

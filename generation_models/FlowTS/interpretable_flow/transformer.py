@@ -540,24 +540,24 @@ class Transformer(nn.Module):
         model_device = next(self.parameters()).device
         self.anomaly_label_embedding = nn.Embedding(2, self.n_embd).to(device=model_device)
 
-        for param in self.parameters():
-            param.requires_grad = False
-
-        # here we only tune AdaLN and cross attention
-        for name, module in self.named_modules():
-            if isinstance(module, AdaLayerNorm):
-                for param in module.parameters():
-                    param.requires_grad = True
-                print(f"set {name} as tunable")
-            elif isinstance(module, CrossAttention):
-                for param in module.parameters():
-                    param.requires_grad = True
-                print(f"set {name} as tunable")
-            else:
-                continue
-
-        for param in self.anomaly_label_embedding.parameters():
-            param.requires_grad = True
+        # for param in self.parameters():
+        #     param.requires_grad = False
+        #
+        # # here we only tune AdaLN and cross attention
+        # for name, module in self.named_modules():
+        #     if isinstance(module, AdaLayerNorm):
+        #         for param in module.parameters():
+        #             param.requires_grad = True
+        #         print(f"set {name} as tunable")
+        #     elif isinstance(module, CrossAttention):
+        #         for param in module.parameters():
+        #             param.requires_grad = True
+        #         print(f"set {name} as tunable")
+        #     else:
+        #         continue
+        #
+        # for param in self.anomaly_label_embedding.parameters():
+        #     param.requires_grad = True
 
 
 

@@ -57,7 +57,7 @@ class FM_TS(nn.Module):
         if ckpt_path != "none":
             model_device = next(self.parameters()).device
             ckpt_dict = torch.load(ckpt_path, map_location=model_device, weights_only=False)
-            self.load_state_dict(ckpt_dict['model'])
+            self.load_state_dict(ckpt_dict)
             print("pretrained checkpoint loaded")
         self.model.prepare_for_finetune()
 
@@ -120,10 +120,45 @@ class FM_TS(nn.Module):
         train_loss = train_loss.mean()
         return train_loss.mean()
 
+    def _finetune_loss_on_normal(self, x_start, anomaly_label):
+
+        z0 = torch.randn_like(x_start) # (B, T, dim)
+        z1 = x_start
+
+        t = torch.rand(z0.shape[0], 1, 1).to(z0.device)
+        if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
+            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0.device)
+
+        z_t = t * z1 + (1. - t) * z0 # (B, T, dim)
+
+        target = z1 - z0
+
+        model_out = self.output(z_t, t.squeeze() * self.time_scalar, anomaly_label, None)
+        train_loss = F.mse_loss(model_out, target, reduction='none') # (B, T, dim)
+        breakpoint()
+        train_loss = train_loss * (1- anomaly_label)
+
+
+        train_loss = reduce(train_loss, 'b ... -> b (...)', 'mean')
+        train_loss = train_loss.mean()
+        return train_loss.mean()
+
     def forward(self, x, anomaly_label):
         b, c, n, device, feature_size, = *x.shape, x.device, self.feature_size
         assert n == feature_size, f'number of variable must be {feature_size}'
         return self._train_loss(x, anomaly_label)
+
+    def finetune_loss(self, x, anomaly_label, mode):
+        b, c, n, device, feature_size, = *x.shape, x.device, self.feature_size
+        assert n == feature_size, f'number of variable must be {feature_size}'
+        assert mode in ("normal", "anomaly")
+        if mode == "normal":
+            return self._finetune_loss_on_normal(x, anomaly_label)
+        elif mode == "anomaly":
+            return self._train_loss(x, anomaly_label)
+        else:
+            raise ValueError("mode must be 'normal' or 'anomaly'")
+
 
     def fast_sample_infill(self, shape, target, partial_mask=None):
 

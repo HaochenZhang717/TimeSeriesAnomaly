@@ -10,7 +10,7 @@ class CGATPretrain(object):
             wandb_project_name, wandb_run_name, grad_clip_norm
     ):
         self.optimizer = optimizer
-        self.model = model
+        self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.max_epochs = max_epochs
@@ -43,8 +43,8 @@ class CGATPretrain(object):
             self.model.train()
             for batch in self.train_loader:
 
-                X_occluded = batch["signal_random_occluded"]
-                X_normal = batch["orig_signal"]
+                X_occluded = batch["signal_random_occluded"].to(self.device)
+                X_normal = batch["orig_signal"].to(self.device)
 
                 self.optimizer.zero_grad()
                 z_mean, z_log_var, z = self.model.encoder(X_occluded)
@@ -61,16 +61,17 @@ class CGATPretrain(object):
                 tr_seen += 1
                 global_steps += 1
 
-                # ====== 记录训练到 wandb ======
-                wandb.log({
-                    "train/step_total_loss": loss.item(),
-                    "train/step_recon_loss": recon_loss.item(),
-                    "train/step_kl_loss": kl.item(),
-                    "lr": self.optimizer.param_groups[0]["lr"],
-                    "step": global_steps
-                })
+                # wandb.log({
+                #     "train/step_total_loss": loss.item(),
+                #     "train/step_recon_loss": recon_loss.item(),
+                #     "train/step_kl_loss": kl.item(),
+                #     "lr": self.optimizer.param_groups[0]["lr"],
+                #     "step": global_steps
+                # })
+            train_total_avg = total_loss / tr_seen
+            train_recon_avg = reconstruction_loss / tr_seen
+            train_kl_avg = kl_loss / tr_seen
 
-                # ====== 每 1000 step 评估 ======
 
             """evaluation"""
             self.model.eval()
@@ -79,8 +80,8 @@ class CGATPretrain(object):
                 for batch in self.val_loader:
                     X_occluded = batch["signal_random_occluded"]
                     X_normal = batch["orig_signal"]
-                    z_mean, z_log_var, z = self.model.encoder(X_occluded)
-                    reconstruction = self.model.normal_decoder(z)
+                    z_mean, z_log_var, z = self.model.encoder(X_occluded).to(self.device)
+                    reconstruction = self.model.normal_decoder(z).to(self.device)
                     loss, recon_loss, kl = self.model.loss_function(X_normal, reconstruction, z_mean, z_log_var)
                     val_total += loss.item()
                     val_recon += recon_loss.item()
@@ -93,11 +94,15 @@ class CGATPretrain(object):
 
                 # 记录到 wandb
                 wandb.log({
+                    "train/total_loss": train_total_avg,
+                    "train/recon_loss": train_recon_avg,
+                    "train/kl_loss": train_kl_avg,
                     "val/total_loss": val_total,
                     "val/recon_loss": val_recon,
                     "val/kl_loss": val_kl,
                     "epoch": epoch,
-                    "step": global_steps
+                    "step": global_steps,
+                    "lr": self.optimizer.param_groups[0]["lr"],
                 })
 
                 if val_total < best_val_loss:
@@ -121,7 +126,7 @@ class CGATFinetune(object):
             wandb_project_name, wandb_run_name
     ):
         self.optimizer = optimizer
-        self.model = model
+        self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.max_epochs = max_epochs
@@ -155,9 +160,9 @@ class CGATFinetune(object):
             tr_seen = 0
             self.model.train()
             for batch in self.train_loader:
-                X_occluded = batch["original_occluded_signal"]
-                X_target = batch["orig_signal"]
-                anomaly_label = batch["anomaly_label"]
+                X_occluded = batch["original_occluded_signal"].to(self.device)
+                X_target = batch["orig_signal"].to(self.device)
+                anomaly_label = batch["anomaly_label"].to(self.device)
 
                 self.optimizer.zero_grad()
 
@@ -173,21 +178,21 @@ class CGATFinetune(object):
                 global_steps += 1
 
                 # ====== 记录训练到 wandb ======
-                wandb.log({
-                    "train/step_total_loss": loss.item(),
-                    "lr": self.optimizer.param_groups[0]["lr"],
-                    "step": global_steps
-                })
-
+                # wandb.log({
+                #     "train/step_total_loss": loss.item(),
+                #     "lr": self.optimizer.param_groups[0]["lr"],
+                #     "step": global_steps
+                # })
+            train_total_avg = total_loss / tr_seen
 
             """evalaution"""
             self.eval()
             with torch.no_grad():
                 val_total, val_seen = 0, 0
                 for batch in self.val_loader:
-                    X_occluded = batch["original_occluded_signal"]
-                    X_target = batch["orig_signal"]
-                    anomaly_label = batch["anomaly_label"]
+                    X_occluded = batch["original_occluded_signal"].to(self.device)
+                    X_target = batch["orig_signal"].to(self.device)
+                    anomaly_label = batch["anomaly_label"].to(self.device)
                     z_mean, z_log_var, z = self.model.encoder(X_occluded)
                     reconstruction = self.model.anomaly_decoder(z, anomaly_label)
                     loss = torch.nn.MSELoss()(reconstruction, X_target)
@@ -199,6 +204,8 @@ class CGATFinetune(object):
                 # 记录到 wandb
                 wandb.log({
                     "val/total_loss": val_total,
+                    "train/total_loss": train_total_avg,
+                    "lr": self.optimizer.param_groups[0]["lr"],
                     "epoch": epoch,
                     "step": global_steps
                 })

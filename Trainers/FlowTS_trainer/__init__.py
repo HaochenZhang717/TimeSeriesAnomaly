@@ -1,1 +1,1 @@
-from .flowts_trainer import FlowTSPretrain
+from .flowts_trainer import FlowTSPretrain, FlowTSFinetune
