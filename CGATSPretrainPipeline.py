@@ -1,0 +1,102 @@
+from generation_models import TimeVAECGATS
+from Trainers import CGATPretrain
+from dataset_utils import ECGDataset
+import argparse
+import torch
+import json
+
+
+
+
+
+def get_pretrain_args():
+    parser = argparse.ArgumentParser(description="parameters for TimeVAE-CGATS pretraining")
+
+    """time series general parameters"""
+    parser.add_argument("--seq_len", type=int, required=True)
+    parser.add_argument("--feature_size", type=int, required=True)
+
+    """model parameters"""
+    parser.add_argument("--latent_dim", type=int, required=True)
+    parser.add_argument("--trend_poly", type=int, required=True)
+    parser.add_argument("--kl_wt", type=float, required=True)
+    parser.add_argument("--hidden_layer_sizes", type=json.loads, required=True)
+    parser.add_argument("--custom_seas", type=json.loads, required=True)
+
+
+    """data parameters"""
+    parser.add_argument("--max_anomaly_ratio", type=int, required=True)
+    parser.add_argument("--raw_data_paths_train", type=str, required=True)
+    parser.add_argument("--raw_data_paths_val", type=str, required=True)
+    parser.add_argument("--indices_paths_train", type=str, required=True)
+    parser.add_argument("--indices_paths_val", type=str, required=True)
+
+    """training parameters"""
+    parser.add_argument("--lr", type=float, required=True)
+    parser.add_argument("--batch_size", type=int, required=True)
+    parser.add_argument("--epochs", type=int, required=True)
+    parser.add_argument("--grad_clip_norm", type=float, required=True)
+
+    """wandb parameters"""
+    parser.add_argument("--wandb_project", type=str,required=True)
+    parser.add_argument("--wandb_run", type=str, required=True)
+
+    """save and load parameters"""
+    parser.add_argument("--ckpt_dir", type=str, required=True)
+
+    """gpu parameters"""
+    parser.add_argument("--gpu_id", type=int, required=True)
+
+    return parser.parse_args()
+
+def pretrain():
+    args = get_pretrain_args()
+    model = TimeVAECGATS(
+        hidden_layer_sizes=args.hidden_layer_sizes,
+        trend_poly=args.trend_poly,
+        custom_seas=args.custom_seas,
+        use_residual_conn=True,
+        seq_len=args.seq_len,
+        feat_dim=args.feature_size,
+        latent_dim=args.latent_dim,
+        kl_wt = args.kl_wt,
+    )
+
+
+    pretrain_dataset_train = ECGDataset(
+        args.raw_data_paths_train,
+        args.indices_paths_train,
+        args.seq_len,
+        args.max_anomaly_ratio,
+    )
+
+    pretrain_dataset_val = ECGDataset(
+        args.raw_data_paths_val,
+        args.indices_paths_val,
+        args.seq_len,
+        args.max_anomaly_ratio,
+    )
+
+    train_loader = torch.utils.data.DataLoader(pretrain_dataset_train, batch_size=args.batch_size, shuffle=True, drop_last=True)
+    val_loader = torch.utils.data.DataLoader(pretrain_dataset_val, batch_size=args.batch_size, shuffle=False, drop_last=False)
+
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+
+    trainer = CGATPretrain(
+        optimizer=optimizer,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.epochs,
+        device=f"cuda:{args.gpu_id}",
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+    )
+    trainer.pretrain()
+
+if __name__ == "__main__":
+    pretrain()
