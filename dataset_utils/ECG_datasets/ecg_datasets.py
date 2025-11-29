@@ -135,7 +135,3 @@ class IterableECGDataset(IterableDataset):
             }
 
             yield sample
-
-
-
-
