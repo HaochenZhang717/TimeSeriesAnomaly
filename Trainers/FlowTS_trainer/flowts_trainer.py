@@ -160,8 +160,6 @@ class FlowTSFinetune(object):
             anomaly_batch = next(anomaly_train_iterator)
             anomaly_signal = anomaly_batch["orig_signal"].to(self.device)
             anomaly_label = anomaly_batch["anomaly_label"].to(device=self.device, dtype=torch.long)
-            print(torch.unique(anomaly_signal))
-            breakpoint()
             anomaly_label = (anomaly_label > 0).to(dtype=torch.long)#for now, we use this
 
             loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
@@ -176,6 +174,7 @@ class FlowTSFinetune(object):
             tr_loss_anomaly += loss_on_anomaly.item()
             tr_seen += 1
 
+            breakpoint()
             """evaluate every 250 steps"""
             if step % 250 == 0:
                 # calculate and log training statistics
@@ -247,8 +246,5 @@ class FlowTSFinetune(object):
                 if no_improve_epochs >= 10:
                     print(f"⛔ Early stopping triggered at Step {step}.")
                     break
-
-            if step > self.max_iters:
-                break
 
         wandb.finish()
