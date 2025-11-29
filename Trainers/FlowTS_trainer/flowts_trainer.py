@@ -164,7 +164,7 @@ class FlowTSFinetune(object):
 
             loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
 
-            total_loss = loss_on_normal + loss_on_anomaly
+            total_loss = (loss_on_normal + loss_on_anomaly) * 0.5
             total_loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
             self.optimizer.step()
@@ -211,7 +211,7 @@ class FlowTSFinetune(object):
                     val_seen += bs
                 val_loss_anomaly_avg = val_loss_anomaly / val_seen
 
-                val_loss_total_avg = val_loss_normal_avg + val_loss_anomaly_avg
+                val_loss_total_avg = (val_loss_normal_avg + val_loss_anomaly_avg) * 0.5
 
 
                 wandb.log({

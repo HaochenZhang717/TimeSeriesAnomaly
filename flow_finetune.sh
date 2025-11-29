@@ -15,7 +15,7 @@ python FlowFinetunePipeline.py \
   --anomaly_indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_100npz/validation/A.jsonl" \
   \
   --lr 1e-5 \
-  --batch_size 128 \
+  --batch_size 64 \
   --max_iters 1000000 \
   --grad_clip_norm 1.0 \
   \
