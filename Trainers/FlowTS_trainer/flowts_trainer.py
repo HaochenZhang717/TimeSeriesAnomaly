@@ -1,7 +1,7 @@
 import torch
 import wandb
 import os
-
+from tqdm import tqdm
 
 class FlowTSPretrain(object):
     def __init__(
@@ -20,12 +20,13 @@ class FlowTSPretrain(object):
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
 
-    def pretrain(self):
+    def pretrain(self, config):
 
         # 初始化 wandb
         wandb.init(
             project=self.wandb_project_name,
             name=self.wandb_run_name,
+            config=config,
         )
 
         os.makedirs(self.save_dir, exist_ok=True)
@@ -38,7 +39,7 @@ class FlowTSPretrain(object):
             total_loss = 0
             tr_seen = 0
             self.model.train()
-            for batch in self.train_loader:
+            for batch in tqdm(self.train_loader, desc=f"Epoch {epoch}"):
 
                 X_normal = batch["orig_signal"]
 
@@ -51,12 +52,12 @@ class FlowTSPretrain(object):
                 total_loss += loss.item()
                 tr_seen += 1
                 global_steps += 1
-
-                wandb.log({
-                    "train/step_total_loss": loss.item(),
-                    "lr": self.optimizer.param_groups[0]["lr"],
-                    "step": global_steps
-                })
+                # wandb.log({
+                #     "train/step_total_loss": loss.item(),
+                #     "lr": self.optimizer.param_groups[0]["lr"],
+                #     "step": global_steps
+                # })
+            train_total_avg = total_loss / tr_seen
 
 
             """evalaution"""
@@ -73,6 +74,7 @@ class FlowTSPretrain(object):
 
                 # 记录到 wandb
                 wandb.log({
+                    "train/total_loss": train_total_avg,
                     "val/total_loss": val_total,
                     "epoch": epoch,
                     "step": global_steps

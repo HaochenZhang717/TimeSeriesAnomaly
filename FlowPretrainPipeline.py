@@ -104,7 +104,7 @@ def pretrain():
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
     )
-    trainer.pretrain()
+    trainer.pretrain(config=vars(args))
 
 if __name__ == "__main__":
     pretrain()
