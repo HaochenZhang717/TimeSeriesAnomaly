@@ -154,12 +154,12 @@ class FlowTSFinetune(object):
             self.optimizer.zero_grad()
             normal_batch = next(normal_train_iterator)
             normal_signal = normal_batch["orig_signal"].to(self.device)
-            normal_random_anomaly_label = normal_batch["random_anomaly_label"].to(self.device)
+            normal_random_anomaly_label = normal_batch["random_anomaly_label"].to(device=self.device, dtype=torch.long)
             loss_on_normal = self.model.finetune_loss(normal_signal, normal_random_anomaly_label, mode="normal")
 
             anomaly_batch = next(anomaly_train_iterator)
             anomaly_signal = anomaly_batch["orig_signal"].to(self.device)
-            anomaly_label = anomaly_batch["anomaly_label"].to(self.device)
+            anomaly_label = anomaly_batch["anomaly_label"].to(device=self.device, dtype=torch.long)
             loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
 
             total_loss = loss_on_normal + loss_on_anomaly
@@ -185,7 +185,7 @@ class FlowTSFinetune(object):
                 val_seen = 0
                 for normal_batch in self.val_normal_loader:
                     normal_signal = normal_batch["orig_signal"].to(self.device)
-                    normal_random_anomaly_label = normal_batch["random_anomaly_label"].to(self.device)
+                    normal_random_anomaly_label = normal_batch["random_anomaly_label"].to(device=self.device, dtype=torch.long)
                     with torch.no_grad():
                         loss_on_normal = self.model.finetune_loss(
                             normal_signal,
@@ -201,7 +201,7 @@ class FlowTSFinetune(object):
                 val_seen = 0
                 for anomaly_batch in self.val_anomaly_loader:
                     anomaly_signal = anomaly_batch["orig_signal"].to(self.device)
-                    anomaly_label = anomaly_batch["anomaly_label"].to(self.device)
+                    anomaly_label = anomaly_batch["anomaly_label"].to(device=self.device, dtype=torch.long)
                     with torch.no_grad():
                         loss_on_anomaly = self.model.finetune_loss(anomaly_signal, anomaly_label, mode="anomaly")
                     bs = anomaly_signal.shape[0]
