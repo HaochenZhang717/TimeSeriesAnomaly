@@ -1,7 +1,7 @@
 import torch
 import wandb
 import os
-
+from tqdm import tqdm
 
 class CGATPretrain(object):
     def __init__(
@@ -42,7 +42,7 @@ class CGATPretrain(object):
             total_loss = reconstruction_loss = kl_loss = 0
             tr_seen = 0
             self.model.train()
-            for batch in self.train_loader:
+            for batch in tqdm(self.train_loader, desc=f"Epoch {epoch}"):
 
                 X_occluded = batch["signal_random_occluded"].to(self.device)
                 X_normal = batch["orig_signal"].to(self.device)
@@ -164,7 +164,7 @@ class CGATFinetune(object):
             total_loss = 0
             tr_seen = 0
             self.model.train()
-            for batch in self.train_loader:
+            for batch in tqdm(self.train_loader, desc=f"Epoch {epoch}"):
                 X_occluded = batch["original_occluded_signal"].to(self.device)
                 X_target = batch["orig_signal"].to(self.device)
                 anomaly_label = batch["anomaly_label"].to(self.device)

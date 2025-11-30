@@ -1,5 +1,5 @@
 from generation_models import TimeVAECGATS
-from Trainers import CGATPretrain, CGATFinetune
+from Trainers import CGATFinetune
 from dataset_utils import ECGDataset
 import argparse
 import torch

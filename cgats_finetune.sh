@@ -19,8 +19,9 @@ python CGATSFinetunePipeline.py \
   --epochs 1000 \
   --grad_clip_norm 1.0 \
   \
-  --wandb_project cgats_pretrain \
-  --wandb_run cgats_pretrain \
+  --wandb_project cgats_finetune \
+  --wandb_run cgats_fientune \
   \
-  --ckpt_dir ../TSA-ckpts/cgats_normal_pretrain_ckpt \
+  --ckpt_dir "../TSA-ckpts/cgats_finetune_ckpt" \
+  --pretrained_ckpt "../TSA-ckpts/cgats_normal_pretrain_ckpt/2025-11-30-00:35:44/ckpt.pth" \
   --gpu_id 0
