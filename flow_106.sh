@@ -77,7 +77,7 @@ python FlowEvaluate.py \
   \
   --model_ckpt "../TSA-ckpts/flow_mitdb106v_finetune_ckpt/2025-11-30-03:01:14/ckpt.pth" \
   --gpu_id 2 \
-  --num_samples 100 \
+  --num_samples -1 \
   --generated_path "../samples_path/flow/mitdb106v-2025-11-30-03:01:14" \
 
 
