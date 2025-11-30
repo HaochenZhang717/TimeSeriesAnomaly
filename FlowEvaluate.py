@@ -181,7 +181,8 @@ def evaluate():
     print(flow_metrics)
 
 
-
+if __name__ == "__main__":
+    evaluate()
 
 
 
