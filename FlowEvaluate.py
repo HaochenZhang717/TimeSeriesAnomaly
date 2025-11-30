@@ -148,7 +148,8 @@ def evaluate():
         "all_samples": all_samples,
         "all_anomaly_labels": all_anomaly_labels,
     })
-
+    torch.save(all_data, f"{args.generated_path}/all_data.pt")
+    breakpoint()
     default_metrics = run_anomaly_quality_test(
         train_normal_signal=all_data["orig_normal_train_signal"],
         train_anomaly_signal=all_data["orig_anomaly_train_signal"],
