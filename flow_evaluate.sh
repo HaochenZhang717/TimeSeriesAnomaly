@@ -19,7 +19,7 @@ python FlowEvaluate.py \
   \
   --model_ckpt ../TSA-ckpts/flow_normal_finetune_ckpt/2025-11-29-06:31:47/ckpt.pth \
   --gpu_id 1 \
-  --num_samples 30524 \
+  --num_samples 100 \
   --generated_path "../samples_path/flow/2025-11-29-06:31:47" \
 
 
