@@ -51,8 +51,8 @@ def classification_metrics_torch(
     # ------------------------------
     # 1) 准备训练集：normal + generated anomaly
     # ------------------------------
-    X_train_normal = torch.tensor(ori_normal_data, dtype=torch.float32)
-    X_train_fake_anom = torch.tensor(gen_anomaly_data, dtype=torch.float32)
+    X_train_normal = torch.tensor(ori_normal_data, dtype=torch.float32, device=device)
+    X_train_fake_anom = torch.tensor(gen_anomaly_data, dtype=torch.float32, device=device)
 
     y_train_normal = torch.zeros((len(X_train_normal), 1), dtype=torch.float32, device=device)
     y_train_fake_anom = torch.ones((len(X_train_fake_anom), 1), dtype=torch.float32, device=device)
@@ -65,8 +65,8 @@ def classification_metrics_torch(
     # ------------------------------
     # 2) 准备测试集：original normal + original anomaly
     # ------------------------------
-    X_test_normal = torch.tensor(ori_normal_data, dtype=torch.float32)
-    X_test_anomaly = torch.tensor(ori_anomaly_data, dtype=torch.float32)
+    X_test_normal = torch.tensor(ori_normal_data, dtype=torch.float32, device=device)
+    X_test_anomaly = torch.tensor(ori_anomaly_data, dtype=torch.float32, device=device)
 
     y_test_normal = torch.zeros((len(X_test_normal), 1), dtype=torch.float32, device=device)
     y_test_anomaly = torch.ones((len(X_test_anomaly), 1), dtype=torch.float32, device=device)
