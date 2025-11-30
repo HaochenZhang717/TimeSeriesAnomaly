@@ -66,6 +66,7 @@ def evaluate():
         n_heads=args.n_heads,
         mlp_hidden_times=4,
     ).to(device)
+    model.prepare_for_finetune(ckpt_path=None)
     model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
