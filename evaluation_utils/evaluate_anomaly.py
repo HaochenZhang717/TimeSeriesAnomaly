@@ -142,10 +142,21 @@ def run_anomaly_quality_test(
     anomaly_train_loader = infinite_loader(anomaly_train_loader)
 
     '''test set'''
-    test_normal = torch.tensor(test_normal_signal, dtype=torch.float32).to(device)
+    # test_normal = torch.tensor(test_normal_signal, dtype=torch.float32).to(device)
+    # test_normal_label = torch.zeros((len(test_normal), 1), dtype=torch.float32).to(device)
+    #
+    # test_anomaly = torch.tensor(test_anomaly_signal, dtype=torch.float32).to(device)
+    # if mode == "interval":
+    #     test_anomaly_label = torch.ones((len(test_anomaly), 1), dtype=torch.float32).to(device)
+    # elif mode == "timestep":
+    #     test_anomaly_label = torch.tensor(test_anomaly_label, dtype=torch.float32).to(device)
+    # else:
+    #     raise ValueError("mode must be interval or timestep")
+
+    test_normal = torch.tensor(normal, dtype=torch.float32).to(device)
     test_normal_label = torch.zeros((len(test_normal), 1), dtype=torch.float32).to(device)
 
-    test_anomaly = torch.tensor(test_anomaly_signal, dtype=torch.float32).to(device)
+    test_anomaly = torch.tensor(train_anomaly_signal, dtype=torch.float32).to(device)
     if mode == "interval":
         test_anomaly_label = torch.ones((len(test_anomaly), 1), dtype=torch.float32).to(device)
     elif mode == "timestep":
@@ -153,10 +164,11 @@ def run_anomaly_quality_test(
     else:
         raise ValueError("mode must be interval or timestep")
 
-    normal_test_set = TensorDataset(test_normal, test_normal_label)
-    anomaly_test_set = TensorDataset(test_anomaly, test_anomaly_label)
-    normal_test_loader = DataLoader(normal_test_set, batch_size=bs, shuffle=False, drop_last=False)
-    anomaly_test_loader = DataLoader(anomaly_test_set, batch_size=bs, shuffle=False, drop_last=False)
+
+    # normal_test_set = TensorDataset(test_normal, test_normal_label)
+    # anomaly_test_set = TensorDataset(test_anomaly, test_anomaly_label)
+    # normal_test_loader = DataLoader(normal_test_set, batch_size=bs, shuffle=False, drop_last=False)
+    # anomaly_test_loader = DataLoader(anomaly_test_set, batch_size=bs, shuffle=False, drop_last=False)
 
     test_set_input = torch.cat([test_normal, test_anomaly], dim=0)
     test_set_label = torch.cat([test_normal_label, test_anomaly_label], dim=0)
