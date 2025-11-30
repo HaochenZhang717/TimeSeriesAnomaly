@@ -1,3 +1,3 @@
-from evaluate_anomaly import run_anomaly_quality_test
+from .evaluate_anomaly import run_anomaly_quality_test
 from .interval_classifiers import GRUClassifier, LSTMClassifier
 from .timestep_classifier import GRUTimestepClassifier, LSTMTimestepClassifier
