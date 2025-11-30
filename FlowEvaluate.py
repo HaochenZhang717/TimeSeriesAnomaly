@@ -158,7 +158,7 @@ def evaluate():
     max_epochs=2000,
     batch_size=64,
     patience=20,
-    device="cuda"
+    device=device
     )
 
     for k, v in old_eval_result.items():

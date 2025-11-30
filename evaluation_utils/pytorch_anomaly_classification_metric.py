@@ -46,7 +46,7 @@ def classification_metrics_torch(
     device="cuda"
 ):
 
-    device = torch.device(device if torch.cuda.is_available() else "cpu")
+    # device = torch.device(device if torch.cuda.is_available() else "cpu")
 
     # ------------------------------
     # 1) 准备训练集：normal + generated anomaly
