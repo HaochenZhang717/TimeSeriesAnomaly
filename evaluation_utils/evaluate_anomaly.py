@@ -22,7 +22,7 @@ def fit_classifier(model, train_loader, test_loader, lr):
         eval_seen = 0
 
         for inputs, labels in test_loader:
-            loss = model.loss(inputs)
+            loss = model.loss(inputs, labels)
             bs = labels.size(0)
             eval_loss += loss.item() * bs
             eval_seen += bs
