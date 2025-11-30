@@ -6,3 +6,6 @@ scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/Trainers/CGAT_
 
 
 scp -r /Users/zhc/Documents/PhD/projects/TSAnomalyGenerationClean/Trainers/FlowTS_trainer/flowts_trainer.py root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/Trainers/FlowTS_trainer
+
+
+scp -r root@134.199.134.61:/root/tianyi/samples_path ./
