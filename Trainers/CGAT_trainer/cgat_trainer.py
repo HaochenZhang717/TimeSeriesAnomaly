@@ -192,7 +192,7 @@ class CGATFinetune(object):
             train_total_avg = total_loss / tr_seen
 
             """evaluation"""
-            self.eval()
+            self.model.eval()
             with torch.no_grad():
                 val_total, val_seen = 0, 0
                 for batch in self.val_loader:
