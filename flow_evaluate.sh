@@ -15,7 +15,7 @@ python FlowEvaluate.py \
   --anomaly_indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_100npz/train/A.jsonl" \
   --anomaly_indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_100npz/validation/A.jsonl" \
   \
-  --batch_size 128 \
+  --batch_size 64 \
   \
   --model_ckpt ../TSA-ckpts/flow_normal_finetune_ckpt/2025-11-29-06:31:47/ckpt.pth \
   --gpu_id 1 \
