@@ -10,7 +10,9 @@ def infinite_loader(dataloader):
         for batch in dataloader:
             yield batch
 
-def fit_classifier(model, normal_train_loader, anomaly_train_loader, test_loader, lr):
+
+def fit_classifier(
+        model, normal_train_loader, anomaly_train_loader, test_loader, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     best_eval = float('inf')
     no_improvement = 0
@@ -18,7 +20,7 @@ def fit_classifier(model, normal_train_loader, anomaly_train_loader, test_loader
     train_seen = 0
 
     model.train()
-    for iteration in tqdm(range(10000)):
+    for iteration in range(100000):
         normal_inputs, normal_labels = next(normal_train_loader)
         anomaly_inputs, anomaly_labels = next(anomaly_train_loader)
         inputs = torch.cat((normal_inputs, anomaly_inputs), dim=0)
@@ -94,6 +96,20 @@ def fit_classifier(model, normal_train_loader, anomaly_train_loader, test_loader
     # F1
     metrics["F1"] = f1_score(y_true, y_pred, zero_division=0)
 
+
+    normal_mask = (y_true == 0)
+    anomaly_mask = (y_true == 1)
+
+    if normal_mask.sum() > 0:
+        metrics["Normal_Accuracy"] = (y_pred[normal_mask] == 0).mean()
+    else:
+        metrics["Normal_Accuracy"] = float("nan")
+
+    if anomaly_mask.sum() > 0:
+        metrics["Anomaly_Accuracy"] = (y_pred[anomaly_mask] == 1).mean()
+    else:
+        metrics["Anomaly_Accuracy"] = float("nan")
+
     return metrics
 
 
@@ -137,13 +153,16 @@ def run_anomaly_quality_test(
     else:
         raise ValueError("mode must be interval or timestep")
 
-
+    normal_test_set = TensorDataset(test_normal, test_normal_label)
+    anomaly_test_set = TensorDataset(test_anomaly, test_anomaly_label)
+    normal_test_loader = DataLoader(normal_test_set, batch_size=bs, shuffle=False, drop_last=False)
+    anomaly_test_loader = DataLoader(anomaly_test_set, batch_size=bs, shuffle=False, drop_last=False)
 
     test_set_input = torch.cat([test_normal, test_anomaly], dim=0)
     test_set_label = torch.cat([test_normal_label, test_anomaly_label], dim=0)
-
     test_set = TensorDataset(test_set_input, test_set_label)
     test_loader = DataLoader(test_set, batch_size=bs, shuffle=True)
+
     # print(f"test_normal.shape: {test_normal.shape}")
     # print(f"test_anomaly.shape: {test_anomaly.shape}")
     # print(f"train_normal.shape: {normal.shape}")
