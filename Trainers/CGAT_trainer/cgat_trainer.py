@@ -20,7 +20,7 @@ class CGATPretrain(object):
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
 
-    def pretrain(self):
+    def pretrain(self, config):
         # freeze encoder
         for param in self.model.anomaly_decoder.parameters():
             param.requires_grad = False
@@ -29,6 +29,7 @@ class CGATPretrain(object):
         wandb.init(
             project=self.wandb_project_name,
             name=self.wandb_run_name,
+            config=config
         )
 
         os.makedirs(self.save_dir, exist_ok=True)
@@ -136,7 +137,7 @@ class CGATFinetune(object):
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
 
-    def finetune(self):
+    def finetune(self, config):
         # freeze encoder
         for param in self.model.encoder.parameters():
             param.requires_grad = False
@@ -150,6 +151,7 @@ class CGATFinetune(object):
         wandb.init(
             project=self.wandb_project_name,
             name=self.wandb_run_name,
+            config=config
         )
 
         os.makedirs(self.save_dir, exist_ok=True)

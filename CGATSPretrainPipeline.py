@@ -74,7 +74,7 @@ def pretrain():
         feat_dim=args.feature_size,
         latent_dim=args.latent_dim,
         kl_wt = args.kl_wt,
-    ).to(device)
+    )
 
 
     pretrain_dataset_train = ECGDataset(
@@ -110,7 +110,7 @@ def pretrain():
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
     )
-    trainer.pretrain()
+    trainer.pretrain(config=vars(args))
 
 if __name__ == "__main__":
     pretrain()

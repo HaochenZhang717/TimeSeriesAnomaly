@@ -113,7 +113,7 @@ def finetune():
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
     )
-    trainer.finetune()
+    trainer.finetune(config=vars(args))
 
 if __name__ == "__main__":
     finetune()
