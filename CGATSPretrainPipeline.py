@@ -64,6 +64,7 @@ def pretrain():
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     model = TimeVAECGATS(
         hidden_layer_sizes=args.hidden_layer_sizes,
         trend_poly=args.trend_poly,
@@ -73,7 +74,7 @@ def pretrain():
         feat_dim=args.feature_size,
         latent_dim=args.latent_dim,
         kl_wt = args.kl_wt,
-    )
+    ).to(device)
 
 
     pretrain_dataset_train = ECGDataset(
@@ -103,7 +104,7 @@ def pretrain():
         train_loader=train_loader,
         val_loader=val_loader,
         max_epochs=args.epochs,
-        device=f"cuda:{args.gpu_id}",
+        device=device,
         save_dir=args.ckpt_dir,
         wandb_run_name=args.wandb_run,
         wandb_project_name=args.wandb_project,
