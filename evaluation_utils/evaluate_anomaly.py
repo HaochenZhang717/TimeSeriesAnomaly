@@ -8,26 +8,34 @@ def fit_classifier(model, train_loader, test_loader, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     best_eval = float('inf')
     no_improvement = 0
-    for epoch in tqdm(range(1000), desc="Training Classifier"):
-        model.train()
-        for inputs, labels in train_loader:
-            optimizer.zero_grad()
 
+    for epoch in range(1000):
+        model.train()
+        train_loss = 0
+        train_seen = 0
+        for inputs, labels in tqdm(train_loader, desc=f"Training Classifier: Epoch{epoch}"):
+            optimizer.zero_grad()
             loss = model.loss(inputs, labels)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
+            train_loss += loss.item()
+            train_seen += 1
+
+        train_loss_avg = train_loss / train_seen
         model.eval()
         eval_loss = 0
         eval_seen = 0
 
         for inputs, labels in test_loader:
-            loss = model.loss(inputs, labels)
+            with torch.no_grad():
+                loss = model.loss(inputs, labels)
             bs = labels.size(0)
             eval_loss += loss.item() * bs
             eval_seen += bs
 
         eval_loss = eval_loss / eval_seen
+        print(f"Epoch{epoch} | train loss: {train_loss_avg:.4f} | eval loss: {eval_loss:.4f} ||")
         if eval_loss < best_eval:
             best_eval = eval_loss
             no_improvement = 0
