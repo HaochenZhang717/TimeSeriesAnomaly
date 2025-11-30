@@ -2,14 +2,14 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
-
+from tqdm import tqdm
 
 def fit_classifier(model_cls, train_loader, test_loader, lr):
     model = model_cls()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     best_eval = np.float('inf')
     no_improvement = 0
-    for epoch in range(1000):
+    for epoch in tqdm(range(1000), desc="Training Classifier"):
         model.train()
         for inputs, labels in train_loader:
             optimizer.zero_grad()

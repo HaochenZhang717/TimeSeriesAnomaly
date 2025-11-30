@@ -9,7 +9,7 @@ import json
 import os
 from evaluation_utils import run_anomaly_quality_test
 from evaluation_utils import GRUClassifier, LSTMClassifier
-
+from tqdm import tqdm
 
 def get_evaluate_args():
     parser = argparse.ArgumentParser(description="parameters for flow-ts pretraining")
@@ -120,7 +120,7 @@ def evaluate():
 
         all_anomaly_samples = []
         all_anomaly_labels = []
-        for _ in range(num_cycle):
+        for _ in tqdm(range(num_cycle), desc="Generating samples"):
             anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device)
             samples = model.generate_mts(
                 batch_size=args.batch_size,
