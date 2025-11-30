@@ -57,8 +57,9 @@ class FM_TS(nn.Module):
 
     @torch.no_grad()
     def sample(self, shape, anomaly_label):
+        model_device = next(self.parameters()).device
         self.eval()
-        zt = torch.randn(shape).cuda()  ## init the noise
+        zt = torch.randn(shape).to(model_device)  ## init the noise
         ## t shifting from stable diffusion 3
         timesteps = torch.linspace(0, 1, self.num_timesteps+1)
         t_shifted = 1-(self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
@@ -70,7 +71,7 @@ class FM_TS(nn.Module):
             step = t_prev - t_curr
             v = self.output(
                 zt.clone(),
-                torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).cuda().squeeze(),
+                torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(model_device).squeeze(),
                 anomaly_label=anomaly_label,
                 padding_masks=None
             )
@@ -144,28 +145,28 @@ class FM_TS(nn.Module):
             raise ValueError("mode must be 'normal' or 'anomaly'")
 
 
-    def fast_sample_infill(self, shape, target, partial_mask=None):
-
-        z0 = torch.randn(shape).cuda()
-        z1 = zt = z0
-        for t in range(self.num_timesteps):
-            t = t/self.num_timesteps  ## scale to 0-1
-            t = t**(float(os.environ['hucfg_Kscale']))  ## perform t-power sampling
-
-            
-            z0 = torch.randn(shape).cuda()  ## re init the z0
-
-            target_t = target*t + z0*(1-t)  ## get the noisy target
-            zt = z1*t + z0*(1-t)  ##
-            # import ipdb; ipdb.set_trace()
-            zt[partial_mask] = target_t[partial_mask]  ## replace with the noisy version of given ground truth information
-            v = self.output(zt, torch.tensor([t*self.time_scalar]).cuda(), None) 
-
-            z1 = zt.clone() + (1 - t) * v  ## one step euler
-            z1 = torch.clamp(z1, min=-1, max=1) ## make sure the upper and lower bound dont exceed
-
-
-        return z1
+    # def fast_sample_infill(self, shape, target, partial_mask=None):
+    #
+    #     z0 = torch.randn(shape).cuda()
+    #     z1 = zt = z0
+    #     for t in range(self.num_timesteps):
+    #         t = t/self.num_timesteps  ## scale to 0-1
+    #         t = t**(float(os.environ['hucfg_Kscale']))  ## perform t-power sampling
+    #
+    #
+    #         z0 = torch.randn(shape).cuda()  ## re init the z0
+    #
+    #         target_t = target*t + z0*(1-t)  ## get the noisy target
+    #         zt = z1*t + z0*(1-t)  ##
+    #         # import ipdb; ipdb.set_trace()
+    #         zt[partial_mask] = target_t[partial_mask]  ## replace with the noisy version of given ground truth information
+    #         v = self.output(zt, torch.tensor([t*self.time_scalar]).cuda(), None)
+    #
+    #         z1 = zt.clone() + (1 - t) * v  ## one step euler
+    #         z1 = torch.clamp(z1, min=-1, max=1) ## make sure the upper and lower bound dont exceed
+    #
+    #
+    #     return z1
 
 
 
