@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 def fit_classifier(model, train_loader, test_loader, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    best_eval = np.float('inf')
+    best_eval = float('inf')
     no_improvement = 0
     for epoch in tqdm(range(1000), desc="Training Classifier"):
         model.train()
