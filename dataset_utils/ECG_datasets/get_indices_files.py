@@ -514,11 +514,16 @@ def build_single_ts_train_val(
 # ----------------------- 使用示例 -----------------------
 if __name__ == "__main__":
 
-    stats = build_single_ts_train_val(
-        npz_file="./raw_data/100.npz",
-        output_dir="./indices/slide_windows_100npz",
-        window_size=800,
-        stride=10,
-        train_ratio=0.5,
-        max_anomaly_ratio=0.2
-    )
+    for name in range(100, 235):
+        print('-'*100)
+        print(name)
+        print('-'*100)
+
+        stats = build_single_ts_train_val(
+            npz_file=f"./raw_data/{name}.npz",
+            output_dir=f"./indices/slide_windows_{name}npz",
+            window_size=800,
+            stride=10,
+            train_ratio=0.5,
+            max_anomaly_ratio=0.2
+        )
