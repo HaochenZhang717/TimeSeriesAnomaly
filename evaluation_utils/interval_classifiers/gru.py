@@ -15,9 +15,8 @@ class GRUClassifier(nn.Module):
 
     def forward(self, x):
         out, _ = self.gru(x)
-        print("out.shape", out.shape)
-        print("x.shape", x.shape)
-        breakpoint()
+        # print("out.shape", out.shape)
+        # print("x.shape", x.shape)
         last_state = out[:, -1, :]   # final hidden state
         logit = self.fc(last_state)
         prob = torch.sigmoid(logit)

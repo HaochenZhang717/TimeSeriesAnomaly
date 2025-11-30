@@ -101,7 +101,6 @@ def evaluate():
         max_anomaly_ratio=args.max_anomaly_ratio,
     )
 
-    breakpoint()
     all_data = {
         "orig_normal_train_signal": torch.from_numpy(np.stack(normal_train_set.slide_windows, axis=0)),
         "orig_normal_train_label": torch.from_numpy(np.stack(normal_train_set.anomaly_labels, axis=0)),
