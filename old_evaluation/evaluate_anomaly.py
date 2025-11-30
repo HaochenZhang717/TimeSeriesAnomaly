@@ -2,7 +2,7 @@ import os
 import json
 import torch
 import numpy as np
-from Utils.pytorch_anomaly_classification_metric import classification_metrics_torch   # <-- 你要把分类metric放这
+from pytorch_anomaly_classification_metric import classification_metrics_torch   # <-- 你要把分类metric放这
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import pandas as pd
