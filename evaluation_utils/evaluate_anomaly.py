@@ -12,6 +12,7 @@ def fit_classifier(model, train_loader, test_loader, lr):
         model.train()
         for inputs, labels in train_loader:
             optimizer.zero_grad()
+
             loss = model.loss(inputs, labels)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
