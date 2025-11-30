@@ -78,15 +78,21 @@ def fit_classifier(model_cls, train_loader, test_loader, lr):
 
 
 def run_anomaly_quality_test(
-        normal, anomaly, test_normal, test_anomaly,
-        model_cls, device, lr, bs
+        train_normal_signal, train_anomaly_signal, train_anomaly_label,
+        test_normal_signal, test_anomaly_signal, test_anomaly_label,
+        model_cls, device, lr, bs, mode
 ):
     '''original train set'''
-    normal = torch.tensor(normal, dtype=torch.float32).to(device)
+    normal = torch.tensor(train_normal_signal, dtype=torch.float32).to(device)
     normal_label = torch.zeros((len(normal), 1), dtype=torch.float32).to(device)
 
-    anomaly = torch.tensor(anomaly, dtype=torch.float32).to(device)
-    anomaly_label = torch.ones((len(anomaly), 1), dtype=torch.float32).to(device)
+    anomaly = torch.tensor(train_anomaly_signal, dtype=torch.float32).to(device)
+    if mode == "interval":
+        anomaly_label = torch.ones((len(anomaly), 1), dtype=torch.float32).to(device)
+    elif mode == "timestep":
+        anomaly_label = torch.tensor(train_anomaly_label, dtype=torch.float32).to(device)
+    else:
+        raise ValueError("mode must be interval or timestep")
 
     train_set_input = torch.cat([normal, anomaly], dim=0)
     train_set_label = torch.cat([normal_label, anomaly_label], dim=0)
@@ -94,11 +100,18 @@ def run_anomaly_quality_test(
     train_loader = DataLoader(train_set, batch_size=bs, shuffle=True)
 
     '''test set'''
-    test_normal = torch.tensor(test_normal, dtype=torch.float32).to(device)
+    test_normal = torch.tensor(test_normal_signal, dtype=torch.float32).to(device)
     test_normal_label = torch.zeros((len(test_normal), 1), dtype=torch.float32).to(device)
 
-    test_anomaly = torch.tensor(test_anomaly, dtype=torch.float32).to(device)
-    test_anomaly_label = torch.ones((len(test_anomaly), 1), dtype=torch.float32).to(device)
+    test_anomaly = torch.tensor(test_anomaly_signal, dtype=torch.float32).to(device)
+    if mode == "interval":
+        test_anomaly_label = torch.ones((len(test_anomaly), 1), dtype=torch.float32).to(device)
+    elif mode == "timestep":
+        test_anomaly_label = torch.tensor(test_anomaly_label, dtype=torch.float32).to(device)
+    else:
+        raise ValueError("mode must be interval or timestep")
+
+
 
     test_set_input = torch.cat([test_normal, test_anomaly], dim=0)
     test_set_label = torch.cat([test_normal_label, test_anomaly_label], dim=0)
@@ -106,8 +119,8 @@ def run_anomaly_quality_test(
     test_set = TensorDataset(test_set_input, test_set_label)
     test_loader = DataLoader(test_set, batch_size=bs, shuffle=True)
 
-    best_accuracy = fit_classifier(model_cls, train_loader, test_loader, lr)
+    metrics = fit_classifier(model_cls, train_loader, test_loader, lr)
 
-    return {"best_accuracy": best_accuracy}
+    return metrics
 
 
