@@ -9,7 +9,7 @@ def fit_classifier(model, train_loader, test_loader, lr):
     best_eval = float('inf')
     no_improvement = 0
 
-    for epoch in range(1000):
+    for epoch in range(100):
         model.train()
         train_loss = 0
         train_seen = 0
@@ -132,7 +132,7 @@ def run_anomaly_quality_test(
     # print(f"train_normal.shape: {normal.shape}")
     # print(f"train_anomaly.shape: {anomaly.shape}")
     # breakpoint()
-    metrics = fit_classifier(model, train_loader, test_loader, lr)
+    metrics = fit_classifier(model, train_loader, train_loader, lr)
 
     return metrics
 

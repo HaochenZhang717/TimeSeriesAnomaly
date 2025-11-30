@@ -123,7 +123,7 @@ class CGATFinetune(object):
     def __init__(
             self, optimizer, model, train_loader,
             val_loader, max_epochs, device, save_dir,
-            wandb_project_name, wandb_run_name
+            wandb_project_name, wandb_run_name, grad_clip_norm
     ):
         self.optimizer = optimizer
         self.model = model.to(device)
@@ -134,10 +134,13 @@ class CGATFinetune(object):
         self.save_dir = save_dir
         self.wandb_project_name = wandb_project_name
         self.wandb_run_name = wandb_run_name
+        self.grad_clip_norm = grad_clip_norm
 
     def finetune(self):
         # freeze encoder
         for param in self.model.encoder.parameters():
+            param.requires_grad = False
+        for param in self.model.normal_decoder.parameters():
             param.requires_grad = False
         # only train anomaly_decoder
         for param in self.model.anomaly_decoder.parameters():
@@ -170,6 +173,7 @@ class CGATFinetune(object):
                 reconstruction = self.model.anomaly_decoder(z, anomaly_label)
                 loss = torch.nn.MSELoss()(reconstruction, X_target)
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
                 self.optimizer.step()
 
                 # 累积统计
@@ -185,7 +189,7 @@ class CGATFinetune(object):
                 # })
             train_total_avg = total_loss / tr_seen
 
-            """evalaution"""
+            """evaluation"""
             self.eval()
             with torch.no_grad():
                 val_total, val_seen = 0, 0
