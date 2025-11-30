@@ -1,3 +1,5 @@
+import numpy as np
+
 from generation_models import FM_TS
 from Trainers import FlowTSPretrain
 from dataset_utils import ECGDataset, IterableECGDataset
@@ -101,14 +103,14 @@ def evaluate():
 
 
     all_data = {
-        "orig_normal_train_signal": torch.cat(normal_train_set.slide_windows, dim=0),
-        "orig_normal_train_label": torch.cat(normal_train_set.anomaly_labels, dim=0),
-        "orig_anomaly_train_signal": torch.cat(anomaly_train_set.slide_windows, dim=0),
-        "orig_anomaly_train_label": torch.cat(anomaly_train_set.anomaly_labels, dim=0),
-        "orig_normal_val_signal": torch.cat(normal_val_set.slide_windows, dim=0),
-        "orig_normal_val_label": torch.cat(normal_val_set.anomaly_labels, dim=0),
-        "orig_anomaly_val_signal": torch.cat(anomaly_val_set.slide_windows, dim=0),
-        "orig_anomaly_val_label": torch.cat(anomaly_val_set.anomaly_labels, dim=0),
+        "orig_normal_train_signal": torch.from_numpy(np.concatenate(normal_train_set.slide_windows, axis=0)),
+        "orig_normal_train_label": torch.from_numpy(np.concatenate(normal_train_set.anomaly_labels, axis=0)),
+        "orig_anomaly_train_signal": torch.from_numpy(np.concatenate(anomaly_train_set.slide_windows, axis=0)),
+        "orig_anomaly_train_label": torch.from_numpy(np.concatenate(anomaly_train_set.anomaly_labels, axis=0)),
+        "orig_normal_val_signal": torch.from_numpy(np.concatenate(normal_val_set.slide_windows, axis=0)),
+        "orig_normal_val_label": torch.from_numpy(np.concatenate(normal_val_set.anomaly_labels, axis=0)),
+        "orig_anomaly_val_signal": torch.from_numpy(np.concatenate(anomaly_val_set.slide_windows, axis=0)),
+        "orig_anomaly_val_label": torch.from_numpy(np.concatenate(anomaly_val_set.anomaly_labels, axis=0)),
     }
 
 
