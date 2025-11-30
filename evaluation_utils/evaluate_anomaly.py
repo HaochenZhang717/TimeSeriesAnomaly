@@ -118,7 +118,11 @@ def run_anomaly_quality_test(
 
     test_set = TensorDataset(test_set_input, test_set_label)
     test_loader = DataLoader(test_set, batch_size=bs, shuffle=True)
-
+    print(f"test_normal.shape: {test_normal.shape}")
+    print(f"test_anomaly.shape: {test_anomaly.shape}")
+    print(f"train_normal.shape: {normal.shape}")
+    print(f"train_anomaly.shape: {anomaly.shape}")
+    breakpoint()
     metrics = fit_classifier(model, train_loader, test_loader, lr)
 
     return metrics
