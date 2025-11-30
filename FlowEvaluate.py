@@ -116,7 +116,7 @@ def evaluate():
     if args.num_samples > 0:
         normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
         normal_train_iterator = iter(normal_train_loader)
-
+        args.num_samples = len(normal_train_set.slide_windows)
         num_cycle = int(args.num_samples // args.batch_size) + 1
 
         all_anomaly_samples = []
