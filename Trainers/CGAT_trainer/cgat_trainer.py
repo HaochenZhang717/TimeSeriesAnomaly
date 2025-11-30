@@ -78,10 +78,10 @@ class CGATPretrain(object):
             with torch.no_grad():
                 val_total, val_recon, val_kl, val_seen = 0, 0, 0, 0
                 for batch in self.val_loader:
-                    X_occluded = batch["signal_random_occluded"]
-                    X_normal = batch["orig_signal"]
-                    z_mean, z_log_var, z = self.model.encoder(X_occluded).to(self.device)
-                    reconstruction = self.model.normal_decoder(z).to(self.device)
+                    X_occluded = batch["signal_random_occluded"].to(self.device)
+                    X_normal = batch["orig_signal"].to(self.device)
+                    z_mean, z_log_var, z = self.model.encoder(X_occluded)
+                    reconstruction = self.model.normal_decoder(z)
                     loss, recon_loss, kl = self.model.loss_function(X_normal, reconstruction, z_mean, z_log_var)
                     val_total += loss.item()
                     val_recon += recon_loss.item()
