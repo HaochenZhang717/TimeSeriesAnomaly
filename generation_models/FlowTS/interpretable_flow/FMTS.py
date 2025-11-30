@@ -64,9 +64,11 @@ class FM_TS(nn.Module):
         timesteps = torch.linspace(0, 1, self.num_timesteps+1)
         t_shifted = 1-(self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
         t_shifted = t_shifted.flip(0)
-        random_index = random.randint(0, anomaly_label.shape[0]-1)
-        model_device = next(self.parameters()).device
-        anomaly_label = anomaly_label[random_index].to(model_device, dtype=torch.long)
+        if anomaly_label is not None:
+            random_index = random.randint(0, anomaly_label.shape[0]-1)
+            model_device = next(self.parameters()).device
+            anomaly_label = anomaly_label[random_index].to(model_device, dtype=torch.long)
+
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             v = self.output(
