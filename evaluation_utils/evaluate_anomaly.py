@@ -4,8 +4,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
 from tqdm import tqdm
 
-def fit_classifier(model_cls, train_loader, test_loader, lr):
-    model = model_cls()
+def fit_classifier(model, train_loader, test_loader, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     best_eval = np.float('inf')
     no_improvement = 0
@@ -80,7 +79,7 @@ def fit_classifier(model_cls, train_loader, test_loader, lr):
 def run_anomaly_quality_test(
         train_normal_signal, train_anomaly_signal, train_anomaly_label,
         test_normal_signal, test_anomaly_signal, test_anomaly_label,
-        model_cls, device, lr, bs, mode
+        model, device, lr, bs, mode
 ):
     '''original train set'''
     normal = torch.tensor(train_normal_signal, dtype=torch.float32).to(device)
@@ -119,7 +118,7 @@ def run_anomaly_quality_test(
     test_set = TensorDataset(test_set_input, test_set_label)
     test_loader = DataLoader(test_set, batch_size=bs, shuffle=True)
 
-    metrics = fit_classifier(model_cls, train_loader, test_loader, lr)
+    metrics = fit_classifier(model, train_loader, test_loader, lr)
 
     return metrics
 
