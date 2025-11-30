@@ -48,7 +48,8 @@ def fit_classifier(model, train_loader, test_loader, lr):
     all_preds = []
     all_labels = []
     for inputs, labels in test_loader:
-        preds = model.run_inference(inputs)  # probabilities
+        with torch.no_grad():
+            preds = model.run_inference(inputs)  # probabilities
         all_preds.append(preds.cpu())
         all_labels.append(labels.cpu())
 
@@ -62,8 +63,8 @@ def fit_classifier(model, train_loader, test_loader, lr):
         all_labels = all_labels.reshape(-1)
 
     # Convert to numpy
-    y_prob = all_preds.numpy().astype(np.float64)
-    y_true = all_labels.numpy().astype(np.int64)
+    y_prob = all_preds.detach().cpu().numpy().astype(np.float64)
+    y_true = all_labels.detach().cpu().numpy().astype(np.int64)
     y_pred = (y_prob >= 0.5).astype(int)
 
     # ------------------ Metrics ------------------
