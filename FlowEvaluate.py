@@ -9,7 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 import os
-from evaluation_utils import run_anomaly_quality_test
+from evaluation_utils import run_anomaly_quality_test, classification_metrics_torch
 from evaluation_utils import GRUClassifier, LSTMClassifier
 from tqdm import tqdm
 
@@ -150,37 +150,52 @@ def evaluate():
     })
     torch.save(all_data, f"{args.generated_path}/all_data.pt")
 
-    default_metrics = run_anomaly_quality_test(
-        train_normal_signal=all_data["orig_normal_train_signal"],
-        train_anomaly_signal=all_data["orig_anomaly_train_signal"],
-        train_anomaly_label=all_data["orig_anomaly_train_label"],
-        test_normal_signal=all_data["orig_normal_val_signal"],
-        test_anomaly_signal=all_data["orig_anomaly_val_signal"],
-        test_anomaly_label=all_data["orig_anomaly_val_label"],
-        model=GRUClassifier(input_dim=args.feature_size, hidden_dim=128).to(device),
-        device=device,
-        lr=1e-4,
-        bs=64,
-        mode="interval"
+    old_eval_result = classification_metrics_torch(
+    ori_normal_data=all_data["orig_normal_train_signal"],
+    ori_anomaly_data=all_data["orig_anomaly_train_signal"],
+    gen_anomaly_data=all_data["all_samples"],
+    hidden_dim=64,
+    max_epochs=2000,
+    batch_size=64,
+    patience=20,
+    device="cuda"
     )
 
-    flow_metrics = run_anomaly_quality_test(
-        train_normal_signal=all_data["orig_normal_train_signal"],
-        train_anomaly_signal=all_data["all_samples"],
-        train_anomaly_label=all_data["all_anomaly_labels"],
-        test_normal_signal=all_data["orig_normal_val_signal"],
-        test_anomaly_signal=all_data["orig_anomaly_val_signal"],
-        test_anomaly_label=all_data["orig_anomaly_val_label"],
-        model=GRUClassifier(input_dim=args.feature_size, hidden_dim=128).to(device),
-        device=device,
-        lr=1e-4,
-        bs=64,
-        mode="interval"
-    )
-    print("default metrics:")
-    print(default_metrics)
-    print("Flow metrics:")
-    print(flow_metrics)
+    for k, v in old_eval_result.items():
+        print(f"{k}: {v}")
+
+
+    # default_metrics = run_anomaly_quality_test(
+    #     train_normal_signal=all_data["orig_normal_train_signal"],
+    #     train_anomaly_signal=all_data["orig_anomaly_train_signal"],
+    #     train_anomaly_label=all_data["orig_anomaly_train_label"],
+    #     test_normal_signal=all_data["orig_normal_val_signal"],
+    #     test_anomaly_signal=all_data["orig_anomaly_val_signal"],
+    #     test_anomaly_label=all_data["orig_anomaly_val_label"],
+    #     model=GRUClassifier(input_dim=args.feature_size, hidden_dim=128).to(device),
+    #     device=device,
+    #     lr=1e-4,
+    #     bs=64,
+    #     mode="interval"
+    # )
+    #
+    # flow_metrics = run_anomaly_quality_test(
+    #     train_normal_signal=all_data["orig_normal_train_signal"],
+    #     train_anomaly_signal=all_data["all_samples"],
+    #     train_anomaly_label=all_data["all_anomaly_labels"],
+    #     test_normal_signal=all_data["orig_normal_val_signal"],
+    #     test_anomaly_signal=all_data["orig_anomaly_val_signal"],
+    #     test_anomaly_label=all_data["orig_anomaly_val_label"],
+    #     model=GRUClassifier(input_dim=args.feature_size, hidden_dim=128).to(device),
+    #     device=device,
+    #     lr=1e-4,
+    #     bs=64,
+    #     mode="interval"
+    # )
+    # print("default metrics:")
+    # print(default_metrics)
+    # print("Flow metrics:")
+    # print(flow_metrics)
 
 
 if __name__ == "__main__":
