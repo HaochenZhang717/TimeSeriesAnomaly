@@ -77,7 +77,11 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 #     num=len(gen_anomaly_data))
 
 
+all_data = torch.load("/root/tianyi/samples_path/flow/2025-11-29-06:31:47/all_data.pt")
 
+ori_data_normal = all_data["orig_normal_train_signal"]
+ori_data_anomaly = all_data["orig_anomaly_train_signal"]
+gen_anomaly_data = all_data["orig_anomaly_train_signal"]
 
 
 print("Loaded data:")
