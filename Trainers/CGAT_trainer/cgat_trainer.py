@@ -167,13 +167,11 @@ class CGATFinetune(object):
             for batch in tqdm(self.train_loader, desc=f"Epoch {epoch}"):
                 X_occluded = batch["original_occluded_signal"].to(self.device)
                 X_target = batch["orig_signal"].to(self.device)
-                anomaly_label = batch["anomaly_label"].to(self.device)
+                anomaly_label = batch["anomaly_label"].unsqueeze(-1).to(self.device)
 
                 self.optimizer.zero_grad()
 
                 z_mean, z_log_var, z = self.model.encoder(X_occluded)
-                print(anomaly_label.shape)
-                breakpoint()
                 reconstruction = self.model.anomaly_decoder(z, anomaly_label)
                 loss = torch.nn.MSELoss()(reconstruction, X_target)
                 loss.backward()
@@ -200,10 +198,8 @@ class CGATFinetune(object):
                 for batch in self.val_loader:
                     X_occluded = batch["original_occluded_signal"].to(self.device)
                     X_target = batch["orig_signal"].to(self.device)
-                    anomaly_label = batch["anomaly_label"].to(self.device)
+                    anomaly_label = batch["anomaly_label"].unsqueeze(-1).to(self.device)
                     z_mean, z_log_var, z = self.model.encoder(X_occluded)
-                    print(anomaly_label.shape)
-                    breakpoint()
                     reconstruction = self.model.anomaly_decoder(z, anomaly_label)
                     loss = torch.nn.MSELoss()(reconstruction, X_target)
 
