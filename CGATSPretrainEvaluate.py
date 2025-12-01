@@ -17,7 +17,7 @@ def save_args_to_jsonl(args, output_path):
         f.write("\n")  # JSONL 一行一个 JSON
 
 
-def get_finetune_args():
+def get_evaluate_args():
     parser = argparse.ArgumentParser(description="parameters for TimeVAE-CGATS pretraining")
 
     """time series general parameters"""
@@ -58,7 +58,7 @@ def get_finetune_args():
 
     return parser.parse_args()
 
-def finetune():
+def evaluate_pretrain():
     args = get_finetune_args()
     timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
     args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
@@ -79,41 +79,17 @@ def finetune():
     '''during pretraining, we did not update parameters in anomaly decoder, so we can just load'''
     pretrained_state_dict = torch.load(args.pretrained_ckpt)
     model.load_state_dict(pretrained_state_dict)
+    model.eval()
 
-    train_set = ECGDataset(
-        args.raw_data_paths_train,
-        args.indices_paths_train,
-        args.seq_len,
-        args.max_anomaly_ratio,
-    )
+    num_cycle = int(args.num_samples // args.batch_size) + 1
+    all_samples = []
 
-    val_set = ECGDataset(
-        args.raw_data_paths_val,
-        args.indices_paths_val,
-        args.seq_len,
-        args.max_anomaly_ratio,
-    )
-
-    train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
-    val_loader = torch.utils.data.DataLoader(val_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
-
-
-    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
-
-
-    trainer = CGATFinetune(
-        optimizer=optimizer,
-        model=model,
-        train_loader=train_loader,
-        val_loader=val_loader,
-        max_epochs=args.epochs,
-        device=f"cuda:{args.gpu_id}",
-        save_dir=args.ckpt_dir,
-        wandb_run_name=args.wandb_run,
-        wandb_project_name=args.wandb_project,
-        grad_clip_norm=args.grad_clip_norm,
-    )
-    trainer.finetune(config=vars(args))
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        samples = model.get_prior_normal_samples(args.batch_size).cpu()
+        all_samples.append(samples)
+    all_samples = torch.cat(all_samples, dim=0)
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(all_samples, f"{args.generated_path}/generated_normal.pt")
 
 if __name__ == "__main__":
-    finetune()
+    evaluate_pretrain()
