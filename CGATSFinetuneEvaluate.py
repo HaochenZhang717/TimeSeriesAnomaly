@@ -31,8 +31,10 @@ def get_evaluate_args():
     parser.add_argument("--max_anomaly_ratio", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
-    parser.add_argument("--indices_paths_train", type=str, required=True)
-    parser.add_argument("--indices_paths_val", type=str, required=True)
+    parser.add_argument("--normal_indices_paths_train", type=str, required=True)
+    parser.add_argument("--normal_indices_paths_val", type=str, required=True)
+    parser.add_argument("--anomaly_indices_paths_train", type=str, required=True)
+    parser.add_argument("--anomaly_indices_paths_val", type=str, required=True)
 
     """training parameters"""
     parser.add_argument("--batch_size", type=int, required=True)
@@ -112,19 +114,36 @@ def evaluate_anomaly():
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
 
-    normal_accuracy, anomaly_accuracy = calculate_robustTAD(
-        anomaly_weight=5.0, feature_size=args.feature_size,
-        ori_data=orig_data, ori_labels=orig_labels,
-        gen_data=all_samples,
-        gen_labels=all_anomaly_labels,
-        device=device,
-        lr=1e-4,
-        max_epochs=2000,
-        batch_size=64,
-        patience=20)
+    precisions = []
+    recalls = []
+    f1s = []
+    for _ in range(5):
+        precision, recall, f1 = calculate_robustTAD(
+            anomaly_weight=5.0,
+            feature_size=args.feature_size,
+            ori_data=orig_data,
+            ori_labels=orig_labels,
+            gen_data=all_samples,
+            gen_labels=all_anomaly_labels,
+            device=device,
+            lr=1e-4,
+            max_epochs=2000,
+            batch_size=64,
+            patience=20)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)
 
-    print(f"Normal Accuracy: {normal_accuracy:.4f}")
-    print(f"Anomaly Accuracy: {anomaly_accuracy:.4f}")
+    mean_precision = np.mean(precisions)
+    mean_recall = np.mean(recalls)
+    mean_f1 = np.mean(f1s)
+    std_precision = np.std(precisions)
+    std_recall = np.std(recalls)
+    std_f1 = np.std(f1s)
+    print(f"precision: {mean_precision}+-{std_precision}")
+    print(f"recall: {mean_recall}+-{std_recall}")
+    print(f"f1: {mean_f1}+-{std_f1}")
 
 
-
+if __name__ == "__main__":
+    evaluate_anomaly()

@@ -69,8 +69,10 @@ python CGATSFinetuneEvaluate.py \
   --max_anomaly_ratio 0.2 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
-  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl" \
+  --normal_indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
+  --normal_indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl" \
+  --anomaly_indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+  --anomaly_indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl" \
   \
   --batch_size 128 \
   \
