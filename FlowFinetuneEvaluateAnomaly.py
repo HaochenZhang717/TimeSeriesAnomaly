@@ -86,6 +86,7 @@ def evaluate_finetune_anomaly_quality():
         normal_train_iterator = iter(normal_train_loader)
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
             anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device).squeeze()
+            breakpoint()
             samples = model.generate_mts(
                 batch_size=args.batch_size,
                 anomaly_label=anomaly_label,
