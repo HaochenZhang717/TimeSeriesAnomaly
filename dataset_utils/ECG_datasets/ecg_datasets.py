@@ -135,3 +135,12 @@ class IterableECGDataset(IterableDataset):
             }
 
             yield sample
+
+if __name__ == "__main__":
+
+    dataset = ECGDataset(
+        raw_data_paths="./raw_data/106.npz",
+        indices_paths="./indices/slide_windows_106npz/train/normal.jsonl",
+        seq_len=800,
+        max_anomaly_ratio=0.1
+    )

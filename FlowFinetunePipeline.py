@@ -44,6 +44,7 @@ def get_finetune_args():
     parser.add_argument("--batch_size", type=int, required=True)
     parser.add_argument("--max_iters", type=int, required=True)
     parser.add_argument("--grad_clip_norm", type=float, required=True)
+    parser.add_argument("--mode", type=str, required=True)
 
     """wandb parameters"""
     parser.add_argument("--wandb_project", type=str,required=True)
@@ -130,7 +131,7 @@ def finetune():
         grad_clip_norm=args.grad_clip_norm,
         pretrained_ckpt=args.pretrained_ckpt,
     )
-    trainer.finetune(config=vars(args), version=args.version)
+    trainer.finetune(config=vars(args), version=args.version, mode=args.mode)
 
 if __name__ == "__main__":
     finetune()

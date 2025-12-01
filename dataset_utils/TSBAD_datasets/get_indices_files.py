@@ -148,9 +148,13 @@ if __name__ == "__main__":
     folder = "./raw_data/selected_uts"
 
     for name in os.listdir(folder):
+        # print(name)
         full_path = os.path.join(folder, name)
         df = pd.read_csv(full_path)
         signal = df["Data"].values
+        plt.plot(signal[3000:3800])
+        plt.title(name)
+        plt.show()
         anomaly_labels = df["Label"].values
         stats = build_single_ts_train_val(
             signal=f"./raw_data/{name}.npz",
@@ -163,6 +167,7 @@ if __name__ == "__main__":
             max_anomaly_ratio=0.2
         )
         print(name)
+
 
     # for name in range(100, 235):
     #     print('-'*100)

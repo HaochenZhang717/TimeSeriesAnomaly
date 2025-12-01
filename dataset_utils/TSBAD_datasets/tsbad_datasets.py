@@ -1,8 +1,9 @@
 import torch
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from torch.utils.data import Dataset, IterableDataset
+from torch.utils.data import Dataset, IterableDataset, DataLoader
 import json
+import pandas as pd
 
 
 def load_jsonl(path):
@@ -21,7 +22,7 @@ class TSBADDataset(Dataset):
             seq_len,
             max_anomaly_ratio,
     ):
-        super(ECGDataset, self).__init__()
+        super(TSBADDataset, self).__init__()
         self.seq_len = seq_len
         self.max_anomaly_ratio = max_anomaly_ratio
         self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
@@ -33,9 +34,17 @@ class TSBADDataset(Dataset):
 
         for indices_path, raw_data_path in zip(indices_paths, raw_data_paths):
 
-            raw_data = np.load(raw_data_path)
-            raw_signal = raw_data["signal"]
-            anomaly_label = raw_data["anomaly_label"]
+            # raw_data = np.load(raw_data_path)
+
+            df_raw = pd.read_csv(raw_data_path)
+            raw_signal = df_raw["Data"].values
+            anomaly_label = df_raw["Label"].values
+
+            if len(raw_signal.shape) == 1:
+                raw_signal = raw_signal.reshape(-1, 1)
+
+            # raw_signal = raw_data["signal"]
+            # anomaly_label = raw_data["anomaly_label"]
             scaler = MinMaxScaler()
             normed_signal = scaler.fit_transform(raw_signal)
             index_lines= load_jsonl(indices_path)
@@ -87,7 +96,7 @@ class IterableTSBADDataset(IterableDataset):
             seq_len,
             max_anomaly_ratio,
     ):
-        super(IterableECGDataset, self).__init__()
+        super(IterableTSBADDataset, self).__init__()
         self.seq_len = seq_len
         self.max_anomaly_ratio = max_anomaly_ratio
         self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
@@ -99,9 +108,16 @@ class IterableTSBADDataset(IterableDataset):
 
         for indices_path, raw_data_path in zip(indices_paths, raw_data_paths):
 
-            raw_data = np.load(raw_data_path)
-            raw_signal = raw_data["signal"]
-            anomaly_label = raw_data["anomaly_label"]
+            # raw_data = np.load(raw_data_path)
+            # raw_signal = raw_data["signal"]
+            # anomaly_label = raw_data["anomaly_label"]
+
+            df_raw = pd.read_csv(raw_data_path)
+            raw_signal = df_raw["Data"].values
+            anomaly_label = df_raw["Label"].values
+            if len(raw_signal.shape) == 1:
+                raw_signal = raw_signal.reshape(-1, 1)
+
             scaler = MinMaxScaler()
             normed_signal = scaler.fit_transform(raw_signal)
             index_lines= load_jsonl(indices_path)
@@ -135,3 +151,22 @@ class IterableTSBADDataset(IterableDataset):
             }
 
             yield sample
+
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    dataset = TSBADDataset(
+        raw_data_paths="./raw_data/selected_uts/030_WSD_id_2_WebService_tr_4499_1st_4599.csv",
+        indices_paths="./indices/slide_windows_030_WSD_id_2_WebService_tr_4499_1st_4599/train/normal.jsonl",
+        seq_len=100,
+        max_anomaly_ratio=20/256,
+    )
+
+    data_loader = DataLoader(dataset, batch_size=1, shuffle=True)
+    one_loader = iter(data_loader)
+
+    for i in range(20):
+        example = next(one_loader)
+        plt.plot(example["orig_signal"][0])
+        plt.show()
