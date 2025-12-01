@@ -104,7 +104,7 @@ python FlowPretrainEvaluate.py \
   --model_ckpt "../TSA-ckpts/flow_normal_pretrain_ckpt_mitdb106/2025-11-30-00:52:35/ckpt.pth" \
   --gpu_id 2 \
   \
-  --need_to_generate 1 \
+  --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-pretrained" \
 
 
