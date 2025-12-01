@@ -101,10 +101,7 @@ def evaluate_finetune_anomaly_quality():
         torch.save(to_save,f"{args.generated_path}/generated_anomaly.pt")
     else:
         assert args.generated_path is not None
-        to_load = torch.load(
-            f"{args.generated_path}/generated_anomaly.pt",
-            map_location=device
-        )
+        to_load = torch.load(f"{args.generated_path}/generated_anomaly.pt")
         all_samples = to_load["all_samples"]
         all_anomaly_labels = to_load["all_anomaly_labels"]
 
