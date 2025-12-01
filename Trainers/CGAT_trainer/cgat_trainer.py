@@ -223,6 +223,7 @@ class CGATFinetune(object):
             else:
                 no_improve_epochs += 1
 
+
             if no_improve_epochs >= 100 and  epoch > self.max_epochs//4:
                 print(f"⛔ Early stopping triggered at Step {global_steps}.")
                 break
