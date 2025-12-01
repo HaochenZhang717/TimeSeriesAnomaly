@@ -118,7 +118,7 @@ def predictive_score_metrics(
     # ----- 6. evaluate on original data -----
     pred_real = []
     with torch.no_grad():
-        for Xb, Yb in test_loader:
+        for Xb, Yb in val_loader:
             pred_real.append(model(Xb.to(device)).cpu())
     pred_real = torch.cat(pred_real, dim=0).detach().cpu().numpy()
 
