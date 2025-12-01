@@ -115,21 +115,39 @@ def evaluate_finetune_anomaly_quality():
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
 
-    precision, recall, f1 = calculate_robustTAD(
-        anomaly_weight=5.0,
-        feature_size=args.feature_size,
-        ori_data=orig_data,
-        ori_labels=orig_labels,
-        gen_data=all_samples,
-        gen_labels=all_anomaly_labels,
-        device=device,
-        lr=1e-4,
-        max_epochs=2000,
-        batch_size=64,
-        patience=20)
-    print(f"Precision: {precision}")
-    print(f"Recall: {recall}")
-    print(f"F1: {f1}")
+
+    precisions = []
+    recalls = []
+    f1s = []
+    for _ in range(5):
+        precision, recall, f1 = calculate_robustTAD(
+            anomaly_weight=5.0,
+            feature_size=args.feature_size,
+            ori_data=orig_data,
+            ori_labels=orig_labels,
+            gen_data=all_samples,
+            gen_labels=all_anomaly_labels,
+            device=device,
+            lr=1e-4,
+            max_epochs=2000,
+            batch_size=64,
+            patience=20)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)
+
+    mean_precision = np.mean(precisions)
+    mean_recall = np.mean(recalls)
+    mean_f1 = np.mean(f1s)
+    std_precision = np.std(precisions)
+    std_recall = np.std(recalls)
+    std_f1 = np.std(f1s)
+    print(f"precision: {mean_precision}+-{std_precision}")
+    print(f"recall: {mean_recall}+-{std_recall}")
+    print(f"f1: {mean_f1}+-{std_f1}")
+
+
+
 
     # predictive_scores = []
     # discriminative_scores = []
