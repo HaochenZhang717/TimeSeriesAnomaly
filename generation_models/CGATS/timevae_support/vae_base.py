@@ -404,18 +404,12 @@ class BaseVariationalAutoencoder(nn.Module, ABC):
         samples = self.normal_decoder(Z)
         return samples
 
-    def get_prior_anomaly_samples(self, num_samples):
+    def get_prior_anomaly_samples(self, anomaly_labels):
         device = next(self.parameters()).device
+        num_samples = len(anomaly_labels)
         Z = torch.randn(num_samples, self.latent_dim).to(device)
-        window_labels = torch.zeros(num_samples, 64, 1).to(device)
-
-        for i in range(num_samples):
-            start = np.random.randint(low=0, high=64-5)
-            end = start + np.random.randint(low=0, high=5)
-            window_labels[i, start:end] = 1
-
         samples = self.anomaly_decoder(Z, window_labels)
-        return samples.cpu().detach().numpy(), window_labels
+        return samples
 
     def get_prior_samples_given_Z(self, Z):
         Z = torch.FloatTensor(Z).to(next(self.parameters()).device)
