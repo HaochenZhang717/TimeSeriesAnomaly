@@ -140,7 +140,7 @@ def discriminative_score_metrics(
             prob, _ = model(Xb.to(device))
             pred = (prob.cpu().numpy().flatten() > 0.5).astype(int)
             y_pred.extend(pred.tolist())
-            y_true.extend(yb.numpy().flatten().tolist())
+            y_true.extend(yb.cpu().numpy().flatten().tolist())
 
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)

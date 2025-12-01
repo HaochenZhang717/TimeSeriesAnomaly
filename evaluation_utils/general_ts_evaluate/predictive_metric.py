@@ -45,9 +45,6 @@ def predictive_score_metrics(
     Returns:
         predictive_score (float): mean MAE on original data
     """
-
-    device = torch.device(device if torch.cuda.is_available() else "cpu")
-
     # ----- 1. build dataset -----
     X_gen, Y_gen = build_one_step_dataset(gen_data)
     X_real, Y_real = build_one_step_dataset(ori_data)
@@ -57,21 +54,11 @@ def predictive_score_metrics(
     X_real = torch.tensor(X_real, dtype=torch.float32)
     Y_real = torch.tensor(Y_real, dtype=torch.float32)
 
-    # ----- 2. split synthetic data into train / val -----
-    total_len = X_gen.shape[0]
-    val_len = int(0.2 * total_len)
-    train_len = total_len - val_len
-
-    train_dataset, val_dataset = random_split(
-        TensorDataset(X_gen, Y_gen),
-        [train_len, val_len]
-    )
-
+    train_dataset = TensorDataset(X_gen, Y_gen)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-    test_dataset = TensorDataset(X_real, Y_real)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, drop_last=False)
+    val_dataset = TensorDataset(X_real, Y_real)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, drop_last=False)
 
 
     # ----- 3. build model -----
@@ -133,14 +120,14 @@ def predictive_score_metrics(
     with torch.no_grad():
         for Xb, Yb in test_loader:
             pred_real.append(model(Xb.to(device)).cpu())
-    pred_real = torch.cat(pred_real, dim=0).numpy()
+    pred_real = torch.cat(pred_real, dim=0).detach().cpu().numpy()
 
     # compute mean MAE
     B = X_real.shape[0]
     assert pred_real.shape == Y_real.shape
     total_mae = 0.0
     for i in range(B):
-        total_mae += mean_absolute_error(Y_real[i].numpy(), pred_real[i])
+        total_mae += mean_absolute_error(Y_real[i].detach().cpu().numpy(), pred_real[i])
 
     predictive_score = total_mae / B
     return predictive_score
