@@ -135,7 +135,7 @@ class RobustTAD(nn.Module):
     def predict(self, inputs):
         logits = self.model(inputs)
         probs = torch.sigmoid(logits)
-        return (probs > 0).to(torch.long)
+        return (probs > 0).to(torch.long).squeeze(1)
 
 
 
@@ -208,7 +208,6 @@ def calculate_robustTAD(
     for Xb, yb in test_loader:
         Xb, yb = Xb.to(device), yb.to(device)
         y_pred = model.predict(Xb)
-        breakpoint()
         normal_num += (yb == 0).sum().item()
         anomaly_num += (yb == 1).sum().item()
         normal_correct += ((y_pred==yb) * (yb==0)).sum().item()
