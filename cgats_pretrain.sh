@@ -76,9 +76,6 @@ python CGATSPretrainEvaluate.py \
   --epochs 1000 \
   --grad_clip_norm 1.0 \
   \
-  --wandb_project cgats_pretrain \
-  --wandb_run cgats_pretrain_mitdb106 \
-  \
   --pretrained_ckpt "../TSA-ckpts/cgats_mitdb106_pretrain_ckpt/2025-11-30-18:19:27/ckpt.pth" \
   --gpu_id 0 \
   --need_to_generate 1 \
