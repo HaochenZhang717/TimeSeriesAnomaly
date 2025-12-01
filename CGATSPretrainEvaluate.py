@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
+from tqdm import tqdm
 
 
 def save_args_to_jsonl(args, output_path):

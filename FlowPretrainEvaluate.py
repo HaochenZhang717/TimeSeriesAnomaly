@@ -79,6 +79,7 @@ def evaluate_pretrain():
         num_samples = len(normal_train_set.slide_windows)
         num_cycle = int(num_samples // args.batch_size) + 1
         all_samples = []
+
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
             samples = model.generate_mts(
                 batch_size=args.batch_size,
