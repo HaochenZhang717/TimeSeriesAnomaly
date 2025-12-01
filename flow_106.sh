@@ -82,7 +82,7 @@
 
 
 
-python FlowEvaluate.py \
+python FlowPretrainEvaluate.py \
   --seq_len 800 \
   --feature_size 2 \
   \
@@ -103,7 +103,8 @@ python FlowEvaluate.py \
   \
   --model_ckpt "../TSA-ckpts/flow_normal_pretrain_ckpt_mitdb106/2025-11-30-00:52:35/ckpt.pth" \
   --gpu_id 2 \
-  --num_samples 15601 \
+  \
+  --need_to_generate 1 \
   --generated_path "../samples_path/flow/mitdb106v-pretrained" \
 
 

@@ -1,90 +1,71 @@
-from generation_models import TimeVAECGATS
-from Trainers import CGATFinetune
-from dataset_utils import ECGDataset
+import numpy as np
+
+from generation_models import FM_TS
+from Trainers import FlowTSPretrain
+from dataset_utils import ECGDataset, IterableECGDataset
 import argparse
 import torch
-import json
-import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import json
 import os
-
-
-def save_args_to_jsonl(args, output_path):
-    args_dict = vars(args)
-    with open(output_path, "w") as f:
-        json.dump(args_dict, f)
-        f.write("\n")  # JSONL 一行一个 JSON
-
+from evaluation_utils import run_anomaly_quality_test, classification_metrics_torch
+from evaluation_utils import predictive_score_metrics, discriminative_score_metrics
+from tqdm import tqdm
 
 def get_evaluate_args():
-    parser = argparse.ArgumentParser(description="parameters for TimeVAE-CGATS pretraining")
+    parser = argparse.ArgumentParser(description="parameters for flow-ts pretraining")
 
     """time series general parameters"""
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
 
     """model parameters"""
-    parser.add_argument("--latent_dim", type=int, required=True)
-    parser.add_argument("--trend_poly", type=int, required=True)
-    parser.add_argument("--kl_wt", type=float, required=True)
-    parser.add_argument("--hidden_layer_sizes", type=json.loads, required=True)
-    parser.add_argument("--custom_seas", type=json.loads, required=True)
-
+    parser.add_argument("--n_layer_enc", type=int, required=True)
+    parser.add_argument("--n_layer_dec", type=int, required=True)
+    parser.add_argument("--d_model", type=int, required=True)
+    parser.add_argument("--n_heads", type=int, required=True)
 
     """data parameters"""
     parser.add_argument("--max_anomaly_ratio", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
-    parser.add_argument("--indices_paths_train", type=str, required=True)
-    parser.add_argument("--indices_paths_val", type=str, required=True)
+    parser.add_argument("--normal_indices_paths_train", type=str, required=True)
+    parser.add_argument("--normal_indices_paths_val", type=str, required=True)
+    parser.add_argument("--anomaly_indices_paths_train", type=str, required=True)
+    parser.add_argument("--anomaly_indices_paths_val", type=str, required=True)
 
     """training parameters"""
-    parser.add_argument("--lr", type=float, required=True)
     parser.add_argument("--batch_size", type=int, required=True)
-    parser.add_argument("--epochs", type=int, required=True)
-    parser.add_argument("--grad_clip_norm", type=float, required=True)
 
-    """wandb parameters"""
-    parser.add_argument("--wandb_project", type=str,required=True)
-    parser.add_argument("--wandb_run", type=str, required=True)
 
     """save and load parameters"""
-    parser.add_argument("--pretrained_ckpt", type=str, required=True)
+    parser.add_argument("--model_ckpt", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
-
 
     """sample parameters"""
     parser.add_argument("--need_to_generate", type=int, required=True)
     parser.add_argument("--generated_path", type=str, required=True)
 
-
     return parser.parse_args()
 
 
 def evaluate_pretrain():
-    args = get_finetune_args()
-    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
-    args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
-    os.makedirs(args.ckpt_dir, exist_ok=True)
-    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+    args = get_evaluate_args()
 
-    model = TimeVAECGATS(
-        hidden_layer_sizes=args.hidden_layer_sizes,
-        trend_poly=args.trend_poly,
-        custom_seas=args.custom_seas,
-        use_residual_conn=True,
-        seq_len=args.seq_len,
-        feat_dim=args.feature_size,
-        latent_dim=args.latent_dim,
-        kl_wt = args.kl_wt,
-    )
-
-    '''during pretraining, we did not update parameters in anomaly decoder, so we can just load'''
-    pretrained_state_dict = torch.load(args.pretrained_ckpt)
-    model.load_state_dict(pretrained_state_dict)
+    device = torch.device("cuda:%d" % args.gpu_id)
+    model = FM_TS(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    ).to(device)
+    model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
     normal_train_set = ECGDataset(
@@ -94,16 +75,20 @@ def evaluate_pretrain():
         max_anomaly_ratio=args.max_anomaly_ratio,
     )
 
-    if args.need_to_generate:
+    if args.need_to_generate: # 15601
         num_samples = len(normal_train_set.slide_windows)
         num_cycle = int(num_samples // args.batch_size) + 1
         all_samples = []
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
-            samples = model.get_prior_normal_samples(args.batch_size).cpu()
+            samples = model.generate_mts(
+                batch_size=args.batch_size,
+                anomaly_label=None,
+            ).cpu()
             all_samples.append(samples)
+
         all_samples = torch.cat(all_samples, dim=0)
         os.makedirs(args.generated_path, exist_ok=True)
-        torch.save(all_samples, f"{args.generated_path}/generated_normal.pt")
+        torch.save(all_samples,f"{args.generated_path}/generated_normal.pt")
     else:
         assert args.generated_path is not None
         all_samples = torch.load(
@@ -141,5 +126,16 @@ def evaluate_pretrain():
     print("Discriminative mean:", disc_mean, "std:", disc_std)
 
 
+
+
 if __name__ == "__main__":
     evaluate_pretrain()
+
+
+
+
+
+
+
+
+

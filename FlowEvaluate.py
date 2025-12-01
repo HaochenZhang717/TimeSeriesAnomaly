@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 import json
 import os
 from evaluation_utils import run_anomaly_quality_test, classification_metrics_torch
-from evaluation_utils import GRUClassifier, LSTMClassifier
+from evaluation_utils import predictive_score_metrics, discriminative_score_metrics
 from tqdm import tqdm
 
 def get_evaluate_args():
@@ -217,8 +217,15 @@ def evaluate_pretrain():
     model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
+    normal_train_set = ECGDataset(
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.normal_indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_ratio=args.max_anomaly_ratio,
+    )
 
     if args.num_samples > 0: # 15601
+
         num_cycle = int(args.num_samples // args.batch_size) + 1
         all_samples = []
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
