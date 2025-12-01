@@ -398,10 +398,10 @@ class BaseVariationalAutoencoder(nn.Module, ABC):
     def get_num_trainable_variables(self):
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
 
-    def get_prior_samples(self, num_samples):
+    def get_prior_normal_samples(self, num_samples):
         device = next(self.parameters()).device
         Z = torch.randn(num_samples, self.latent_dim).to(device)
-        samples = self.decoder(Z)
+        samples = self.normal_decoder(Z)
         return samples.cpu().detach().numpy()
 
     def get_prior_anomaly_samples(self, num_samples):

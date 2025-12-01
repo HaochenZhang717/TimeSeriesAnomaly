@@ -228,12 +228,15 @@ def evaluate_pretrain():
             ).cpu()
             all_samples.append(samples)
 
-        all_samples = torch.cat(all_anomaly_samples, dim=0)
+        all_samples = torch.cat(all_samples, dim=0)
         os.makedirs(args.generated_path, exist_ok=True)
-        torch.save(to_save,f"{args.generated_path}/generated_normal.pt")
+        torch.save(all_samples,f"{args.generated_path}/generated_normal.pt")
     else:
         assert args.generated_path is not None
-        all_samples = torch.load(f"{args.generated_path}/generated_normal.pt", map_location=device)
+        all_samples = torch.load(
+            f"{args.generated_path}/generated_normal.pt",
+            map_location=device
+        )
 
 
     # old_eval_result = classification_metrics_torch(
