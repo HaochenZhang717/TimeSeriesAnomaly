@@ -65,7 +65,7 @@ def get_evaluate_args():
 
 
 def evaluate_pretrain():
-    args = get_finetune_args()
+    args = get_evaluate_args()
     timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
     args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
     os.makedirs(args.ckpt_dir, exist_ok=True)
