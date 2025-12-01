@@ -85,7 +85,7 @@ def evaluate_finetune_anomaly_quality():
         normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
         normal_train_iterator = iter(normal_train_loader)
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
-            anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device)
+            anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device).squeeze()
             samples = model.generate_mts(
                 batch_size=args.batch_size,
                 anomaly_label=anomaly_label,
