@@ -45,10 +45,6 @@ def get_evaluate_args():
     parser.add_argument("--epochs", type=int, required=True)
     parser.add_argument("--grad_clip_norm", type=float, required=True)
 
-    """wandb parameters"""
-    parser.add_argument("--wandb_project", type=str,required=True)
-    parser.add_argument("--wandb_run", type=str, required=True)
-
     """save and load parameters"""
     parser.add_argument("--pretrained_ckpt", type=str, required=True)
 
