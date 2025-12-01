@@ -575,8 +575,7 @@ class Transformer(nn.Module):
                 anomaly_label = self.anomaly_label_embedding(anomaly_label)
             elif isinstance(self.anomaly_label_embedding, nn.Conv1d):
                 model_dtype = next(self.parameters()).dtype
-                breakpoint()
-                anomaly_label = self.anomaly_label_embedding(anomaly_label.to(dtype=model_dtype))
+                anomaly_label = self.anomaly_label_embedding(anomaly_label.unsqueeze(1).to(dtype=model_dtype)).permute(0, 2, 1)
             else:
                 raise NotImplementedError
         enc_cond = self.encoder(inp_enc, t, anomaly_label, padding_masks=padding_masks)
