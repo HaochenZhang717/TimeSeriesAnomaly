@@ -6,8 +6,15 @@ Flow:
 Predictive mean: 0.012572022141961209 std: 0.00013401411856174937
 Discriminative mean: 0.1576645843344546 std: 0.13780863821957184
 
-After finetuning：
+After finetuning, I tested normal generation：
 Flow:
 Predictive mean: 0.0134918955792244 std: 0.0010837732743837908
 Discriminative mean: 0.2469485824123018 std: 0.1273794052882718
+
+
+After finetuning, I test anomaly generation:
+Flow: for 5 iterations
+precision: 0.22942184083476874+-0.06466798843131633
+recall: 0.44689850208216797+-0.03673896418992533
+f1: 0.2981125183191303+-0.061591872625802783
 

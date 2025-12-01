@@ -193,39 +193,39 @@ class CGATFinetune(object):
 
             """evaluation"""
             self.model.eval()
-            with torch.no_grad():
-                val_total, val_seen = 0, 0
-                for batch in self.val_loader:
-                    X_occluded = batch["original_occluded_signal"].to(self.device)
-                    X_target = batch["orig_signal"].to(self.device)
-                    anomaly_label = batch["anomaly_label"].unsqueeze(-1).to(self.device)
+            val_total, val_seen = 0, 0
+            for batch in self.val_loader:
+                X_occluded = batch["original_occluded_signal"].to(self.device)
+                X_target = batch["orig_signal"].to(self.device)
+                anomaly_label = batch["anomaly_label"].unsqueeze(-1).to(self.device)
+                with torch.no_grad():
                     z_mean, z_log_var, z = self.model.encoder(X_occluded)
                     reconstruction = self.model.anomaly_decoder(z, anomaly_label)
-                    loss = torch.nn.MSELoss()(reconstruction, X_target)
+                loss = torch.nn.MSELoss()(reconstruction, X_target)
 
-                    val_total += loss.item()
-                    val_seen += 1
+                val_total += loss.item()
+                val_seen += 1
 
-                val_total /= val_seen
-                # 记录到 wandb
-                wandb.log({
-                    "val/total_loss": val_total,
-                    "train/total_loss": train_total_avg,
-                    "lr": self.optimizer.param_groups[0]["lr"],
-                    "epoch": epoch,
-                    "step": global_steps
-                })
+            val_total /= val_seen
+            # 记录到 wandb
+            wandb.log({
+                "val/total_loss": val_total,
+                "train/total_loss": train_total_avg,
+                "lr": self.optimizer.param_groups[0]["lr"],
+                "epoch": epoch,
+                "step": global_steps
+            })
 
-                if val_total < best_val_loss:
-                    best_val_loss = val_total
-                    no_improve_epochs = 0
-                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
-                else:
-                    no_improve_epochs += 1
+            if val_total < best_val_loss:
+                best_val_loss = val_total
+                no_improve_epochs = 0
+                torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+            else:
+                no_improve_epochs += 1
 
-                if no_improve_epochs >= 20 and epoch > 100:
-                    print(f"⛔ Early stopping triggered at Step {global_steps}.")
-                    break
+            if no_improve_epochs >= 100 and  epoch > self.max_epochs//4:
+                print(f"⛔ Early stopping triggered at Step {global_steps}.")
+                break
 
         wandb.finish()
 
