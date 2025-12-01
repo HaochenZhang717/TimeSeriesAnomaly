@@ -573,7 +573,7 @@ class Transformer(nn.Module):
         if anomaly_label is not None:
             if isinstance(self.anomaly_label_embedding, nn.Embedding):
                 breakpoint()
-                anomaly_label = self.anomaly_label_embedding(anomaly_label)
+                anomaly_label = self.anomaly_label_embedding(anomaly_label.to(torch.long))
             elif isinstance(self.anomaly_label_embedding, nn.Conv1d):
                 model_dtype = next(self.parameters()).dtype
                 anomaly_label = self.anomaly_label_embedding(anomaly_label.unsqueeze(1).to(dtype=model_dtype)).permute(0, 2, 1)
