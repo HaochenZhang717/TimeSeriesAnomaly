@@ -62,10 +62,6 @@ def get_evaluate_args():
 
 def evaluate_pretrain():
     args = get_evaluate_args()
-    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
-    args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
-    os.makedirs(args.ckpt_dir, exist_ok=True)
-    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
     model = TimeVAECGATS(
         hidden_layer_sizes=args.hidden_layer_sizes,
