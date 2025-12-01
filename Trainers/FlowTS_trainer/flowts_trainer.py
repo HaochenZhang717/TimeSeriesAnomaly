@@ -126,9 +126,9 @@ class FlowTSFinetune(object):
         self.grad_clip_norm = grad_clip_norm
         self.pretrained_ckpt = pretrained_ckpt
 
-    def finetune(self, config):
+    def finetune(self, config, version):
 
-        self.model.prepare_for_finetune(ckpt_path=self.pretrained_ckpt)
+        self.model.prepare_for_finetune(ckpt_path=self.pretrained_ckpt, version=version)
 
         wandb.init(
             project=self.wandb_project_name,

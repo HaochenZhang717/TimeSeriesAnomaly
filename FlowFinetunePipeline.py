@@ -28,6 +28,7 @@ def get_finetune_args():
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
+    parser.add_argument("--version", type=int, required=True)
 
     """data parameters"""
     parser.add_argument("--max_anomaly_ratio", type=float, required=True)
@@ -129,7 +130,7 @@ def finetune():
         grad_clip_norm=args.grad_clip_norm,
         pretrained_ckpt=args.pretrained_ckpt,
     )
-    trainer.finetune(config=vars(args))
+    trainer.finetune(config=vars(args), version=args.version)
 
 if __name__ == "__main__":
     finetune()

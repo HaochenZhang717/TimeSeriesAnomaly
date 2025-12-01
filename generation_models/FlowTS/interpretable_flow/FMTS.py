@@ -40,13 +40,13 @@ class FM_TS(nn.Module):
 
         self.num_timesteps = int(os.environ.get('hucfg_num_steps', '100'))
 
-    def prepare_for_finetune(self, ckpt_path):
+    def prepare_for_finetune(self, ckpt_path, version):
         if ckpt_path is not None:
             model_device = next(self.parameters()).device
             ckpt_dict = torch.load(ckpt_path, map_location=model_device, weights_only=False)
             self.load_state_dict(ckpt_dict)
             print(f"pretrained checkpoint: {ckpt_path} loaded")
-        self.model.prepare_for_finetune()
+        self.model.prepare_for_finetune(version)
 
     def output(self, x, t, anomaly_label, padding_masks=None):
 

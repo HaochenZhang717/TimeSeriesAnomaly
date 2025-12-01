@@ -535,10 +535,14 @@ class Transformer(nn.Module):
         self.decoder = Decoder(n_channel, n_feat, n_embd, n_heads, n_layer_dec, attn_pdrop, resid_pdrop, mlp_hidden_times,
                                block_activate, condition_dim=n_embd, max_len = self.max_len)
 
-    def prepare_for_finetune(self):
+    def prepare_for_finetune(self, version):
         # load ckpt
         model_device = next(self.parameters()).device
-        self.anomaly_label_embedding = nn.Embedding(2, self.n_embd).to(device=model_device)
+
+        if version == 1:
+            self.anomaly_label_embedding = nn.Embedding(2, self.n_embd).to(device=model_device)
+        elif version == 2:
+            self.anomaly_label_embedding = nn.Conv1d(1, self.n_embd, kernel_size=1, stride=1, padding=0).to(device=model_device)
 
         # for param in self.parameters():
         #     param.requires_grad = False
