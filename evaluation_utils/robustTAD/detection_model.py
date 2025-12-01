@@ -212,6 +212,7 @@ def calculate_robustTAD(
         anomaly_num += (yb == 1).sum().item()
         normal_correct += ((y_pred==yb) * (yb==0)).sum().item()
         anomaly_correct += ((y_pred==yb) * (yb==1)).sum().item()
+        breakpoint()
     normal_accuracy = normal_correct / normal_num
     anomaly_accuracy = anomaly_correct / anomaly_num
     return normal_accuracy, anomaly_accuracy
