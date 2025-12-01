@@ -325,10 +325,10 @@ class FlowTSFinetune(object):
 
                 wandb.log({
                     "train/avg_loss_total": tr_total_avg,
-                    "train/avg_loss_on_normal": tr_normal_avg,
+                    # "train/avg_loss_on_normal": tr_normal_avg,
                     "train/avg_loss_on_anomaly": tr_anomaly_avg,
                     "val/avg_loss_total": val_loss_total_avg,
-                    "val/avg_loss_on_normal": val_loss_normal_avg,
+                    # "val/avg_loss_on_normal": val_loss_normal_avg,
                     "val/avg_loss_on_anomaly": val_loss_anomaly_avg,
                     "step": step,
                     "lr": self.optimizer.param_groups[0]["lr"],
