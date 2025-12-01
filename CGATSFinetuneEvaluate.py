@@ -53,8 +53,8 @@ def get_evaluate_args():
 
 
 def evaluate_anomaly():
-    device = torch.device("cuda:%d" % args.gpu_id)
     args = get_evaluate_args()
+    device = torch.device("cuda:%d" % args.gpu_id)
     model = TimeVAECGATS(
         hidden_layer_sizes=args.hidden_layer_sizes,
         trend_poly=args.trend_poly,
