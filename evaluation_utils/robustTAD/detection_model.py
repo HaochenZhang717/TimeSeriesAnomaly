@@ -135,7 +135,7 @@ class RobustTAD(nn.Module):
     def predict(self, inputs):
         logits = self.model(inputs)
         probs = torch.sigmoid(logits)
-        return (probs > 0).to(torch.long).squeeze(1)
+        return (probs > 0.5).to(torch.long).squeeze(1)
 
 
 

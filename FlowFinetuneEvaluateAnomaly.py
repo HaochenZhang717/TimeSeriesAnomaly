@@ -116,8 +116,10 @@ def evaluate_finetune_anomaly_quality():
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
 
     normal_accuracy, anomaly_accuracy = calculate_robustTAD(
-        anomaly_weight=1.0, feature_size=args.feature_size,
-        ori_data=orig_data, ori_labels=orig_labels,
+        anomaly_weight=5.0,
+        feature_size=args.feature_size,
+        ori_data=orig_data,
+        ori_labels=orig_labels,
         gen_data=all_samples,
         gen_labels=all_anomaly_labels,
         device=device,
