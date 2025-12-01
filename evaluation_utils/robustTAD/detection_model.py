@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
-
+from tqdm import tqdm
 
 # -----------------------------
 # 基础模块：Double Conv (Conv → ReLU → Conv → ReLU)
