@@ -408,6 +408,9 @@ class BaseVariationalAutoencoder(nn.Module, ABC):
         device = next(self.parameters()).device
         num_samples = len(anomaly_labels)
         Z = torch.randn(num_samples, self.latent_dim).to(device)
+        if len(anomaly_labels.shape) == 2:
+            anomaly_labels = anomaly_labels.unsqueeze(-1)
+        breakpoint()
         samples = self.anomaly_decoder(Z, anomaly_labels)
         return samples
 
