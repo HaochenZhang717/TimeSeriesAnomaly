@@ -26,6 +26,7 @@ def get_evaluate_args():
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
+    parser.add_argument("--version", type=int, required=True)
 
     """data parameters"""
     parser.add_argument("--max_anomaly_ratio", type=float, required=True)
@@ -65,7 +66,7 @@ def evaluate_finetune_anomaly_quality():
         n_heads=args.n_heads,
         mlp_hidden_times=4,
     ).to(device)
-    model.prepare_for_finetune(ckpt_path=None)
+    model.prepare_for_finetune(ckpt_path=None, version=args.version)
     model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
