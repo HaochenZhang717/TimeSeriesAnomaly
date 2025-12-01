@@ -64,6 +64,7 @@ def get_evaluate_args():
 
 def evaluate_pretrain():
     args = get_evaluate_args()
+    device = torch.device("cuda:%d" % args.gpu_id)
 
     model = TimeVAECGATS(
         hidden_layer_sizes=args.hidden_layer_sizes,
@@ -74,7 +75,7 @@ def evaluate_pretrain():
         feat_dim=args.feature_size,
         latent_dim=args.latent_dim,
         kl_wt = args.kl_wt,
-    )
+    ).to(device)
 
     '''during pretraining, we did not update parameters in anomaly decoder, so we can just load'''
     pretrained_state_dict = torch.load(args.pretrained_ckpt)
