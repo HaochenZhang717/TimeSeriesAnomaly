@@ -9,6 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
 from tqdm import tqdm
+import numpy as np
 
 
 def save_args_to_jsonl(args, output_path):
