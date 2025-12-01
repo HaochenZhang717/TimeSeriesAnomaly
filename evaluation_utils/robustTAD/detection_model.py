@@ -160,7 +160,7 @@ def calculate_robustTAD(
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, drop_last=True)
     test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, drop_last=False)
 
-    model = RobustTAD(in_ch=feature_size, anomaly_weight=anomaly_weight)
+    model = RobustTAD(in_ch=feature_size, anomaly_weight=anomaly_weight).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     best_val_loss = float("inf")
     best_state = None
@@ -180,6 +180,7 @@ def calculate_robustTAD(
         val_loss = 0.0
         val_seen = 0
         for Xb, yb in test_loader:
+            Xb, yb = Xb.to(device), yb.to(device)
             with torch.no_grad():
                 loss = model(Xb, yb)
             val_loss += loss.item()
