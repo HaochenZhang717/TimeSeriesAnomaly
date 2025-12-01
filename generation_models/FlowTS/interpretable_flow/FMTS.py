@@ -68,7 +68,6 @@ class FM_TS(nn.Module):
         #     random_index = random.randint(0, anomaly_label.shape[0]-1)
         #     model_device = next(self.parameters()).device
         #     anomaly_label = anomaly_label[random_index].to(model_device, dtype=torch.long)
-        breakpoint()
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             v = self.output(
