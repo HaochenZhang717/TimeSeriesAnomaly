@@ -6,6 +6,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --n_layer_dec 4 \
   --d_model 64 \
   --n_heads 4 \
+  --version 1 \
   \
   --max_anomaly_ratio 0.2 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
