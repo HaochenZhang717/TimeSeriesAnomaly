@@ -95,7 +95,7 @@ class UNetTS(nn.Module):
 
 
 class WeightedBCEWithLogitsLoss(nn.Module):
-    def __init__(self, beta=5.0):
+    def __init__(self, beta=1.0):
         """
         使用BCEWithLogitsLoss，它在内部处理logits，数值更稳定
         pos_weight: 正样本权重 = beta
