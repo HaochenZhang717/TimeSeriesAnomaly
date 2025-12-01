@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
+from sklearn.metrics import precision_score, recall_score, f1_score
+
 
 # -----------------------------
 # 基础模块：Double Conv (Conv → ReLU → Conv → ReLU)
@@ -205,6 +207,9 @@ def calculate_robustTAD(
     normal_num = 0
     anomaly_correct = 0
     anomaly_num = 0
+    all_preds = []
+    all_labels = []
+
     for Xb, yb in test_loader:
         Xb, yb = Xb.to(device), yb.to(device)
         y_pred = model.predict(Xb)
@@ -215,7 +220,16 @@ def calculate_robustTAD(
         # breakpoint()
     normal_accuracy = normal_correct / normal_num
     anomaly_accuracy = anomaly_correct / anomaly_num
-    return normal_accuracy, anomaly_accuracy
+
+    all_preds = torch.cat(all_preds).flatten().numpy()
+    all_labels = torch.cat(all_labels).flatten().numpy()
+
+    precision = precision_score(all_labels, all_preds, zero_division=0)
+    recall = recall_score(all_labels, all_preds, zero_division=0)
+    f1 = f1_score(all_labels, all_preds, zero_division=0)
+
+    return normal_accuracy, anomaly_accuracy, precision, recall, f1
+
 
 
 
