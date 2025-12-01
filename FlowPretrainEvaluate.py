@@ -109,13 +109,12 @@ def evaluate_pretrain():
                 gen_data=generated_data
             )
         )
-
-        discriminative_scores.append(
-            discriminative_score_metrics(
+        disc_score, fake_acc, real_acc = discriminative_score_metrics(
                 ori_data=orig_data,
                 gen_data=generated_data
             )
-        )
+
+        discriminative_scores.append(disc_score)
 
     pred_mean = np.mean(predictive_scores)
     pred_std = np.std(predictive_scores)

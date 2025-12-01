@@ -92,7 +92,8 @@ def evaluate_pretrain():
         num_cycle = int(num_samples // args.batch_size) + 1
         all_samples = []
         for _ in tqdm(range(num_cycle), desc="Generating samples"):
-            samples = model.get_prior_normal_samples(args.batch_size).cpu()
+            with torch.no_grad():
+                samples = model.get_prior_normal_samples(args.batch_size).detach().cpu()
             all_samples.append(samples)
         all_samples = torch.cat(all_samples, dim=0)
         os.makedirs(args.generated_path, exist_ok=True)
@@ -117,12 +118,13 @@ def evaluate_pretrain():
             )
         )
 
-        discriminative_scores.append(
-            discriminative_score_metrics(
+        disc_score, fake_acc, real_acc = discriminative_score_metrics(
                 ori_data=orig_data,
                 gen_data=generated_data
             )
-        )
+
+        discriminative_scores.append(disc_score)
+
 
     pred_mean = np.mean(predictive_scores)
     pred_std = np.std(predictive_scores)
