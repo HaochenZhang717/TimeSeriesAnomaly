@@ -115,7 +115,7 @@ def evaluate_finetune_anomaly_quality():
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
 
-    normal_accuracy, anomaly_accuracy = calculate_robustTAD(
+    precision, recall, f1 = calculate_robustTAD(
         anomaly_weight=5.0,
         feature_size=args.feature_size,
         ori_data=orig_data,
@@ -127,10 +127,9 @@ def evaluate_finetune_anomaly_quality():
         max_epochs=2000,
         batch_size=64,
         patience=20)
-
-    print(f"Normal Accuracy: {normal_accuracy:.4f}")
-    print(f"Anomaly Accuracy: {anomaly_accuracy:.4f}")
-
+    print(f"Precision: {precision}")
+    print(f"Recall: {recall}")
+    print(f"F1: {f1}")
 
     # predictive_scores = []
     # discriminative_scores = []
