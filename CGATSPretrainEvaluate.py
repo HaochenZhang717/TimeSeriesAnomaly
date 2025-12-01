@@ -81,7 +81,7 @@ def evaluate_pretrain():
 
     normal_train_set = ECGDataset(
         raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.normal_indices_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_ratio=args.max_anomaly_ratio,
     )
