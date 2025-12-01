@@ -169,7 +169,7 @@ def calculate_robustTAD(
 
     for epoch in range(max_epochs):
         model.train()
-        for Xb, yb in train_loader:
+        for Xb, yb in tqdm(train_loader, desc=f"Epoch{epoch}"):
             Xb, yb = Xb.to(device), yb.to(device)
             loss = model(Xb, yb)
             optimizer.zero_grad()
@@ -206,6 +206,7 @@ def calculate_robustTAD(
     anomaly_correct = 0
     anomaly_num = 0
     for Xb, yb in test_loader:
+        Xb, yb = Xb.to(device), yb.to(device)
         y_pred = model.predict(Xb)
         breakpoint()
         normal_num += (yb == 0).sum().item()
