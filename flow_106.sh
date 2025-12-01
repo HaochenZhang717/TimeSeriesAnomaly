@@ -109,7 +109,7 @@
 
 
 
-python FlowFinetuneEvaluate.py \
+python FlowFinetuneEvaluateAnomaly.py \
   --seq_len 800 \
   --feature_size 2 \
   \

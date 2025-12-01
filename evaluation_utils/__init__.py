@@ -4,3 +4,4 @@ from .timestep_classifier import GRUTimestepClassifier, LSTMTimestepClassifier
 from .pytorch_anomaly_classification_metric import classification_metrics_torch
 
 from .general_ts_evaluate import predictive_score_metrics, discriminative_score_metrics
+from .robustTAD import calculate_robustTAD
