@@ -152,7 +152,7 @@ if __name__ == "__main__":
         full_path = os.path.join(folder, name)
         df = pd.read_csv(full_path)
         signal = df["Data"].values
-        plt.plot(signal[3000:3800])
+        plt.plot(signal[3000:3200])
         plt.title(name)
         plt.show()
         anomaly_labels = df["Label"].values
@@ -161,7 +161,7 @@ if __name__ == "__main__":
             anomaly_label=anomaly_labels,
             source_name=name.split(".")[0],
             output_dir=f"./indices/slide_windows_{name.split(".")[0]}",
-            window_size=800,
+            window_size=200,
             stride=10,
             train_ratio=1.0,
             max_anomaly_ratio=0.2
