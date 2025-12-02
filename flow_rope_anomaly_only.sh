@@ -81,7 +81,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --batch_size 64 \
   \
   --model_ckpt "../TSA-ckpts/flow_normal_finetune_ckpt_mitdb106_rope_v2_anomaly_only/2025-12-01-16:42:26/ckpt.pth" \
-  --gpu_id 0 \
+  --gpu_id 7 \
   \
   --need_to_generate 1 \
   --generated_path "../samples_path/flow/mitdb106v-finetuned-rope-v2-anomaly-only" \
