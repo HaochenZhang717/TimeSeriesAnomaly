@@ -222,7 +222,7 @@ python FlowFinetunePipeline.py \
   --mode "anomaly_only" \
   \
   --wandb_project flow_mitdb106v_finetune \
-  --wandb_run flow_mitdb106v_finetune_v2_rope_anomaly_only \
+  --wandb_run flow_mitdb106v_finetune_v2_norope_anomaly_only \
   \
   --ckpt_dir "../TSA-ckpts/flow_mitdb106v_finetune_ckpt_v2_anomaly_only" \
   --pretrained_ckpt "../TSA-ckpts/flow_normal_pretrain_ckpt_mitdb106/2025-11-30-00:52:35/ckpt.pth" \
