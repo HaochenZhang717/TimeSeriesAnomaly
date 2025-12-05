@@ -29,6 +29,8 @@ def get_pretrain_args():
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
+    parser.add_argument("--n_heads", type=int, required=True)
+    parser.add_argument("--early_stop", type=str, required=True)
 
     """data parameters"""
     parser.add_argument("--dataset_name", type=str, required=True)
@@ -138,6 +140,7 @@ def pretrain():
         wandb_run_name=args.wandb_run,
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
+        early_stop=args.early_stop,
     )
     trainer.pretrain(config=vars(args))
 

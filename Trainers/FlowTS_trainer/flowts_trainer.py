@@ -9,6 +9,7 @@ class FlowTSPretrain(object):
             self,optimizer, model, train_loader,
             val_loader, max_epochs, device, save_dir,
             wandb_project_name, wandb_run_name, grad_clip_norm,
+            early_stop
     ):
         self.optimizer = optimizer
         self.model = model.to(device)
@@ -20,6 +21,7 @@ class FlowTSPretrain(object):
         self.wandb_project_name = wandb_project_name
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
+        self.early_stop = early_stop
 
     def pretrain(self, config):
 
@@ -61,7 +63,7 @@ class FlowTSPretrain(object):
             train_total_avg = total_loss / tr_seen
 
 
-            """evalaution"""
+            """evaluation"""
             self.model.eval()
             with torch.no_grad():
                 val_total, val_seen =  0, 0
@@ -89,7 +91,7 @@ class FlowTSPretrain(object):
                 else:
                     no_improve_epochs += 1
 
-                if no_improve_epochs >= 10:
+                if self.early_stop== "true" and no_improve_epochs >= 10:
                     print(f"⛔ Early stopping triggered at Step {global_steps}.")
                     break
 

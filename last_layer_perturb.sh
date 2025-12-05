@@ -17,8 +17,9 @@ python FlowPretrainPipeline.py \
   \
   --lr 1e-5 \
   --batch_size 128 \
-  --epochs 1000 \
+  --epochs 200 \
   --grad_clip_norm 1.0 \
+  --early_stop "false" \
   \
   --wandb_project flow_normal_pretrain \
   --wandb_run LastLayerPerturbFlow_pretrain_mitdb106 \
