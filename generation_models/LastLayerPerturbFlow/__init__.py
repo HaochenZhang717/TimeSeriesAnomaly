@@ -1,1 +1,1 @@
-from .interpretable_flow import FM_TS
+from .interpretable_flow import LastLayerPerturbFlow

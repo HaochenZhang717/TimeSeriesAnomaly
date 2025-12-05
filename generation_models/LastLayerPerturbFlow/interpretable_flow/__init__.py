@@ -1,1 +1,1 @@
-from .FMTS import FM_TS
+from .FMTS import LastLayerPerturbFlow

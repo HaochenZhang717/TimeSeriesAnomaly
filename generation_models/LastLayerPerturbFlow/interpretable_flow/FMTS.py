@@ -54,7 +54,6 @@ class LastLayerPerturbFlow(nn.Module):
 
         return output
 
-
     @torch.no_grad()
     def sample(self, shape, anomaly_label):
         model_device = next(self.parameters()).device
@@ -78,13 +77,11 @@ class LastLayerPerturbFlow(nn.Module):
             )
             zt = zt.clone() + step * v 
 
-        return zt 
-
+        return zt
 
     def generate_mts(self, anomaly_label, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
         return self.sample((batch_size, seq_length, feature_size), anomaly_label)
-
 
     def _train_loss(self, x_start, anomaly_label):
         
@@ -102,9 +99,6 @@ class LastLayerPerturbFlow(nn.Module):
         model_out = self.output(z_t, t.squeeze()*self.time_scalar, anomaly_label, None)
         train_loss = F.mse_loss(model_out, target, reduction='none')
 
-
-
-        
         train_loss = reduce(train_loss, 'b ... -> b (...)', 'mean')
         train_loss = train_loss.mean()
         return train_loss.mean()
@@ -144,31 +138,6 @@ class LastLayerPerturbFlow(nn.Module):
             return self._train_loss(x, anomaly_label)
         else:
             raise ValueError("mode must be 'normal' or 'anomaly'")
-
-
-    # def fast_sample_infill(self, shape, target, partial_mask=None):
-    #
-    #     z0 = torch.randn(shape).cuda()
-    #     z1 = zt = z0
-    #     for t in range(self.num_timesteps):
-    #         t = t/self.num_timesteps  ## scale to 0-1
-    #         t = t**(float(os.environ['hucfg_Kscale']))  ## perform t-power sampling
-    #
-    #
-    #         z0 = torch.randn(shape).cuda()  ## re init the z0
-    #
-    #         target_t = target*t + z0*(1-t)  ## get the noisy target
-    #         zt = z1*t + z0*(1-t)  ##
-    #         # import ipdb; ipdb.set_trace()
-    #         zt[partial_mask] = target_t[partial_mask]  ## replace with the noisy version of given ground truth information
-    #         v = self.output(zt, torch.tensor([t*self.time_scalar]).cuda(), None)
-    #
-    #         z1 = zt.clone() + (1 - t) * v  ## one step euler
-    #         z1 = torch.clamp(z1, min=-1, max=1) ## make sure the upper and lower bound dont exceed
-    #
-    #
-    #     return z1
-
 
 
 

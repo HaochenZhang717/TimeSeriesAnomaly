@@ -96,8 +96,6 @@ class FlowTSPretrain(object):
         wandb.finish()
 
 
-
-
 class FlowTSFinetune(object):
     def __init__(
             self,optimizer, model,

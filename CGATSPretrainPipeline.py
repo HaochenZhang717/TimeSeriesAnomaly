@@ -1,6 +1,6 @@
 from generation_models import TimeVAECGATS
 from Trainers import CGATPretrain
-from dataset_utils import ECGDataset
+from dataset_utils import build_dataset
 import argparse
 import torch
 import json
@@ -33,7 +33,8 @@ def get_pretrain_args():
 
 
     """data parameters"""
-    parser.add_argument("--max_anomaly_ratio", type=float, required=True)
+    parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--max_anomaly_length", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--indices_paths_train", type=str, required=True)
@@ -77,19 +78,39 @@ def pretrain():
     )
 
 
-    pretrain_dataset_train = ECGDataset(
-        args.raw_data_paths_train,
-        args.indices_paths_train,
-        args.seq_len,
-        args.max_anomaly_ratio,
-    )
 
-    pretrain_dataset_val = ECGDataset(
-        args.raw_data_paths_val,
-        args.indices_paths_val,
-        args.seq_len,
-        args.max_anomaly_ratio,
-    )
+    if args.raw_data_paths_val == "none":
+        pretrain_dataset_full = build_dataset(
+            args.dataset_name,
+            'non_iterable',
+            args.raw_data_paths_train,
+            args.indices_paths_train,
+            args.seq_len,
+            args.max_anomaly_length,
+        )
+        pretrain_dataset_train, pretrain_dataset_val = random_split(
+        )
+
+    else:
+        pretrain_dataset_train = build_dataset(
+            args.dataset_name,
+            'non_iterable',
+            args.raw_data_paths_train,
+            args.indices_paths_train,
+            args.seq_len,
+            args.max_anomaly_length,
+        )
+
+        pretrain_dataset_val = build_dataset(
+            args.dataset_name,
+            'non_iterable',
+            args.raw_data_paths_val,
+            args.indices_paths_val,
+            args.seq_len,
+            args.max_anomaly_ratio,
+        )
+
+
 
     train_loader = torch.utils.data.DataLoader(pretrain_dataset_train, batch_size=args.batch_size, shuffle=True, drop_last=True)
     val_loader = torch.utils.data.DataLoader(pretrain_dataset_val, batch_size=args.batch_size, shuffle=False, drop_last=False)

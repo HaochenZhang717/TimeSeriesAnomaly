@@ -54,7 +54,6 @@ class FM_TS(nn.Module):
 
         return output
 
-
     @torch.no_grad()
     def sample(self, shape, anomaly_label):
         model_device = next(self.parameters()).device
@@ -80,11 +79,9 @@ class FM_TS(nn.Module):
 
         return zt 
 
-
     def generate_mts(self, anomaly_label, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
         return self.sample((batch_size, seq_length, feature_size), anomaly_label)
-
 
     def _train_loss(self, x_start, anomaly_label):
         
