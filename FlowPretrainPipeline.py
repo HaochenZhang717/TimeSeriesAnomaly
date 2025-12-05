@@ -29,7 +29,6 @@ def get_pretrain_args():
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
-    parser.add_argument("--n_heads", type=int, required=True)
     parser.add_argument("--early_stop", type=str, required=True)
 
     """data parameters"""
