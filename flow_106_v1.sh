@@ -45,7 +45,7 @@ python FlowFinetunePipeline.py \
   \
   --lr 1e-5 \
   --batch_size 64 \
-  --max_iters 1000000 \
+  --max_iters 50000 \
   --grad_clip_norm 1.0 \
   --mode "anomaly_only" \
   \
@@ -77,7 +77,7 @@ python FlowFinetunePipeline.py \
   \
   --lr 1e-5 \
   --batch_size 64 \
-  --max_iters 1000000 \
+  --max_iters 50000 \
   --grad_clip_norm 1.0 \
   --mode "mixed_data" \
   \

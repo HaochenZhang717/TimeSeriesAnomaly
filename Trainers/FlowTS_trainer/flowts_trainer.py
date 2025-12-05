@@ -251,9 +251,9 @@ class FlowTSFinetune(object):
                 else:
                     no_improve_epochs += 1
 
-                if no_improve_epochs >= 10:
-                    print(f"⛔ Early stopping triggered at Step {step}.")
-                    break
+                # if no_improve_epochs >= 10:
+                #     print(f"⛔ Early stopping triggered at Step {step}.")
+                #     break
 
         wandb.finish()
 
@@ -350,8 +350,8 @@ class FlowTSFinetune(object):
                 else:
                     no_improve_epochs += 1
 
-                if no_improve_epochs >= 10:
-                    print(f"⛔ Early stopping triggered at Step {step}.")
-                    break
+                # if no_improve_epochs >= 10:
+                #     print(f"⛔ Early stopping triggered at Step {step}.")
+                #     break
 
         wandb.finish()
