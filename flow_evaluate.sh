@@ -9,6 +9,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --n_heads 4 \
   --version 2 \
   \
+  --dataset_name "ECG" \
   --max_anomaly_length 160 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
@@ -41,6 +42,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --n_heads 4 \
   --version 3 \
   \
+  --dataset_name "ECG" \
   --max_anomaly_length 160 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
