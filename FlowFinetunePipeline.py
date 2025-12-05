@@ -1,7 +1,6 @@
-from Trainers.FlowTS_trainer.flowts_trainer import FlowTSFinetune
+from Trainers import FlowTSFinetune
 from generation_models import FM_TS
-from Trainers import FlowTSPretrain
-from dataset_utils import ECGDataset, IterableECGDataset
+from dataset_utils import build_dataset
 import argparse
 import torch
 from datetime import datetime
@@ -31,7 +30,8 @@ def get_finetune_args():
     parser.add_argument("--version", type=int, required=True)
 
     """data parameters"""
-    parser.add_argument("--max_anomaly_ratio", type=float, required=True)
+    parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--max_anomaly_length", type=int, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--normal_indices_paths_train", type=str, required=True)
@@ -78,33 +78,71 @@ def finetune():
         mlp_hidden_times=4,
     )
 
-    normal_train_set = IterableECGDataset(
+    # normal_train_set = IterableECGDataset(
+    #     raw_data_paths=args.raw_data_paths_train,
+    #     indices_paths=args.normal_indices_paths_train,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+    #
+    # normal_val_set = ECGDataset(
+    #     raw_data_paths=args.raw_data_paths_val,
+    #     indices_paths=args.normal_indices_paths_val,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+    #
+    # anomaly_train_set = IterableECGDataset(
+    #     raw_data_paths=args.raw_data_paths_train,
+    #     indices_paths=args.anomaly_indices_paths_train,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+    #
+    # anomaly_val_set = ECGDataset(
+    #     raw_data_paths=args.raw_data_paths_val,
+    #     indices_paths=args.anomaly_indices_paths_val,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.normal_indices_paths_train,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length,
     )
 
-    normal_val_set = ECGDataset(
+    normal_val_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
         raw_data_paths=args.raw_data_paths_val,
         indices_paths=args.normal_indices_paths_val,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length,
     )
 
-    anomaly_train_set = IterableECGDataset(
+    anomaly_train_set = build_dataset(
+        args.dataset_name,
+        'iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.anomaly_indices_paths_train,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length,
     )
 
-    anomaly_val_set = ECGDataset(
+    anomaly_val_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
         raw_data_paths=args.raw_data_paths_val,
         indices_paths=args.anomaly_indices_paths_val,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length,
     )
+
+
 
     """train loaders are on IterableDataset"""
     normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)

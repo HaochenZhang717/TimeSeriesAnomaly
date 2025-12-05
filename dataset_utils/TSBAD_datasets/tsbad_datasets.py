@@ -20,12 +20,12 @@ class TSBADDataset(Dataset):
             raw_data_paths,
             indices_paths,
             seq_len,
-            max_anomaly_ratio,
+            max_anomaly_length,
     ):
         super(TSBADDataset, self).__init__()
         self.seq_len = seq_len
-        self.max_anomaly_ratio = max_anomaly_ratio
-        self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
+        # self.max_anomaly_ratio = max_anomaly_ratio
+        self.max_anomaly_length = max_anomaly_length
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -94,12 +94,12 @@ class IterableTSBADDataset(IterableDataset):
             raw_data_paths,
             indices_paths,
             seq_len,
-            max_anomaly_ratio,
+            max_anomaly_length,
     ):
         super(IterableTSBADDataset, self).__init__()
         self.seq_len = seq_len
-        self.max_anomaly_ratio = max_anomaly_ratio
-        self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
+        # self.max_anomaly_ratio = max_anomaly_ratio
+        self.max_anomaly_length = max_anomaly_length
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -156,14 +156,14 @@ class IterableTSBADDataset(IterableDataset):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    dataset = TSBADDataset(
+    dataset = IterableTSBADDataset(
         raw_data_paths="./raw_data/selected_uts/030_WSD_id_2_WebService_tr_4499_1st_4599.csv",
         indices_paths="./indices/slide_windows_030_WSD_id_2_WebService_tr_4499_1st_4599/train/normal.jsonl",
-        seq_len=100,
-        max_anomaly_ratio=20/256,
+        seq_len=800,
+        max_anomaly_length=20,
     )
 
-    data_loader = DataLoader(dataset, batch_size=1, shuffle=True)
+    data_loader = DataLoader(dataset, batch_size=1)
     one_loader = iter(data_loader)
 
     for i in range(20):

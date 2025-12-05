@@ -428,9 +428,19 @@ class DecoderBlock(nn.Module):
         )
 
         self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
+
+        proj_anomaly_act = nn.GELU()
+        self.proj_anomaly = nn.Sequential(
+            nn.Conv1d(n_channel, n_channel * 2, 3, 1, 1),
+            proj_anomaly_act,
+            nn.Conv1d(n_channel * 2, n_channel * 2, 3, 1, 1),
+            proj_anomaly_act,
+            nn.Conv1d(n_channel * 2, n_feat, 3, 1, 1),
+        )
+
         self.linear = nn.Linear(n_embd, n_feat)
 
-    def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None):
+    def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None, anomaly_condition_mask=None):
         a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
         x = x + a
 
@@ -438,11 +448,18 @@ class DecoderBlock(nn.Module):
         x = x + a
         x1, x2 = self.proj(x).chunk(2, dim=1)
         trend, season = self.trend(x1), self.seasonal(x2)
+        if anomaly_condition_mask is not None:
+            anomaly_part = self.proj_anomaly(x) * anomaly_condition_mask
+        else:
+            anomaly_part = None
+
         x = x + self.mlp(self.ln2(x))
 
 
         m = torch.mean(x, dim=1, keepdim=True)
-        return x - m, self.linear(m), trend, season
+
+
+        return x - m, self.linear(m), trend, season, anomaly_part
     
 
 class Decoder(nn.Module):
@@ -477,21 +494,28 @@ class Decoder(nn.Module):
         ) for _ in range(n_layer)])
 
 
-    def forward(self, x, t, enc, anomaly_label, padding_masks=None):
+    def forward(self, x, t, enc, anomaly_label, anomaly_condition_mask, padding_masks=None):
         b, c, _ = x.shape
         # att_weights = []
         mean = []
         season = torch.zeros((b, c, self.d_model), device=x.device)
         trend = torch.zeros((b, c, self.n_feat), device=x.device)
+        anomaly_component = torch.zeros((b, c, self.n_feat), device=x.device)
+
         for block_idx in range(len(self.blocks)):
-            x, residual_mean, residual_trend, residual_season = \
-                self.blocks[block_idx](x, enc, t, mask=padding_masks, anomaly_label=anomaly_label)
+            x, residual_mean, residual_trend, residual_season, anomaly_part = \
+                self.blocks[block_idx](
+                    x, enc, t, mask=padding_masks, anomaly_label=anomaly_label,
+                    anomaly_condition_mask=anomaly_condition_mask
+                )
             season += residual_season
             trend += residual_trend
+            if anomaly_part is not None:
+                anomaly_component += anomaly_part
             mean.append(residual_mean)
 
         mean = torch.cat(mean, dim=1)
-        return x, mean, trend, season
+        return x, mean, trend, season, anomaly_component
 
 
 class Transformer(nn.Module):
@@ -541,27 +565,28 @@ class Transformer(nn.Module):
 
         if version == 1:
             self.anomaly_label_embedding = nn.Embedding(2, self.n_embd).to(device=model_device)
-        elif version == 2:
+        elif version == 2 or version == 3:
             self.anomaly_label_embedding = nn.Conv1d(1, self.n_embd, kernel_size=1, stride=1, padding=0).to(device=model_device)
 
-        # for param in self.parameters():
-        #     param.requires_grad = False
-        #
-        # # here we only tune AdaLN and cross attention
-        # for name, module in self.named_modules():
-        #     if isinstance(module, AdaLayerNorm):
-        #         for param in module.parameters():
-        #             param.requires_grad = True
-        #         print(f"set {name} as tunable")
-        #     elif isinstance(module, CrossAttention):
-        #         for param in module.parameters():
-        #             param.requires_grad = True
-        #         print(f"set {name} as tunable")
-        #     else:
-        #         continue
-        #
-        # for param in self.anomaly_label_embedding.parameters():
-        #     param.requires_grad = True
+        if version == 3:
+            for param in self.parameters():
+                param.requires_grad = False
+
+            # here we only tune AdaLN and cross attention
+            for name, module in self.named_modules():
+                if isinstance(module, AdaLayerNorm):
+                    for param in module.parameters():
+                        param.requires_grad = True
+                    print(f"set {name} as tunable")
+                elif isinstance(module, CrossAttention):
+                    for param in module.parameters():
+                        param.requires_grad = True
+                    print(f"set {name} as tunable")
+                else:
+                    continue
+
+            for param in self.anomaly_label_embedding.parameters():
+                param.requires_grad = True
 
 
 
@@ -571,6 +596,8 @@ class Transformer(nn.Module):
         inp_enc = emb
 
         if anomaly_label is not None:
+            anomaly_condition_mask = anomaly_label.clone()
+
             if isinstance(self.anomaly_label_embedding, nn.Embedding):
                 anomaly_label = self.anomaly_label_embedding(anomaly_label.to(torch.long))
             elif isinstance(self.anomaly_label_embedding, nn.Conv1d):
@@ -578,10 +605,17 @@ class Transformer(nn.Module):
                 anomaly_label = self.anomaly_label_embedding(anomaly_label.unsqueeze(1).to(dtype=model_dtype)).permute(0, 2, 1)
             else:
                 raise NotImplementedError
+        else:
+            anomaly_condition_mask = None
+
         enc_cond = self.encoder(inp_enc, t, anomaly_label, padding_masks=padding_masks)
 
         inp_dec = emb
-        output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, anomaly_label, padding_masks=padding_masks)
+        output, mean, trend, season, anomaly_component = self.decoder(
+            inp_dec, t, enc_cond, anomaly_label,
+            padding_masks=padding_masks,
+            anomaly_condition_mask=anomaly_condition_mask
+        )
 
         res = self.inverse(output)
         res_m = torch.mean(res, dim=1, keepdim=True)
@@ -589,7 +623,8 @@ class Transformer(nn.Module):
         trend = self.combine_m(mean) + res_m + trend
         out = trend+season_error
 
-  
+        if anomaly_label is not None:
+            out = out + anomaly_component
 
         return out
 

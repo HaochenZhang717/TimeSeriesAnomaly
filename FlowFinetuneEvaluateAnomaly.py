@@ -1,16 +1,13 @@
 import numpy as np
-
 from generation_models import FM_TS
-from Trainers import FlowTSPretrain
-from dataset_utils import ECGDataset, IterableECGDataset
+# from dataset_utils import ECGDataset, IterableECGDataset
+from dataset_utils import build_dataset
 import argparse
 import torch
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 import os
-from evaluation_utils import run_anomaly_quality_test, classification_metrics_torch
-from evaluation_utils import predictive_score_metrics, discriminative_score_metrics
 from tqdm import tqdm
 from evaluation_utils import calculate_robustTAD
 
@@ -29,7 +26,8 @@ def get_evaluate_args():
     parser.add_argument("--version", type=int, required=True)
 
     """data parameters"""
-    parser.add_argument("--max_anomaly_ratio", type=float, required=True)
+    parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--max_anomaly_length", type=int, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--normal_indices_paths_train", type=str, required=True)
@@ -70,11 +68,21 @@ def evaluate_finetune_anomaly_quality():
     model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
-    normal_train_set = IterableECGDataset(
+    # normal_train_set = IterableECGDataset(
+    #     raw_data_paths=args.raw_data_paths_train,
+    #     indices_paths=args.normal_indices_paths_train,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+
+
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.normal_indices_paths_train,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length,
     )
 
     if args.need_to_generate:
@@ -106,11 +114,20 @@ def evaluate_finetune_anomaly_quality():
         all_samples = to_load["all_samples"]
         all_anomaly_labels = to_load["all_anomaly_labels"]
 
-    anomaly_train_set = ECGDataset(
+    # anomaly_train_set = ECGDataset(
+    #     raw_data_paths=args.raw_data_paths_train,
+    #     indices_paths=args.anomaly_indices_paths_train,
+    #     seq_len=args.seq_len,
+    #     max_anomaly_ratio=args.max_anomaly_ratio,
+    # )
+
+    anomaly_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.anomaly_indices_paths_train,
         seq_len=args.seq_len,
-        max_anomaly_ratio=args.max_anomaly_ratio,
+        max_anomaly_length=args.max_anomaly_length
     )
 
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))

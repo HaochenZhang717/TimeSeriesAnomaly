@@ -19,12 +19,12 @@ class ECGDataset(Dataset):
             raw_data_paths,
             indices_paths,
             seq_len,
-            max_anomaly_ratio,
+            max_anomaly_length,
     ):
         super(ECGDataset, self).__init__()
         self.seq_len = seq_len
-        self.max_anomaly_ratio = max_anomaly_ratio
-        self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
+        # self.max_anomaly_ratio = max_anomaly_ratio
+        self.max_anomaly_length = max_anomaly_length
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -85,12 +85,12 @@ class IterableECGDataset(IterableDataset):
             raw_data_paths,
             indices_paths,
             seq_len,
-            max_anomaly_ratio,
+            max_anomaly_length,
     ):
         super(IterableECGDataset, self).__init__()
         self.seq_len = seq_len
-        self.max_anomaly_ratio = max_anomaly_ratio
-        self.max_anomaly_length = int(seq_len * max_anomaly_ratio)
+        # self.max_anomaly_ratio = max_anomaly_ratio
+        self.max_anomaly_length = max_anomaly_length
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -142,5 +142,5 @@ if __name__ == "__main__":
         raw_data_paths="./raw_data/106.npz",
         indices_paths="./indices/slide_windows_106npz/train/normal.jsonl",
         seq_len=800,
-        max_anomaly_ratio=0.1
+        max_anomaly_length=80
     )
