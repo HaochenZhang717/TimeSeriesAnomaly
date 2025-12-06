@@ -389,7 +389,7 @@ class DecoderBlock(nn.Module):
                  max_len = None
                  ):
         super().__init__()
-        
+        self.n_embed = n_embd
         self.ln1 = AdaLayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         # self.ln2 = AdaLayerNorm(n_embd)
@@ -431,15 +431,24 @@ class DecoderBlock(nn.Module):
 
         proj_anomaly_act = nn.GELU()
         self.proj_anomaly = nn.Sequential(
-            nn.Conv1d(n_embd, n_embd * 2, 3, 1, 1),
+            nn.Conv1d(n_channel, n_channel * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(n_embd * 2, n_embd * 2, 3, 1, 1),
+            nn.Conv1d(n_channel * 2, n_channel * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(n_embd * 2, n_channel, 3, 1, 1),
+            nn.Conv1d(n_channel * 2, n_channel, 3, 1, 1),
         )
 
         self.linear = nn.Linear(n_embd, n_feat)
 
+    def prepare_for_finetune(self):
+        proj_anomaly_act = nn.GELU()
+        self.proj_anomaly = nn.Sequential(
+            nn.Conv1d(self.n_embed, self.n_embed * 2, 3, 1, 1),
+            proj_anomaly_act,
+            nn.Conv1d(self.n_embed * 2, self.n_embed * 2, 3, 1, 1),
+            proj_anomaly_act,
+            nn.Conv1d(self.n_embed * 2, n_channel, 3, 1, 1),
+        )
     def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None, anomaly_condition_mask=None):
         a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
         x = x + a
@@ -494,6 +503,10 @@ class Decoder(nn.Module):
                 max_len = max_len
         ) for _ in range(n_layer)])
 
+
+    def prepare_for_finetune(self):
+        for decoder_block in self.blocks:
+            decoder_block.prepare_for_finetune()
 
     def forward(self, x, t, enc, anomaly_label, anomaly_condition_mask, padding_masks=None):
         b, c, _ = x.shape
@@ -563,6 +576,8 @@ class Transformer(nn.Module):
     def prepare_for_finetune(self, version):
         # load ckpt
         model_device = next(self.parameters()).device
+
+        self.decoder.prepare_for_finetune()
 
         if version == 1:
             self.anomaly_label_embedding = nn.Embedding(2, self.n_embd).to(device=model_device)
