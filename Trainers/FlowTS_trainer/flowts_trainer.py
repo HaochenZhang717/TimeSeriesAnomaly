@@ -129,9 +129,9 @@ class FlowTSFinetune(object):
 
     def finetune(self, config, version, mode):
         if mode == "mixed_data":
-            self.finetune_mixed_data(config, version)
+            return self.finetune_mixed_data(config, version)
         elif mode == "anomaly_only":
-            self.finetune_anomaly_only(config, version)
+            return self.finetune_anomaly_only(config, version)
         else:
             raise ValueError("mode must be 'mixed_data' or 'anomaly_only'")
 
