@@ -280,20 +280,19 @@ def finetune():
         pretrained_ckpt=args.pretrained_ckpt,
         early_stop=args.early_stop,
     )
-    trainer.finetune(
-        config=vars(args),
-        version=args.version,
-        mode=args.mode
-    )
-
-
-
+    # trainer.finetune(
+    #     config=vars(args),
+    #     version=args.version,
+    #     mode=args.mode
+    # )
 
     evaluate_finetune_anomaly_quality(
+        args,
         trainer.model,
         normal_train_set,
         anomaly_train_set
     )
+
 
 if __name__ == "__main__":
     finetune()

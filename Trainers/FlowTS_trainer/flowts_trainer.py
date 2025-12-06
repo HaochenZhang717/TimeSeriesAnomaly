@@ -140,6 +140,9 @@ class FlowTSFinetune(object):
 
         self.model.prepare_for_finetune(ckpt_path=self.pretrained_ckpt, version=version)
 
+        ema_decay = 0.999  # you can adjust
+        ema_state_dict = {k: v.clone().detach() for k, v in self.model.state_dict().items()}
+
         wandb.init(
             project=self.wandb_project_name,
             name=self.wandb_run_name,
@@ -178,6 +181,13 @@ class FlowTSFinetune(object):
             total_loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
             self.optimizer.step()
+
+            # 🔥 Update EMA after optimizer.step()
+            with torch.no_grad():
+                model_state = self.model.state_dict()
+                for key in model_state.keys():
+                    ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1-ema_decay)
+            # -------------------------------
 
             tr_loss_total += total_loss.item()
             tr_loss_normal += loss_on_normal.item()
@@ -258,9 +268,9 @@ class FlowTSFinetune(object):
                         break
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                    torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
 
         wandb.finish()
-
 
 
     def finetune_anomaly_only(self, config, version):

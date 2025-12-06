@@ -49,3 +49,136 @@ Flow Version 2---with rope---anomaly data: for 5 iterations
 precision: 0.19270846585606025+-0.02239410659328831
 recall: 0.306709553110821+-0.027728173465737117
 f1: 0.23598013333837137+-0.021351090348731578
+
+
+
+
+
+
+
+--------------------------------------------
+mitdb106v-flow-finetuned-v2-anomaly-only
+--------------------------------------------
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 2, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v2_anomaly_only/2025-12-05-12:50:54/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v2-anomaly-only"}, "result": {"precision_mean": 0.3261404863854235, "precision_std": 0.01968256882204
+5384, "recall_mean": 0.43147492075330973, "recall_std": 0.010639555170059907, "f1_mean": 0.3709998938883879, "f1_std": 0.01166368910656
+8228, "timestamp": "2025-12-05T22:56:41.714951-08:00"}}
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 2, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v2_anomaly_only/2025-12-05-12:50:54/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v2-anomaly-only"}, "result": {"precision_mean": 0.28606349855757607, "precision_std": 0.0430164307622
+9869, "recall_mean": 0.43539063956740637, "recall_std": 0.019443663789051272, "f1_mean": 0.3422582878210473, "f1_std": 0.02615654410818
+9274, "timestamp": "2025-12-05T23:39:59.580504-08:00"}}
+
+
+
+
+
+--------------------------------------------
+mitdb106v-flow-finetuned-v2-mixed-data
+--------------------------------------------
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 2, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v2_mixed_data/2025-12-05-15:09:46/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_pat
+h/flow/mitdb106v-flow-finetuned-v2-mixed-data"}, "result": {"precision_mean": 0.36227691135051004, "precision_std": 0.00699604815511059
+2, "recall_mean": 0.37039281496674753, "recall_std": 0.002614822694934085, "f1_mean": 0.3662446584637737, "f1_std": 0.00347234317330066
+74, "timestamp": "2025-12-05T23:49:35.693788-08:00"}}
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 2, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v2_mixed_data/2025-12-05-15:09:46/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_pat
+h/flow/mitdb106v-flow-finetuned-v2-mixed-data"}, "result": {"precision_mean": 0.3633433564304158, "precision_std": 0.006971616511928561
+, "recall_mean": 0.3693952389831562, "recall_std": 0.003958394900138222, "f1_mean": 0.3663169915388019, "f1_std": 0.004751055413018485,
+ "timestamp": "2025-12-06T00:37:53.854867-08:00"}}
+
+
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_anomaly_only/2025-12-05-12:50:10/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v3-anomaly-only"}, "result": {"precision_mean": 0.3509992967795727, "precision_std": 0.01555665999407
+722, "recall_mean": 0.38756293119522656, "recall_std": 0.016613176896148135, "f1_mean": 0.36810645545455745, "f1_std": 0.01252791122623
+2914, "timestamp": "2025-12-06T00:47:34.523476-08:00"}}
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_anomaly_only/2025-12-05-12:50:10/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v3-anomaly-only"}, "result": {"precision_mean": 0.32069363018725927, "precision_std": 0.0237227218993
+08245, "recall_mean": 0.39983218347939586, "recall_std": 0.012823543716365593, "f1_mean": 0.3551975579224754, "f1_std": 0.0127367810631
+81121, "timestamp": "2025-12-06T01:35:59.604769-08:00"}
+
+
+--------------------------------------------
+mitdb106v-flow-finetuned-v3-anomaly-only
+--------------------------------------------
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_anomaly_only/2025-12-05-12:50:10/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v3-anomaly-only"}, "result": {"precision_mean": 0.3509992967795727, "precision_std": 0.01555665999407
+722, "recall_mean": 0.38756293119522656, "recall_std": 0.016613176896148135, "f1_mean": 0.36810645545455745, "f1_std": 0.01252791122623
+2914, "timestamp": "2025-12-06T00:47:34.523476-08:00"}}
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_anomaly_only/2025-12-05-12:50:10/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_p
+ath/flow/mitdb106v-flow-finetuned-v3-anomaly-only"}, "result": {"precision_mean": 0.32069363018725927, "precision_std": 0.0237227218993
+08245, "recall_mean": 0.39983218347939586, "recall_std": 0.012823543716365593, "f1_mean": 0.3551975579224754, "f1_std": 0.0127367810631
+81121, "timestamp": "2025-12-06T01:35:59.604769-08:00"}}
+
+
+
+--------------------------------------------
+mitdb106v-flow-finetuned-v3-mixed-data
+--------------------------------------------
+(base) root@gpu-ssh-server-4:~/tianyi/samples_path/flow/mitdb106v-flow-finetuned-v3-mixed-data# more evaluation_results.jsonl
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_mixed_data/2025-12-05-15:03:35/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_pat
+h/flow/mitdb106v-flow-finetuned-v3-mixed-data"}, "result": {"precision_mean": 0.26169631151444284, "precision_std": 0.02264449007947302
+5, "recall_mean": 0.42566038908571074, "recall_std": 0.03323427562205654, "f1_mean": 0.3236491067213188, "f1_std": 0.02384288001602215,
+ "timestamp": "2025-12-06T01:45:55.403849-08:00"}}
+{"args": {"seq_len": 800, "feature_size": 2, "n_layer_enc": 4, "n_layer_dec": 4, "d_model": 64, "n_heads": 4, "version": 3, "dataset_na
+me": "ECG", "max_anomaly_length": 160, "raw_data_paths_train": "./dataset_utils/ECG_datasets/raw_data/106.npz", "raw_data_paths_val": "
+./dataset_utils/ECG_datasets/raw_data/106.npz", "normal_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106np
+z/train/normal.jsonl", "normal_indices_paths_val": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl",
+ "anomaly_indices_paths_train": "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl", "anomaly_indices_paths_val":
+ "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl", "batch_size": 64, "model_ckpt": "../TSA-ckpts/flow_mit
+db106v_finetune_ckpt_v3_mixed_data/2025-12-05-15:03:35/ckpt.pth", "gpu_id": 2, "need_to_generate": 1, "generated_path": "../samples_pat
+h/flow/mitdb106v-flow-finetuned-v3-mixed-data"}, "result": {"precision_mean": 0.33777217998768627, "precision_std": 0.03805034801844666
+, "recall_mean": 0.3915097271427683, "recall_std": 0.023509493024261474, "f1_mean": 0.3599779491358924, "f1_std": 0.013733717808778025,
+ "timestamp": "2025-12-06T02:15:01.715367-08:00"}}
+
