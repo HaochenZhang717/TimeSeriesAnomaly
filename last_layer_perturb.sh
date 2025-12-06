@@ -28,6 +28,9 @@
 #  --gpu_id 6
 
 
+#versions=(2 3)
+#modes=(mixed_data anomaly_only)
+
 versions=(2 3)
 modes=(mixed_data anomaly_only)
 
