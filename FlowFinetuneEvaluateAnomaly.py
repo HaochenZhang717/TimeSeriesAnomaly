@@ -175,7 +175,7 @@ def evaluate_finetune_anomaly_quality():
     }
 
     output_record = {
-        "args": args_dict,
+        "args": vars(args),
         "result": result,
     }
 
