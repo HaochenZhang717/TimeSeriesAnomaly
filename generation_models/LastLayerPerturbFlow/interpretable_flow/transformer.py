@@ -431,11 +431,11 @@ class DecoderBlock(nn.Module):
 
         proj_anomaly_act = nn.GELU()
         self.proj_anomaly = nn.Sequential(
-            nn.Conv1d(n_channel, n_channel * 2, 3, 1, 1),
+            nn.Conv1d(n_embd, n_embd * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(n_channel * 2, n_channel * 2, 3, 1, 1),
+            nn.Conv1d(n_embd * 2, n_embd * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(n_channel * 2, n_feat, 3, 1, 1),
+            nn.Conv1d(n_embd * 2, n_channel, 3, 1, 1),
         )
 
         self.linear = nn.Linear(n_embd, n_feat)
@@ -450,7 +450,7 @@ class DecoderBlock(nn.Module):
         trend, season = self.trend(x1), self.seasonal(x2)
         if anomaly_condition_mask is not None:
             breakpoint()
-            anomaly_part = self.proj_anomaly(x) * anomaly_condition_mask
+            anomaly_part = self.proj_anomaly(x.permute(0, 2, 1)).permute(0, 2, 1) * anomaly_condition_mask
         else:
             anomaly_part = None
 
