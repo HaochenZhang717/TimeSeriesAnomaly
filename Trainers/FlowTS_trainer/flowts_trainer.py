@@ -270,7 +270,7 @@ class FlowTSFinetune(object):
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
-            break
+
         wandb.finish()
         return ema_state_dict
 
@@ -383,7 +383,7 @@ class FlowTSFinetune(object):
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
-            break
+
 
         wandb.finish()
         return ema_state_dict

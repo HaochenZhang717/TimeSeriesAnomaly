@@ -80,8 +80,7 @@ def evaluate_finetune_anomaly_quality(
     model.eval()
 
     num_samples = len(normal_train_set.slide_windows)
-    # num_cycle = int(num_samples // args.batch_size) + 1
-    num_cycle = 2
+    num_cycle = int(num_samples // args.batch_size) + 1
     all_samples = []
     all_anomaly_labels = []
     normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
