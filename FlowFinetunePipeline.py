@@ -1,4 +1,4 @@
-from Trainers import FlowTSFinetune
+from Trainers import FlowTSFinetune, LastLayerPerturbFlow
 from generation_models import FM_TS
 from dataset_utils import build_dataset
 import argparse
