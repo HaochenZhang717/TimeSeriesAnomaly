@@ -7,6 +7,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 import os
+from tqdm import tqdm
+
 
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
