@@ -443,13 +443,14 @@ class DecoderBlock(nn.Module):
 
     def prepare_for_finetune(self):
         proj_anomaly_act = nn.GELU()
+        model_device = next(self.parameters()).device
         self.proj_anomaly = nn.Sequential(
             nn.Conv1d(self.n_embed, self.n_embed * 2, 3, 1, 1),
             proj_anomaly_act,
             nn.Conv1d(self.n_embed * 2, self.n_embed * 2, 3, 1, 1),
             proj_anomaly_act,
             nn.Conv1d(self.n_embed * 2, self.n_feat, 3, 1, 1),
-        )
+        ).to(model_device)
     def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None, anomaly_condition_mask=None):
         a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
         x = x + a
