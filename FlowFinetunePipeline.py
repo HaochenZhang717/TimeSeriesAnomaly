@@ -56,11 +56,104 @@ def get_finetune_args():
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
     parser.add_argument("--pretrained_ckpt", type=str, required=True)
+    parser.add_argument("--generated_path", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
 
     return parser.parse_args()
+
+
+def evaluate_finetune_anomaly_quality(
+    args,
+    model,
+    normal_train_set,
+    anomaly_train_set):
+    device = torch.device("cuda:%d" % args.gpu_id)
+    model.prepare_for_finetune(ckpt_path=None, version=args.version)
+    model.load_state_dict(torch.load(args.model_ckpt))
+    model.eval()
+
+    num_samples = len(normal_train_set.slide_windows)
+    num_cycle = int(num_samples // args.batch_size) + 1
+    all_samples = []
+    all_anomaly_labels = []
+    normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
+    normal_train_iterator = iter(normal_train_loader)
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device).squeeze()
+        samples = model.generate_mts(
+            batch_size=args.batch_size,
+            anomaly_label=anomaly_label,
+        ).cpu()
+        all_samples.append(samples)
+        all_anomaly_labels.append(anomaly_label)
+    all_samples = torch.cat(all_samples, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    os.makedirs(args.generated_path, exist_ok=True)
+    to_save = {
+        "all_samples": all_samples,
+        "all_anomaly_labels": all_anomaly_labels,
+    }
+    torch.save(to_save,f"{args.generated_path}/generated_anomaly.pt")
+
+
+    orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
+    orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
+
+
+    precisions = []
+    recalls = []
+    f1s = []
+    for _ in range(5):
+        precision, recall, f1 = calculate_robustTAD(
+            anomaly_weight=5.0,
+            feature_size=args.feature_size,
+            ori_data=orig_data,
+            ori_labels=orig_labels,
+            gen_data=all_samples,
+            gen_labels=all_anomaly_labels,
+            device=device,
+            lr=1e-4,
+            max_epochs=2000,
+            batch_size=64,
+            patience=20)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)
+
+    mean_precision = np.mean(precisions)
+    mean_recall = np.mean(recalls)
+    mean_f1 = np.mean(f1s)
+    std_precision = np.std(precisions)
+    std_recall = np.std(recalls)
+    std_f1 = np.std(f1s)
+    print(f"precision: {mean_precision}+-{std_precision}")
+    print(f"recall: {mean_recall}+-{std_recall}")
+    print(f"f1: {mean_f1}+-{std_f1}")
+
+    result = {
+        "precision_mean": float(mean_precision),
+        "precision_std": float(std_precision),
+        "recall_mean": float(mean_recall),
+        "recall_std": float(std_recall),
+        "f1_mean": float(mean_f1),
+        "f1_std": float(std_f1),
+        "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
+    }
+
+    output_record = {
+        "args": vars(args),
+        "result": result,
+    }
+
+    save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
+    os.makedirs(args.generated_path, exist_ok=True)
+
+    with open(save_path, "a") as f:
+        f.write(json.dumps(output_record) + "\n")
+
+
 
 
 def finetune():
@@ -191,6 +284,15 @@ def finetune():
         config=vars(args),
         version=args.version,
         mode=args.mode
+    )
+
+
+
+
+    evaluate_finetune_anomaly_quality(
+        trainer.model,
+        normal_train_set,
+        anomaly_train_set
     )
 
 if __name__ == "__main__":
