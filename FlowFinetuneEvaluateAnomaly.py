@@ -164,7 +164,26 @@ def evaluate_finetune_anomaly_quality():
     print(f"recall: {mean_recall}+-{std_recall}")
     print(f"f1: {mean_f1}+-{std_f1}")
 
+    result = {
+        "precision_mean": float(mean_precision),
+        "precision_std": float(std_precision),
+        "recall_mean": float(mean_recall),
+        "recall_std": float(std_recall),
+        "f1_mean": float(mean_f1),
+        "f1_std": float(std_f1),
+        "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
+    }
 
+    output_record = {
+        "args": args_dict,
+        "result": result,
+    }
+
+    save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
+    os.makedirs(args.generated_path, exist_ok=True)
+
+    with open(save_path, "a") as f:
+        f.write(json.dumps(output_record) + "\n")
 
 
     # predictive_scores = []
