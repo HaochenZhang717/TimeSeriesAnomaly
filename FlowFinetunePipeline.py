@@ -70,8 +70,6 @@ def evaluate_finetune_anomaly_quality(
     normal_train_set,
     anomaly_train_set):
     device = torch.device("cuda:%d" % args.gpu_id)
-    model.prepare_for_finetune(ckpt_path=None, version=args.version)
-    model.load_state_dict(torch.load(args.model_ckpt))
     model.eval()
 
     num_samples = len(normal_train_set.slide_windows)
