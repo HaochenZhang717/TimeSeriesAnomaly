@@ -390,6 +390,7 @@ class DecoderBlock(nn.Module):
                  ):
         super().__init__()
         self.n_embed = n_embd
+        self.n_feat = int(n_feat)
         self.ln1 = AdaLayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         # self.ln2 = AdaLayerNorm(n_embd)
@@ -447,7 +448,7 @@ class DecoderBlock(nn.Module):
             proj_anomaly_act,
             nn.Conv1d(self.n_embed * 2, self.n_embed * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(self.n_embed * 2, n_feat, 3, 1, 1),
+            nn.Conv1d(self.n_embed * 2, self.n_feat, 3, 1, 1),
         )
     def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None, anomaly_condition_mask=None):
         a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
