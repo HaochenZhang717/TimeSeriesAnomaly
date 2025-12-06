@@ -460,8 +460,7 @@ class DecoderBlock(nn.Module):
         x1, x2 = self.proj(x).chunk(2, dim=1)
         trend, season = self.trend(x1), self.seasonal(x2)
         if anomaly_condition_mask is not None:
-            breakpoint()
-            anomaly_part = self.proj_anomaly(x.permute(0, 2, 1)).permute(0, 2, 1) * anomaly_condition_mask
+            anomaly_part = self.proj_anomaly(x.permute(0, 2, 1)).permute(0, 2, 1) * anomaly_condition_mask.unsqueeze(-1)
         else:
             anomaly_part = None
 
