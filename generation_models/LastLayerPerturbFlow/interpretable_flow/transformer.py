@@ -435,7 +435,7 @@ class DecoderBlock(nn.Module):
             proj_anomaly_act,
             nn.Conv1d(n_channel * 2, n_channel * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(n_channel * 2, n_channel, 3, 1, 1),
+            nn.Conv1d(n_channel * 2, n_feat, 3, 1, 1),
         )
 
         self.linear = nn.Linear(n_embd, n_feat)
@@ -447,7 +447,7 @@ class DecoderBlock(nn.Module):
             proj_anomaly_act,
             nn.Conv1d(self.n_embed * 2, self.n_embed * 2, 3, 1, 1),
             proj_anomaly_act,
-            nn.Conv1d(self.n_embed * 2, n_channel, 3, 1, 1),
+            nn.Conv1d(self.n_embed * 2, n_feat, 3, 1, 1),
         )
     def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None, anomaly_condition_mask=None):
         a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
