@@ -243,18 +243,21 @@ class FlowTSFinetune(object):
                 tr_loss_total = 0
                 tr_seen = 0
 
-                # save model and early stop
-                if val_loss_total_avg < best_val_loss:
-                    best_val_loss = val_loss_total_avg
-                    no_improve_epochs = 0
-                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                if self.early_stop== "true":
+                    # save model and early stop
+                    if val_loss_total_avg < best_val_loss:
+                        best_val_loss = val_loss_total_avg
+                        no_improve_epochs = 0
+                        torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                    else:
+                        no_improve_epochs += 1
+
+
+                    if no_improve_epochs >= 10:
+                        print(f"⛔ Early stopping triggered at Step {step}.")
+                        break
                 else:
-                    no_improve_epochs += 1
-
-
-                if self.early_stop== "true" and no_improve_epochs >= 10:
-                    print(f"⛔ Early stopping triggered at Step {step}.")
-                    break
+                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
 
         wandb.finish()
 
@@ -344,15 +347,18 @@ class FlowTSFinetune(object):
                 tr_seen = 0
 
                 # save model and early stop
-                if val_loss_total_avg < best_val_loss:
-                    best_val_loss = val_loss_total_avg
-                    no_improve_epochs = 0
-                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
-                else:
-                    no_improve_epochs += 1
+                if self.early_stop == "true":
+                    if val_loss_total_avg < best_val_loss:
+                        best_val_loss = val_loss_total_avg
+                        no_improve_epochs = 0
+                        torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                    else:
+                        no_improve_epochs += 1
 
-                if self.early_stop== "true" and no_improve_epochs >= 10:
-                    print(f"⛔ Early stopping triggered at Step {step}.")
-                    break
+                    if no_improve_epochs >= 10:
+                        print(f"⛔ Early stopping triggered at Step {step}.")
+                        break
+                else:
+                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
 
         wandb.finish()
