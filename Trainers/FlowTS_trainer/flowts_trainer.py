@@ -107,7 +107,7 @@ class FlowTSFinetune(object):
             val_anomaly_loader: DataLoader,
             max_iters, device, save_dir,
             wandb_project_name, wandb_run_name, grad_clip_norm,
-            pretrained_ckpt
+            pretrained_ckpt, early_stop
     ):
         self.optimizer = optimizer
         self.model = model.to(device)
@@ -125,7 +125,7 @@ class FlowTSFinetune(object):
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
         self.pretrained_ckpt = pretrained_ckpt
-
+        self.early_stop = early_stop
 
     def finetune(self, config, version, mode):
         if mode == "mixed_data":
@@ -251,9 +251,10 @@ class FlowTSFinetune(object):
                 else:
                     no_improve_epochs += 1
 
-                # if no_improve_epochs >= 10:
-                #     print(f"⛔ Early stopping triggered at Step {step}.")
-                #     break
+
+                if self.early_stop== "true" and no_improve_epochs >= 10:
+                    print(f"⛔ Early stopping triggered at Step {step}.")
+                    break
 
         wandb.finish()
 
@@ -350,8 +351,8 @@ class FlowTSFinetune(object):
                 else:
                     no_improve_epochs += 1
 
-                # if no_improve_epochs >= 10:
-                #     print(f"⛔ Early stopping triggered at Step {step}.")
-                #     break
+                if self.early_stop== "true" and no_improve_epochs >= 10:
+                    print(f"⛔ Early stopping triggered at Step {step}.")
+                    break
 
         wandb.finish()

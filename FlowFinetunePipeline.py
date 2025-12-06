@@ -23,11 +23,14 @@ def get_finetune_args():
     parser.add_argument("--feature_size", type=int, required=True)
 
     """model parameters"""
+    parser.add_argument("--model_type", type=str, required=True)
     parser.add_argument("--n_layer_enc", type=int, required=True)
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
     parser.add_argument("--version", type=int, required=True)
+    parser.add_argument("--early_stop", type=str, required=True)
+
 
     """data parameters"""
     parser.add_argument("--dataset_name", type=str, required=True)
@@ -68,15 +71,29 @@ def finetune():
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
-    model = FM_TS(
-        seq_length=args.seq_len,
-        feature_size=args.feature_size,
-        n_layer_enc=args.n_layer_enc,
-        n_layer_dec=args.n_layer_dec,
-        d_model=args.d_model,
-        n_heads=args.n_heads,
-        mlp_hidden_times=4,
-    )
+    if args.model_type == "FM_TS":
+        model = FM_TS(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+        )
+    elif args.model_type == "LastLayerPerturbFlow":
+        model = LastLayerPerturbFlow(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+        )
+    else:
+        raise ValueError(f"{args.model_type} is not supported")
+
 
     # normal_train_set = IterableECGDataset(
     #     raw_data_paths=args.raw_data_paths_train,
@@ -168,8 +185,13 @@ def finetune():
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
         pretrained_ckpt=args.pretrained_ckpt,
+        early_stop=args.early_stop,
     )
-    trainer.finetune(config=vars(args), version=args.version, mode=args.mode)
+    trainer.finetune(
+        config=vars(args),
+        version=args.version,
+        mode=args.mode
+    )
 
 if __name__ == "__main__":
     finetune()
