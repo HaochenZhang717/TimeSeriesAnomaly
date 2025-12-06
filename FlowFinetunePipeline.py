@@ -1,5 +1,5 @@
-from Trainers import FlowTSFinetune, LastLayerPerturbFlow
-from generation_models import FM_TS
+from Trainers import FlowTSFinetune
+from generation_models import FM_TS, LastLayerPerturbFlow
 from dataset_utils import build_dataset
 import argparse
 import torch
