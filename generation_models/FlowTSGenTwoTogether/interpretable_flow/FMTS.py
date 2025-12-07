@@ -1,0 +1,145 @@
+import math
+import torch
+import torch.nn.functional as F
+from torch import nn
+from einops import reduce
+from tqdm.auto import tqdm
+from .transformer import Transformer
+import os
+import random
+
+
+class FM_TS_Two_Together(nn.Module):
+    def __init__(
+            self,
+            version,
+            seq_length,
+            feature_size,
+            n_layer_enc=3,
+            n_layer_dec=6,
+            d_model=None,
+            n_heads=4,
+            mlp_hidden_times=4,
+            attn_pd=0.,
+            resid_pd=0.,
+            kernel_size=None,
+            padding_size=None,
+            **kwargs
+    ):
+        super(FM_TS_Two_Together, self).__init__()
+
+        self.seq_length = seq_length
+        self.feature_size = feature_size
+
+        self.model = Transformer(version=version, n_feat=feature_size, n_channel=seq_length, n_layer_enc=n_layer_enc, n_layer_dec=n_layer_dec,
+                                 n_heads=n_heads, attn_pdrop=attn_pd, resid_pdrop=resid_pd, mlp_hidden_times=mlp_hidden_times,
+                                 max_len=seq_length, n_embd=d_model, conv_params=[kernel_size, padding_size], **kwargs)
+
+        self.alpha = 3  ## t shifting, change to 1 is the uniform sampling during inference
+        self.time_scalar = 1000 ## scale 0-1 to 0-1000 for time embedding
+
+        self.num_timesteps = int(os.environ.get('hucfg_num_steps', '100'))
+
+    def prepare_for_finetune(self, ckpt_path, version):
+        if ckpt_path is not None:
+            model_device = next(self.parameters()).device
+            ckpt_dict = torch.load(ckpt_path, map_location=model_device, weights_only=False)
+            self.load_state_dict(ckpt_dict)
+            print(f"pretrained checkpoint: {ckpt_path} loaded")
+        self.model.prepare_for_finetune(version)
+
+
+    def output(self, x, t, anomaly_label, mode, padding_masks=None):
+
+        output = self.model(x, t, anomaly_label, mode, padding_masks=None)
+
+        return output
+
+
+    @torch.no_grad()
+    def sample(self, shape, anomaly_label, mode):#todo: need to change
+        model_device = next(self.parameters()).device
+        self.eval()
+        zt = torch.randn(shape).to(model_device)  ## init the noise
+        ## t shifting from stable diffusion 3
+        timesteps = torch.linspace(0, 1, self.num_timesteps+1)
+        t_shifted = 1-(self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
+        t_shifted = t_shifted.flip(0)
+        # if anomaly_label is not None:
+        #     random_index = random.randint(0, anomaly_label.shape[0]-1)
+        #     model_device = next(self.parameters()).device
+        #     anomaly_label = anomaly_label[random_index].to(model_device, dtype=torch.long)
+        for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
+            step = t_prev - t_curr
+            v = self.output(
+                zt.clone(),
+                torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(model_device).squeeze(),
+                anomaly_label=anomaly_label,
+                mode=mode,
+                padding_masks=None
+            )
+            zt = zt.clone() + step * v 
+
+        return zt 
+
+
+    def generate_mts(self, anomaly_label, batch_size=16):
+        feature_size, seq_length = self.feature_size, self.seq_length
+        return self.sample((batch_size, seq_length, feature_size), anomaly_label)
+
+
+    def _train_loss_on_normal(self, x_start, anomaly_label):
+
+        z0 = torch.randn_like(x_start) # (B, T, dim)
+        z1 = x_start
+
+        t = torch.rand(z0.shape[0], 1, 1).to(z0.device)
+        if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
+            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0.device)
+
+        z_t = t * z1 + (1. - t) * z0 # (B, T, dim)
+
+        target = z1 - z0
+
+        model_out = self.output(z_t, t.squeeze() * self.time_scalar, anomaly_label, "normal", None)
+
+        loss = F.mse_loss(model_out, target, reduction='none')  # (B, T, dim)
+        mask = (1 - anomaly_label.float()).unsqueeze(-1)  # (B, T, 1)
+        loss = loss * mask
+        # sum over feature dims
+        loss = loss.sum(dim=[1, 2])  # (B,)
+        denom = mask.sum(dim=[1, 2]) + 1e-8  # (B,)
+        loss = (loss / denom).mean()
+        return loss
+
+
+    def _train_loss_on_anomaly(self, x_start, anomaly_label):
+        z0 = torch.randn_like(x_start) # (B, T, dim)
+        z1 = x_start
+        t = torch.rand(z0.shape[0], 1, 1).to(z0.device)
+        if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
+            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0.device)
+
+        z_t = t * z1 + (1. - t) * z0 # (B, T, dim)
+        target = z1 - z0
+        model_out = self.output(z_t, t.squeeze() * self.time_scalar, anomaly_label, "anomaly", None)
+
+        loss = F.mse_loss(model_out, target, reduction='none')  # (B, T, dim)
+        mask = anomaly_label.float().unsqueeze(-1)  # (B, T, 1)
+        loss = loss * mask
+        # sum over feature dims
+        loss = loss.sum(dim=[1, 2])  # (B,)
+        denom = mask.sum(dim=[1, 2]) + 1e-8  # (B,)
+        loss = (loss / denom).mean()
+        return loss
+
+
+    def forward(self, x, anomaly_label, mode):
+        b, c, n, device, feature_size, = *x.shape, x.device, self.feature_size
+        assert n == feature_size, f'number of variable must be {feature_size}'
+        if mode == 'normal':
+            return self._train_loss_on_normal(x, anomaly_label)
+        elif mode == 'anomaly':
+            return self._train_loss_on_anomaly(x, anomaly_label)
+        else:
+            raise ValueError("mode must be 'normal' or 'anomaly'")

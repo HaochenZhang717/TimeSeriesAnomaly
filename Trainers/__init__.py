@@ -1,2 +1,3 @@
 from .CGAT_trainer import CGATPretrain, CGATFinetune
-from .FlowTS_trainer import FlowTSPretrain, FlowTSFinetune
+from .FlowTS_trainer import FlowTSPretrain, FlowTSFinetune, FlowTSTrainerTwoTogether
+
