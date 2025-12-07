@@ -314,4 +314,4 @@ def conditional_train():
     trainer.conditional_train(config=vars(args))
 
 if __name__ == "__main__":
-    train()
+    conditional_train()
