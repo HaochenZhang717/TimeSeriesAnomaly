@@ -2,7 +2,7 @@
 
 
 #export hucfg_attention_rope_use=1
-export hucfg_t_sampling=logitnorm
+#export hucfg_t_sampling=logitnorm
 python FlowTrainTogether.py \
   --seq_len 800 \
   --feature_size 2 \
@@ -27,7 +27,7 @@ python FlowTrainTogether.py \
   --patience 50 \
   \
   --wandb_project "flow_imputation" \
-  --wandb_run "mitdb106v" \
+  --wandb_run "mitdb106v_uniform" \
   \
-  --ckpt_dir "../TSA-ckpts/flow_imputation_logit_norm" \
-  --gpu_id 3
+  --ckpt_dir "../TSA-ckpts/flow_imputation_uniform" \
+  --gpu_id 0

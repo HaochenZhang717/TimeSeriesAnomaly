@@ -120,7 +120,6 @@ class FM_TS_Two_Together(nn.Module):
     def _impute_loss(self, x_start, anomaly_label):
         # x_start == [1,2,3,4,5,6]
         # anomaly_label = [0,0,1,1,1,0]
-        breakpoint()
         z0_impute = torch.randn_like(x_start) * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1)) #[1,2,noise,noise,noise,6]
         z1 = x_start # [1,2,3,4,5,6]
 
@@ -139,7 +138,6 @@ class FM_TS_Two_Together(nn.Module):
         train_loss = ((model_out - target) ** 2).mean(-1) #(B, T)
         # 只对 anomaly 部分计算误差
         masked_loss = train_loss * anomaly_label #(B, T)
-        breakpoint()
         # 每个样本 anomaly 的数量
         num_anomalies = reduce(anomaly_label, 'b t -> b 1', 'sum')  # shape: (B, 1)
 
