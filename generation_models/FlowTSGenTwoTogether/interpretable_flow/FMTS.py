@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 from einops import reduce
-from Models.interpretable_diffusion.transformer import Transformer
+from .transformer import Transformer
 import os
 
 
