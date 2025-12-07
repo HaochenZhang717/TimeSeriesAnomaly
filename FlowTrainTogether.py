@@ -56,8 +56,6 @@ def get_args():
 
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
-    parser.add_argument("--pretrained_ckpt", type=str, required=True)
-    parser.add_argument("--generated_path", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)

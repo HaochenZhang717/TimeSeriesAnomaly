@@ -12,7 +12,7 @@ python FlowTrainTogether.py \
   --d_model 64 \
   --n_heads 4 \
   \
-  --dataset_anme "ECG" \
+  --dataset_name "ECG" \
   --max_anomaly_length 160 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
@@ -27,7 +27,7 @@ python FlowTrainTogether.py \
   --patience 50 \
   \
   --wandb_project "flow_imputation" \
-  --wandb_name "mitdb106v" \
+  --wandb_run "mitdb106v" \
   \
   --ckpt_dir "../TSA-ckpts/flow_imputation_logit_norm" \
   --gpu_id 3
