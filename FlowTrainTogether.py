@@ -31,8 +31,6 @@ def get_args():
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
     parser.add_argument("--n_heads", type=int, required=True)
-    parser.add_argument("--version", type=int, required=True)
-    parser.add_argument("--early_stop", type=str, required=True)
 
 
     """data parameters"""
@@ -40,17 +38,17 @@ def get_args():
     parser.add_argument("--max_anomaly_length", type=int, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
-    parser.add_argument("--normal_indices_paths_train", type=str, required=True)
-    parser.add_argument("--normal_indices_paths_val", type=str, required=True)
-    parser.add_argument("--anomaly_indices_paths_train", type=str, required=True)
-    parser.add_argument("--anomaly_indices_paths_val", type=str, required=True)
+    parser.add_argument("--indices_paths_train", type=str, required=True)
+    parser.add_argument("--indices_paths_val", type=str, required=True)
 
     """training parameters"""
     parser.add_argument("--lr", type=float, required=True)
     parser.add_argument("--batch_size", type=int, required=True)
-    parser.add_argument("--max_iters", type=int, required=True)
+    parser.add_argument("--max_epochs", type=int, required=True)
     parser.add_argument("--grad_clip_norm", type=float, required=True)
-    parser.add_argument("--mode", type=str, required=True)
+    parser.add_argument("--early_stop", type=str, required=True)
+    parser.add_argument("--patience", type=int, required=True)
+
 
     """wandb parameters"""
     parser.add_argument("--wandb_project", type=str,required=True)
@@ -160,17 +158,110 @@ def evaluate_finetune_anomaly_quality(
 
 
 
-def train():
+# def train():
+#     args = get_args()
+#
+#     # timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
+#     # args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
+#     os.makedirs(args.ckpt_dir, exist_ok=True)
+#     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+#
+#
+#     model = FM_TS_Two_Together(
+#         seq_length=args.seq_len,
+#         feature_size=args.feature_size,
+#         n_layer_enc=args.n_layer_enc,
+#         n_layer_dec=args.n_layer_dec,
+#         d_model=args.d_model,
+#         n_heads=args.n_heads,
+#         mlp_hidden_times=4,
+#     )
+#
+#     normal_train_set = build_dataset(
+#         args.dataset_name,
+#         'iterable',
+#         raw_data_paths=args.raw_data_paths_train,
+#         indices_paths=args.normal_indices_paths_train,
+#         seq_len=args.seq_len,
+#         max_anomaly_length=args.max_anomaly_length,
+#     )
+#
+#     normal_val_set = build_dataset(
+#         args.dataset_name,
+#         'non_iterable',
+#         raw_data_paths=args.raw_data_paths_val,
+#         indices_paths=args.normal_indices_paths_val,
+#         seq_len=args.seq_len,
+#         max_anomaly_length=args.max_anomaly_length,
+#     )
+#
+#     anomaly_train_set = build_dataset(
+#         args.dataset_name,
+#         'iterable',
+#         raw_data_paths=args.raw_data_paths_train,
+#         indices_paths=args.anomaly_indices_paths_train,
+#         seq_len=args.seq_len,
+#         max_anomaly_length=args.max_anomaly_length,
+#     )
+#
+#     anomaly_val_set = build_dataset(
+#         args.dataset_name,
+#         'non_iterable',
+#         raw_data_paths=args.raw_data_paths_val,
+#         indices_paths=args.anomaly_indices_paths_val,
+#         seq_len=args.seq_len,
+#         max_anomaly_length=args.max_anomaly_length,
+#     )
+#
+#
+#     """train loaders are on IterableDataset"""
+#     normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
+#     anomaly_train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size)
+#     """val loaders are on Dataset"""
+#     normal_val_loader = torch.utils.data.DataLoader(normal_val_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+#     anomaly_val_loader = torch.utils.data.DataLoader(anomaly_val_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+#
+#     optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+#
+#     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+#     trainer = FlowTSTrainerTwoTogether(
+#         optimizer=optimizer,
+#         model=model,
+#         train_normal_loader=normal_train_loader,
+#         val_normal_loader=normal_val_loader,
+#         train_anomaly_loader=anomaly_train_loader,
+#         val_anomaly_loader=anomaly_val_loader,
+#         max_iters=args.max_iters,
+#         device=device,
+#         save_dir=args.ckpt_dir,
+#         wandb_run_name=args.wandb_run,
+#         wandb_project_name=args.wandb_project,
+#         grad_clip_norm=args.grad_clip_norm,
+#         early_stop=args.early_stop,
+#     )
+#     ema_state_dict = trainer.train(
+#         config=vars(args),
+#     )
+#
+#     evaluate_finetune_anomaly_quality(
+#         args,
+#         trainer.model,
+#         normal_train_set,
+#         anomaly_train_set,
+#         ema_state_dict
+#     )
+
+
+
+def conditional_train():
     args = get_args()
 
-    timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
-    args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
+    # timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
+    # args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
-
     model = FM_TS_Two_Together(
-        version=args.version,
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
@@ -180,80 +271,47 @@ def train():
         mlp_hidden_times=4,
     )
 
-    normal_train_set = build_dataset(
-        args.dataset_name,
-        'iterable',
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.normal_indices_paths_train,
-        seq_len=args.seq_len,
-        max_anomaly_length=args.max_anomaly_length,
-    )
-
-    normal_val_set = build_dataset(
-        args.dataset_name,
-        'non_iterable',
-        raw_data_paths=args.raw_data_paths_val,
-        indices_paths=args.normal_indices_paths_val,
-        seq_len=args.seq_len,
-        max_anomaly_length=args.max_anomaly_length,
-    )
-
     anomaly_train_set = build_dataset(
         args.dataset_name,
-        'iterable',
+        'non_iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.anomaly_indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
     )
 
-    anomaly_val_set = build_dataset(
-        args.dataset_name,
-        'non_iterable',
-        raw_data_paths=args.raw_data_paths_val,
-        indices_paths=args.anomaly_indices_paths_val,
-        seq_len=args.seq_len,
-        max_anomaly_length=args.max_anomaly_length,
-    )
-
-
-    """train loaders are on IterableDataset"""
-    normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
-    anomaly_train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size)
-    """val loaders are on Dataset"""
-    normal_val_loader = torch.utils.data.DataLoader(normal_val_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
-    anomaly_val_loader = torch.utils.data.DataLoader(anomaly_val_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+    train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
+    val_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
 
     optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=5,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-6,  # min LR clamp
+    )
 
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     trainer = FlowTSTrainerTwoTogether(
         optimizer=optimizer,
+        scheduler=scheduler,
         model=model,
-        train_normal_loader=normal_train_loader,
-        val_normal_loader=normal_val_loader,
-        train_anomaly_loader=anomaly_train_loader,
-        val_anomaly_loader=anomaly_val_loader,
-        max_iters=args.max_iters,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
         device=device,
         save_dir=args.ckpt_dir,
         wandb_run_name=args.wandb_run,
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
         early_stop=args.early_stop,
-    )
-    ema_state_dict = trainer.train(
-        config=vars(args),
+        patience=args.patience,
     )
 
-    evaluate_finetune_anomaly_quality(
-        args,
-        trainer.model,
-        normal_train_set,
-        anomaly_train_set,
-        ema_state_dict
-    )
-
+    trainer.conditional_train(config=vars(args))
 
 if __name__ == "__main__":
     train()

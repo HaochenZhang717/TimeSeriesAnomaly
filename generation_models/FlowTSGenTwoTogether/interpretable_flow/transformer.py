@@ -5,14 +5,17 @@ import torch.nn.functional as F
 
 from torch import nn
 from einops import rearrange, reduce, repeat
-from .model_utils import LearnablePositionalEncoding, Conv_MLP, AdaLayerNorm, Transpose, RMSNorm, GELU2, series_decomp
+from Models.interpretable_diffusion.model_utils import LearnablePositionalEncoding, Conv_MLP, \
+    AdaLayerNorm, Transpose, RMSNorm, GELU2, series_decomp
 import os
+
 
 ## hunote: our backbone network is most same as diffusion-TS. Diffusion-TS backbone has really good potential!!
 class TrendBlock(nn.Module):
     """
     Model trend of time series using the polynomial regressor.
     """
+
     def __init__(self, in_dim, out_dim, in_feat, out_feat, act):
         super(TrendBlock, self).__init__()
         trend_poly = 3
@@ -32,12 +35,13 @@ class TrendBlock(nn.Module):
         trend_vals = torch.matmul(x.transpose(1, 2), self.poly_space.to(x.device))
         trend_vals = trend_vals.transpose(1, 2)
         return trend_vals
-    
+
 
 class MovingBlock(nn.Module):
     """
     Model trend of time series using the moving average.
     """
+
     def __init__(self, out_dim):
         super(MovingBlock, self).__init__()
         size = max(min(int(out_dim / 4), 24), 4)
@@ -53,6 +57,7 @@ class FourierLayer(nn.Module):
     """
     Model seasonality of time series using the inverse DFT.
     """
+
     def __init__(self, d_model, low_freq=1, factor=1):
         super().__init__()
         self.d_model = d_model
@@ -95,12 +100,13 @@ class FourierLayer(nn.Module):
         index_tuple = (mesh_a.unsqueeze(1), indices, mesh_b.unsqueeze(1))
         x_freq = x_freq[index_tuple]
         return x_freq, index_tuple
-    
+
 
 class SeasonBlock(nn.Module):
     """
     Model seasonality of time series using the Fourier series.
     """
+
     def __init__(self, in_dim, out_dim, factor=1):
         super(SeasonBlock, self).__init__()
         season_poly = factor * min(32, int(out_dim // 2))
@@ -128,6 +134,7 @@ def precompute_freqs_cis(dim: int, end: int, theta: float = 10000.0):
     freqs_cis = torch.polar(torch.ones_like(freqs), freqs)  # complex64
     return freqs_cis
 
+
 def reshape_for_broadcast(freqs_cis: torch.Tensor, x: torch.Tensor):
     ndim = x.ndim
     assert 0 <= 1 < ndim
@@ -135,10 +142,11 @@ def reshape_for_broadcast(freqs_cis: torch.Tensor, x: torch.Tensor):
     shape = [d if i == 1 or i == ndim - 1 else 1 for i, d in enumerate(x.shape)]
     return freqs_cis.view(*shape)
 
+
 def apply_rotary_emb(
-    xq: torch.Tensor,
-    xk: torch.Tensor,
-    freqs_cis: torch.Tensor,
+        xq: torch.Tensor,
+        xk: torch.Tensor,
+        freqs_cis: torch.Tensor,
 ):
     xq_ = torch.view_as_complex(xq.float().reshape(*xq.shape[:-1], -1, 2))
     xk_ = torch.view_as_complex(xk.float().reshape(*xk.shape[:-1], -1, 2))
@@ -147,15 +155,16 @@ def apply_rotary_emb(
     xk_out = torch.view_as_real(xk_ * freqs_cis).flatten(3)
     return xq_out.type_as(xq), xk_out.type_as(xk)
 
+
 class FullAttention(nn.Module):
     def __init__(self,
-                 n_embd, # the embed dim
-                 n_head, # the number of heads
-                 attn_pdrop=0.1, # attention dropout prob
-                 resid_pdrop=0.1, # residual attention dropout prob
-                 max_len = None
-                 
-    ):
+                 n_embd,  # the embed dim
+                 n_head,  # the number of heads
+                 attn_pdrop=0.1,  # attention dropout prob
+                 resid_pdrop=0.1,  # residual attention dropout prob
+                 max_len=None
+
+                 ):
         super().__init__()
         assert n_embd % n_head == 0
 
@@ -175,12 +184,11 @@ class FullAttention(nn.Module):
         self.freqs_cis = precompute_freqs_cis(
             n_embd // n_head,
             max_len * 4,  ## if we use register, the overall length can be longer.
-            50000,  ## 
+            50000,  ##
         )
 
         self.regi_num = 128
         self.register = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
-
 
     def forward(self, x, mask=None):
         # x = torch.cat([self.register.repeat(x.shape[0],1,1), x], 1)
@@ -190,30 +198,26 @@ class FullAttention(nn.Module):
         q = self.query(x)
         v = self.value(x)
 
+        k = self.k_norm(k) + 0.1 * k
+        q = self.q_norm(q) + 0.1 * q
 
-        k = self.k_norm(k) + 0.1*k
-        q = self.q_norm(q) + 0.1*q
-
-        k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-
+        k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
 
         if int(os.environ.get('hucfg_attention_rope_use', '-1')) == 1:
-            freqs_cis = self.freqs_cis[0 : T].to(q.device)
-            q, k = apply_rotary_emb(q.permute(0,2,1,3), k.permute(0,2,1,3), freqs_cis=freqs_cis)
-            q, k = q.permute(0,2,1,3), k.permute(0,2,1,3)
+            freqs_cis = self.freqs_cis.cuda()[0: T]
+            q, k = apply_rotary_emb(q.permute(0, 2, 1, 3), k.permute(0, 2, 1, 3), freqs_cis=freqs_cis)
+            q, k = q.permute(0, 2, 1, 3), k.permute(0, 2, 1, 3)
 
+        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))  # (B, nh, T, T)
 
-
-        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1))) # (B, nh, T, T)
-
-        att = F.softmax(att, dim=-1) # (B, nh, T, T)
+        att = F.softmax(att, dim=-1)  # (B, nh, T, T)
         # att = torch.sigmoid(att)
         att = self.attn_drop(att)
-        y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
-        y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side, (B, T, C)
-        att = att.mean(dim=1, keepdim=False) # (B, T, T)
+        y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        y = y.transpose(1, 2).contiguous().view(B, T, C)  # re-assemble all head outputs side by side, (B, T, C)
+        att = att.mean(dim=1, keepdim=False)  # (B, T, T)
 
         # output projection
         y = self.resid_drop(self.proj(y))
@@ -224,20 +228,20 @@ class FullAttention(nn.Module):
 
 class CrossAttention(nn.Module):
     def __init__(self,
-                 n_embd, # the embed dim
-                 condition_embd, # condition dim
-                 n_head, # the number of heads
-                 attn_pdrop=0.1, # attention dropout prob
-                 resid_pdrop=0.1, # residual attention dropout prob
-                 max_len = None
-    ):
+                 n_embd,  # the embed dim
+                 condition_embd,  # condition dim
+                 n_head,  # the number of heads
+                 attn_pdrop=0.1,  # attention dropout prob
+                 resid_pdrop=0.1,  # residual attention dropout prob
+                 max_len=None
+                 ):
         super().__init__()
         assert n_embd % n_head == 0
         # key, query, value projections for all heads
         self.key = nn.Linear(condition_embd, n_embd)
         self.query = nn.Linear(n_embd, n_embd)
         self.value = nn.Linear(condition_embd, n_embd)
-        
+
         # regularization
         self.attn_drop = nn.Dropout(attn_pdrop)
         self.resid_drop = nn.Dropout(resid_pdrop)
@@ -248,21 +252,17 @@ class CrossAttention(nn.Module):
         self.q_norm = RMSNorm(n_embd)
         self.k_norm = RMSNorm(n_embd)
 
-
         self.freqs_cis = precompute_freqs_cis(
             n_embd // n_head,
             max_len * 4,
             50000,  ## hucfg913
         )
-     
 
-        self.regi_num = 128
-        self.register = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
-        self.register_2 = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
-
+        # self.regi_num = 128
+        # self.register = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
+        # self.register_2 = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
 
     def forward(self, x, encoder_output, mask=None):
-        
         # x = torch.cat([self.register.repeat(x.shape[0],1,1), x], 1)
 
         # encoder_output = torch.cat([self.register_2.repeat(x.shape[0],1,1), encoder_output], 1)
@@ -273,37 +273,36 @@ class CrossAttention(nn.Module):
         k = self.key(encoder_output)
         q = self.query(x)
 
-        k = self.k_norm(k) + 0.1*k  ## residual qk norm
-        q = self.q_norm(q) + 0.1*q
+        k = self.k_norm(k) + 0.1 * k  ## residual qk norm
+        q = self.q_norm(q) + 0.1 * q
 
         k = k.view(B, T_E, self.n_head, C // self.n_head).transpose(1, 2)
-        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
+        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
 
-        freqs_cis = self.freqs_cis[0 : T].to(q.device)
-        q, k = apply_rotary_emb(q.permute(0,2,1,3), k.permute(0,2,1,3), freqs_cis=freqs_cis)
-        q, k = q.permute(0,2,1,3), k.permute(0,2,1,3)
+        freqs_cis = self.freqs_cis.cuda()[0: T]
+        q, k = apply_rotary_emb(q.permute(0, 2, 1, 3), k.permute(0, 2, 1, 3), freqs_cis=freqs_cis)
+        q, k = q.permute(0, 2, 1, 3), k.permute(0, 2, 1, 3)
 
+        v = self.value(encoder_output).view(B, T_E, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))  # (B, nh, T, T)
 
-        v = self.value(encoder_output).view(B, T_E, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1))) # (B, nh, T, T)
-
-        att = F.softmax(att, dim=-1) # (B, nh, T, T)
-        # att = torch.sigmoid(att)  ## sigmoid attention infact 
+        att = F.softmax(att, dim=-1)  # (B, nh, T, T)
+        # att = torch.sigmoid(att)  ## sigmoid attention infact
 
         att = self.attn_drop(att)
-        y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
-        y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side, (B, T, C)
-        att = att.mean(dim=1, keepdim=False) # (B, T, T)
-
+        y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        y = y.transpose(1, 2).contiguous().view(B, T, C)  # re-assemble all head outputs side by side, (B, T, C)
+        att = att.mean(dim=1, keepdim=False)  # (B, T, T)
 
         y = self.resid_drop(self.proj(y))
         # y = y[:,self.regi_num:,:]
 
         return y, att
-        
+
 
 class EncoderBlock(nn.Module):
     """ an unassuming Transformer block """
+
     def __init__(self,
                  n_embd=1024,
                  n_head=16,
@@ -311,71 +310,72 @@ class EncoderBlock(nn.Module):
                  resid_pdrop=0.1,
                  mlp_hidden_times=4,
                  activate='GELU',
-                 max_len = None
+                 max_len=None
                  ):
         super().__init__()
 
         self.ln1 = AdaLayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         self.attn = FullAttention(
-                n_embd=n_embd,
-                n_head=n_head,
-                attn_pdrop=attn_pdrop,
-                resid_pdrop=resid_pdrop,
-                max_len = max_len
-            )
-        
+            n_embd=n_embd,
+            n_head=n_head,
+            attn_pdrop=attn_pdrop,
+            resid_pdrop=resid_pdrop,
+            max_len=max_len
+        )
+
         assert activate in ['GELU', 'GELU2']
         act = nn.GELU() if activate == 'GELU' else GELU2()
 
         self.mlp = nn.Sequential(
-                nn.Linear(n_embd, mlp_hidden_times * n_embd),
-                act,
-                nn.Linear(mlp_hidden_times * n_embd, n_embd),
-                nn.Dropout(resid_pdrop),
-            )
-        
-    def forward(self, x, timestep, mask=None, anomaly_label=None):
-        a, att = self.attn(self.ln1(x, timestep, anomaly_label), mask=mask)
+            nn.Linear(n_embd, mlp_hidden_times * n_embd),
+            act,
+            nn.Linear(mlp_hidden_times * n_embd, n_embd),
+            nn.Dropout(resid_pdrop),
+        )
+
+    def forward(self, x, timestep, mask=None):
+        a, att = self.attn(self.ln1(x, timestep), mask=mask)
         x = x + a
-        x = x + self.mlp(self.ln2(x))   # only one really use encoder_output
+        x = x + self.mlp(self.ln2(x))  # only one really use encoder_output
         return x, att
 
 
 class Encoder(nn.Module):
     def __init__(
-        self,
-        n_layer=14,
-        n_embd=1024,
-        n_head=16,
-        attn_pdrop=0.,
-        resid_pdrop=0.,
-        mlp_hidden_times=4,
-        block_activate='GELU',
-        max_len = None
+            self,
+            n_layer=14,
+            n_embd=1024,
+            n_head=16,
+            attn_pdrop=0.,
+            resid_pdrop=0.,
+            mlp_hidden_times=4,
+            block_activate='GELU',
+            max_len=None
     ):
         super().__init__()
 
         self.blocks = nn.Sequential(*[EncoderBlock(
-                n_embd=n_embd,
-                n_head=n_head,
-                attn_pdrop=attn_pdrop,
-                resid_pdrop=resid_pdrop,
-                mlp_hidden_times=mlp_hidden_times,
-                activate=block_activate,
-                max_len = max_len
+            n_embd=n_embd,
+            n_head=n_head,
+            attn_pdrop=attn_pdrop,
+            resid_pdrop=resid_pdrop,
+            mlp_hidden_times=mlp_hidden_times,
+            activate=block_activate,
+            max_len=max_len
         ) for _ in range(n_layer)])
 
-    def forward(self, input, t, anomaly_label, padding_masks=None ):
+    def forward(self, input, t, padding_masks=None):
         x = input
 
         for block_idx in range(len(self.blocks)):
-            x, _ = self.blocks[block_idx](x, t, mask=padding_masks, anomaly_label=anomaly_label)
+            x, _ = self.blocks[block_idx](x, t, mask=padding_masks)
         return x
 
 
 class DecoderBlock(nn.Module):
     """ an unassuming Transformer block """
+
     def __init__(self,
                  n_channel,
                  n_feat,
@@ -386,30 +386,30 @@ class DecoderBlock(nn.Module):
                  mlp_hidden_times=4,
                  activate='GELU',
                  condition_dim=1024,
-                 max_len = None
+                 max_len=None
                  ):
         super().__init__()
-        
+
         self.ln1 = AdaLayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         # self.ln2 = AdaLayerNorm(n_embd)
 
         self.attn1 = FullAttention(
-                n_embd=n_embd,
-                n_head=n_head,
-                attn_pdrop=attn_pdrop, 
-                resid_pdrop=resid_pdrop,
-                max_len = max_len
-                )
+            n_embd=n_embd,
+            n_head=n_head,
+            attn_pdrop=attn_pdrop,
+            resid_pdrop=resid_pdrop,
+            max_len=max_len
+        )
         self.attn2 = CrossAttention(
-                n_embd=n_embd,
-                condition_embd=condition_dim,
-                n_head=n_head,
-                attn_pdrop=attn_pdrop,
-                resid_pdrop=resid_pdrop,
-                max_len = max_len
-                )
-        
+            n_embd=n_embd,
+            condition_embd=condition_dim,
+            n_head=n_head,
+            attn_pdrop=attn_pdrop,
+            resid_pdrop=resid_pdrop,
+            max_len=max_len
+        )
+
         self.ln1_1 = AdaLayerNorm(n_embd)
         # self.ln1_1 = nn.LayerNorm(n_embd)
 
@@ -418,7 +418,6 @@ class DecoderBlock(nn.Module):
 
         self.trend = TrendBlock(n_channel, n_channel, n_embd, n_feat, act=act)
         self.seasonal = FourierLayer(d_model=n_embd)
-
 
         self.mlp = nn.Sequential(
             nn.Linear(n_embd, mlp_hidden_times * n_embd),
@@ -430,8 +429,8 @@ class DecoderBlock(nn.Module):
         self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
-    def forward(self, x, encoder_output, timestep, mask=None, anomaly_label=None):
-        a, att = self.attn1(self.ln1(x, timestep, anomaly_label), mask=mask)
+    def forward(self, x, encoder_output, timestep, mask=None):
+        a, att = self.attn1(self.ln1(x, timestep), mask=mask)
         x = x + a
 
         a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
@@ -440,44 +439,42 @@ class DecoderBlock(nn.Module):
         trend, season = self.trend(x1), self.seasonal(x2)
         x = x + self.mlp(self.ln2(x))
 
-
         m = torch.mean(x, dim=1, keepdim=True)
         return x - m, self.linear(m), trend, season
-    
+
 
 class Decoder(nn.Module):
     def __init__(
-        self,
-        n_channel,
-        n_feat,
-        n_embd=1024,
-        n_head=16,
-        n_layer=10,
-        attn_pdrop=0.1,
-        resid_pdrop=0.1,
-        mlp_hidden_times=4,
-        block_activate='GELU',
-        condition_dim=512,
-        max_len = None
+            self,
+            n_channel,
+            n_feat,
+            n_embd=1024,
+            n_head=16,
+            n_layer=10,
+            attn_pdrop=0.1,
+            resid_pdrop=0.1,
+            mlp_hidden_times=4,
+            block_activate='GELU',
+            condition_dim=512,
+            max_len=None
     ):
-      super().__init__()
-      self.d_model = n_embd
-      self.n_feat = n_feat
-      self.blocks = nn.Sequential(*[DecoderBlock(
-                n_feat=n_feat,
-                n_channel=n_channel,
-                n_embd=n_embd,
-                n_head=n_head,
-                attn_pdrop=attn_pdrop,
-                resid_pdrop=resid_pdrop,
-                mlp_hidden_times=mlp_hidden_times,
-                activate=block_activate,
-                condition_dim=condition_dim,
-                max_len = max_len
+        super().__init__()
+        self.d_model = n_embd
+        self.n_feat = n_feat
+        self.blocks = nn.Sequential(*[DecoderBlock(
+            n_feat=n_feat,
+            n_channel=n_channel,
+            n_embd=n_embd,
+            n_head=n_head,
+            attn_pdrop=attn_pdrop,
+            resid_pdrop=resid_pdrop,
+            mlp_hidden_times=mlp_hidden_times,
+            activate=block_activate,
+            condition_dim=condition_dim,
+            max_len=max_len
         ) for _ in range(n_layer)])
 
-
-    def forward(self, x, t, enc, anomaly_label, padding_masks=None):
+    def forward(self, x, t, enc, padding_masks=None):
         b, c, _ = x.shape
         # att_weights = []
         mean = []
@@ -485,7 +482,7 @@ class Decoder(nn.Module):
         trend = torch.zeros((b, c, self.n_feat), device=x.device)
         for block_idx in range(len(self.blocks)):
             x, residual_mean, residual_trend, residual_season = \
-                self.blocks[block_idx](x, enc, t, mask=padding_masks, anomaly_label=anomaly_label)
+                self.blocks[block_idx](x, enc, t, mask=padding_masks)
             season += residual_season
             trend += residual_trend
             mean.append(residual_mean)
@@ -496,26 +493,22 @@ class Decoder(nn.Module):
 
 class Transformer(nn.Module):
     def __init__(
-        self,
-        version,
-        num_semantic_tokens,
-        n_feat,
-        n_channel,
-        n_layer_enc=5,
-        n_layer_dec=14,
-        n_embd=1024,
-        n_heads=16,
-        attn_pdrop=0.1,
-        resid_pdrop=0.1,
-        mlp_hidden_times=4,
-        block_activate='GELU',
-        max_len=2048,
-        conv_params=None,
-        **kwargs
+            self,
+            n_feat,
+            n_channel,
+            n_layer_enc=5,
+            n_layer_dec=14,
+            n_embd=1024,
+            n_heads=16,
+            attn_pdrop=0.1,
+            resid_pdrop=0.1,
+            mlp_hidden_times=4,
+            block_activate='GELU',
+            max_len=2048,
+            conv_params=None,
+            **kwargs
     ):
         super().__init__()
-
-        self.n_embd = n_embd
         self.emb = Conv_MLP(n_feat, n_embd, resid_pdrop=resid_pdrop)
         self.inverse = Conv_MLP(n_embd, n_feat, resid_pdrop=resid_pdrop)
 
@@ -532,47 +525,27 @@ class Transformer(nn.Module):
         self.combine_m = nn.Conv1d(n_layer_dec, 1, kernel_size=1, stride=1, padding=0,
                                    padding_mode='circular', bias=False)
         self.max_len = max_len
-        self.encoder = Encoder(n_layer_enc, n_embd, n_heads, attn_pdrop, resid_pdrop, mlp_hidden_times, block_activate, max_len = self.max_len)
+        self.encoder = Encoder(n_layer_enc, n_embd, n_heads, attn_pdrop, resid_pdrop, mlp_hidden_times, block_activate,
+                               max_len=self.max_len)
 
-        self.decoder = Decoder(n_channel, n_feat, n_embd, n_heads, n_layer_dec, attn_pdrop, resid_pdrop, mlp_hidden_times,
-                               block_activate, condition_dim=n_embd, max_len = self.max_len)
+        self.decoder = Decoder(n_channel, n_feat, n_embd, n_heads, n_layer_dec, attn_pdrop, resid_pdrop,
+                               mlp_hidden_times,
+                               block_activate, condition_dim=n_embd, max_len=self.max_len)
 
-        self.num_semantic_tokens = num_semantic_tokens
-        self.semantic_tokens = nn.Embedding(2 * num_semantic_tokens, n_embd)
-        self.version = version
-        if version == 1:
-            self.anomaly_label_embedding = nn.Embedding(2, self.n_embd)
-        elif version == 2:
-            self.anomaly_label_embedding = nn.Conv1d(1, self.n_embd, kernel_size=1, stride=1, padding=0)
-        else:
-            raise ValueError("Invalid version, should be 1 or 2")
-
-    def forward(self, input, t, anomaly_label, padding_masks=None, return_res=False):
+    def forward(self, input, t, padding_masks=None, return_res=False):
         emb = self.emb(input)
 
         inp_enc = emb
-
-
-        if anomaly_label is not None:
-            if isinstance(self.anomaly_label_embedding, nn.Embedding):
-                anomaly_label = self.anomaly_label_embedding(anomaly_label.to(torch.long))
-            elif isinstance(self.anomaly_label_embedding, nn.Conv1d):
-                model_dtype = next(self.parameters()).dtype
-                anomaly_label = self.anomaly_label_embedding(anomaly_label.unsqueeze(1).to(dtype=model_dtype)).permute(0, 2, 1)
-            else:
-                raise NotImplementedError
-        enc_cond = self.encoder(inp_enc, t, anomaly_label, padding_masks=padding_masks)
+        enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
 
         inp_dec = emb
-        output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, anomaly_label, padding_masks=padding_masks)
+        output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, padding_masks=padding_masks)
 
         res = self.inverse(output)
         res_m = torch.mean(res, dim=1, keepdim=True)
         season_error = self.combine_s(season.transpose(1, 2)).transpose(1, 2) + res - res_m
         trend = self.combine_m(mean) + res_m + trend
-        out = trend+season_error
-
-  
+        out = trend + season_error
 
         return out
 

@@ -207,19 +207,11 @@ class AdaLayerNorm(nn.Module):
         self.layernorm = nn.LayerNorm(n_embd, elementwise_affine=False)
         # self.layernorm = nn.LayerNorm(n_embd)
 
-    def forward(self, x, timestep, anomaly_label=None):
-        """
-        :param x: (batch_size, seq_len, n_embd)
-        :param timestep: (batch_size)
-        :param: label_emb: (batch_size, seq_len, n_embd)
-        """
-        # breakpoint()
-        emb = self.emb(timestep).unsqueeze(1) # (batch_size, n_embed)
-        if anomaly_label is not None:
-            emb = emb + anomaly_label
-        emb = self.linear(self.silu(emb))
+    def forward(self, x, timestep):
+        emb = self.emb(timestep)
+        emb = self.linear(self.silu(emb)).unsqueeze(1)
         scale, shift = torch.chunk(emb, 2, dim=2)
         x = self.layernorm(x) * (1 + scale) + shift
         return x
-    
+
 
