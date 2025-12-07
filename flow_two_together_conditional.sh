@@ -16,8 +16,8 @@ python FlowTrainTogether.py \
   --max_anomaly_length 160 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
-  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl" \
+  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl" \
   \
   --lr 1e-3 \
   --batch_size 64 \
