@@ -273,7 +273,7 @@ def conditional_train():
         args.dataset_name,
         'non_iterable',
         raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.anomaly_indices_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
     )
