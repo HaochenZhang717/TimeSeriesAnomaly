@@ -120,6 +120,7 @@ class FM_TS_Two_Together(nn.Module):
     def _impute_loss(self, x_start, anomaly_label):
         # x_start == [1,2,3,4,5,6]
         # anomaly_label = [0,0,1,1,1,0]
+        breakpoint()
         z0_impute = torch.randn_like(x_start) * anomaly_label + x_start * (1 - anomaly_label) #[1,2,noise,noise,noise,6]
         z1 = x_start # [1,2,3,4,5,6]
 
