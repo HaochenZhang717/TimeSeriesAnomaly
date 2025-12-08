@@ -349,8 +349,6 @@ def conditional_evaluate(args):
     train_loader = torch.utils.data.DataLoader(
         anomaly_train_set,
         batch_size=args.batch_size,
-        shuffle=True,
-        drop_last=True
     )
 
     num_samples = len(anomaly_train_set.slide_windows)
