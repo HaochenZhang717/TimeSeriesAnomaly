@@ -22,6 +22,11 @@ def save_args_to_jsonl(args, output_path):
 def get_args():
     parser = argparse.ArgumentParser(description="parameters for flow-ts pretraining")
 
+
+    """what to do"""
+    parser.add_argument("--what_to_do", type=str, required=True, choices=["conditional_training", "unconditional_training", "conditional_evaluate"], help="what to do")
+
+
     """time series general parameters"""
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
@@ -56,6 +61,7 @@ def get_args():
 
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
+    parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
@@ -310,6 +316,39 @@ def conditional_train():
     )
 
     trainer.conditional_train(config=vars(args))
+
+
+
+def conditional_evaluate():
+    args = get_args()
+
+    model = FM_TS_Two_Together(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    )
+    model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
+
+    anomaly_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+    )
+
+    train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
+    # val_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+
+
 
 if __name__ == "__main__":
     conditional_train()
