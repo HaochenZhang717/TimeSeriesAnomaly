@@ -79,12 +79,12 @@ class FM_TS_Two_Together(nn.Module):
         # --- identical timestep shifting as unconditional sample ---
         timesteps = torch.linspace(0, 1, self.num_timesteps + 1)
         t_shifted = 1 - (self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
-        t_shifted = t_shifted.flip(0).cuda()
+        t_shifted = t_shifted.flip(0).to(x_start.device)
 
         # 2) Integrate ODE from t=1 → t=0
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
-            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).cuda().squeeze()
+            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).squeeze()
             v = self.output(zt.clone(), t_input, padding_masks=None)
 
             #update missing region ONLY
