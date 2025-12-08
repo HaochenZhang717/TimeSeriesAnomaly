@@ -36,7 +36,7 @@
 
 
 #python FlowTwoTogether.py \
-#  --what_to_do "conditional_evaluate" \
+#  --what_to_do "conditional_sample" \
 #  \
 #  --seq_len 800 \
 #  --feature_size 2 \
@@ -60,14 +60,14 @@
 #  --early_stop "true" \
 #  --patience 50 \
 #  \
-#  --wandb_project "flow_imputation" \
-#  --wandb_run "mitdb106v_logit_norm" \
+#  --wandb_project "none" \
+#  --wandb_run "none" \
 #  \
-#  --ckpt_dir "../TSA-ckpts/flow_imputation_logit_norm" \
-#  --gpu_id 1 \
+#  --ckpt_dir "none" \
+#  --gpu_id 7 \
 #  \
 #  --cond_eval_model_ckpt "../TSA-ckpts/flow_imputation_logit_norm/ema_ckpt.pth" \
-#  --generated_path "../samples_path/flow_imputation_logit_norm"
+#  --generated_path "../samples_path/flow_imputation_logit_norm/mitdb"
 
 
 export hucfg_t_sampling=logitnorm
@@ -89,7 +89,7 @@ python FlowTwoTogether.py \
   --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
   --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/normal.jsonl" \
   \
-  --lr 1e-3 \
+  --lr 5e-4 \
   --batch_size 64 \
   --max_epochs 1000 \
   --grad_clip_norm 1.0 \
@@ -100,7 +100,7 @@ python FlowTwoTogether.py \
   --wandb_run "mitdb_unconditional_logit_norm" \
   \
   --ckpt_dir "../TSA-ckpts/flow_unconditional_logit_norm" \
-  --gpu_id 1 \
+  --gpu_id 2 \
   \
   --cond_eval_model_ckpt "none" \
   --generated_path "none"
