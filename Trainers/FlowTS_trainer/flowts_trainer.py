@@ -538,7 +538,7 @@ class FlowTSTrainerTwoTogether(object):
             with torch.no_grad():
                 val_total, val_seen =  0, 0
                 # for batch in self.val_loader:
-                for batch in tqdm(self.val_loader, desc=f"Train Epoch {epoch}"):
+                for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
                     X_signal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
                     anomaly_label = batch["anomaly_label"].to(dtype=model_dtype, device=self.device)
                     loss = self.model(X_signal, anomaly_label=anomaly_label)
