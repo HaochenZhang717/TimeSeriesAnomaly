@@ -107,7 +107,8 @@ for seq_len in "${SEQLENS[@]}"; do
       --gpu_id 0 \
       \
       --cond_eval_model_ckpt "none" \
-      --generated_path "none"
+      --generated_path "none" \
+      --eval_train_set -1
   done
 done
 
