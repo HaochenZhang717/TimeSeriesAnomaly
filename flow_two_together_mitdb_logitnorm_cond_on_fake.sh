@@ -31,7 +31,7 @@ python FlowTwoTogether.py \
   \
   --cond_eval_model_ckpt "../TSA-ckpts/flow_imputation_logit_norm/ema_ckpt.pth" \
   --generated_path "../samples_path/flow_unconditional/mitdblen800_a_few_to_look" \
-  --normal_data_path "/samples_path/flow_unconditional/mitdblen800_a_few_to_look/generated_normal.pt" \
+  --normal_data_path "../samples_path/flow_unconditional/mitdblen800_a_few_to_look/generated_normal.pt" \
   \
   --uncond_eval_model_ckpt "none" \
   --uncond_num_samples -1 \
