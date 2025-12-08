@@ -130,7 +130,7 @@ class FM_TS_Two_Together(nn.Module):
         z_t = t * z1 + (1. - t) * z0_impute # [1,2,3+noise,4+noise,5+noise,6]
 
         target = (z1 - z0_impute) * anomaly_label.unsqueeze(-1) # [0,0,3-noise, 4-noise, 5-noise, 0]
-
+        breakpoint()
         model_out = self.output(z_t, t.squeeze() * self.time_scalar, None)
         model_out = model_out * anomaly_label.unsqueeze(-1)
 
