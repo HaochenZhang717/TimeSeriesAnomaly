@@ -335,10 +335,11 @@ class EncoderBlock(nn.Module):
         )
 
     def forward(self, x, timestep, mask=None):
-        print("---"*20)
-        print(x.shape)
-        print(timestep.shape)
-        print("---"*20)
+        if not self.training:
+            print("---"*20)
+            print(x.shape)
+            print(timestep.shape)
+            print("---"*20)
 
         # breakpoint()
         a, att = self.attn(self.ln1(x, timestep), mask=mask)
@@ -539,8 +540,8 @@ class Transformer(nn.Module):
                                block_activate, condition_dim=n_embd, max_len=self.max_len)
 
     def forward(self, input, t, padding_masks=None, return_res=False):
-        if not self.training:
-            breakpoint()
+        # if not self.training:
+        #     breakpoint()
         emb = self.emb(input)
 
         inp_enc = emb
