@@ -24,7 +24,7 @@ def get_args():
 
 
     """what to do"""
-    parser.add_argument("--what_to_do", type=str, required=True, choices=["conditional_training", "unconditional_training", "conditional_evaluate", "conditional_sample"], help="what to do")
+    parser.add_argument("--what_to_do", type=str, required=True, choices=["conditional_training", "unconditional_training", "conditional_evaluate", "conditional_sample", "unconditional_sample"], help="what to do")
 
 
     """time series general parameters"""
