@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     folder = "./raw_data/selected_uts"
 
-    for seq_len in [100, 300, 400]:
+    for seq_len in [100, 200, 300, 400]:
         for name in os.listdir(folder):
             # print(name)
             full_path = os.path.join(folder, name)
@@ -163,7 +163,7 @@ if __name__ == "__main__":
                 source_name=name.split(".")[0],
                 output_dir=f"./indices_len{seq_len}/slide_windows_{name.split(".")[0]}",
                 window_size=seq_len,
-                stride=10,
+                stride=1,
                 train_ratio=1.0,
                 max_anomaly_ratio=0.2
             )
