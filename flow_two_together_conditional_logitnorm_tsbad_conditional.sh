@@ -98,7 +98,7 @@ for seq_len in "${SEQLENS[@]}"; do
       --max_epochs 1000 \
       --grad_clip_norm 1.0 \
       --early_stop "true" \
-      --patience 50 \
+      --patience 20 \
       \
       --wandb_project "flow_conditional" \
       --wandb_run "logit_norm_len${seq_len}_${subset}" \

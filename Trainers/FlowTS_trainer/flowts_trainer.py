@@ -515,7 +515,6 @@ class FlowTSTrainerTwoTogether(object):
 
                 X_signal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
                 anomaly_label = batch["anomaly_label"].to(dtype=model_dtype, device=self.device)
-                breakpoint()
                 self.optimizer.zero_grad()
                 loss = self.model(X_signal, anomaly_label=anomaly_label)
                 loss.backward()
