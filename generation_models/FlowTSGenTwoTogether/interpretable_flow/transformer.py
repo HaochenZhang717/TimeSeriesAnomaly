@@ -335,9 +335,11 @@ class EncoderBlock(nn.Module):
         )
 
     def forward(self, x, timestep, mask=None):
+        print("---"*20)
         print(x.shape)
         print(timestep.shape)
-        breakpoint()
+        print("---"*20)
+        # breakpoint()
         a, att = self.attn(self.ln1(x, timestep), mask=mask)
         x = x + a
         x = x + self.mlp(self.ln2(x))  # only one really use encoder_output
