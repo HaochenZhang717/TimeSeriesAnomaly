@@ -103,5 +103,6 @@ python FlowTwoTogether.py \
   --gpu_id 2 \
   \
   --cond_eval_model_ckpt "none" \
-  --generated_path "none"
+  --generated_path "none" \
+  -eval_train_size -1
 
