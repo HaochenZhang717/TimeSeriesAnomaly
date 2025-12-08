@@ -73,7 +73,8 @@
 export hucfg_t_sampling=logitnorm
 #subsets=("041_WSD_id_13_WebService_tr_4296_1st_5196" "128_WSD_id_100_WebService_tr_4068_1st_4168" "178_SMD_id_1_Facility_tr_6000_1st_10609" "182_SMD_id_5_Facility_tr_7174_1st_21230")
 #SEQLENS=(100 200 400)
-subsets=( "178_SMD_id_1_Facility_tr_6000_1st_10609")
+#subsets=( "178_SMD_id_1_Facility_tr_6000_1st_10609")
+subsets=( "041_WSD_id_13_WebService_tr_4296_1st_5196")
 SEQLENS=(400)
 for seq_len in "${SEQLENS[@]}"; do
   for subset in "${subsets[@]}"; do
