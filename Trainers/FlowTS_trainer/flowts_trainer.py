@@ -488,7 +488,6 @@ class FlowTSTrainerTwoTogether(object):
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
-
             self.scheduler.step(val_total)
         wandb.finish()
 

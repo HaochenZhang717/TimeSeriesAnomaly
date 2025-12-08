@@ -66,101 +66,105 @@ def get_args():
     parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
     parser.add_argument("--generated_path", type=str, required=True)
 
+    """parameters for anomaly evaluation"""
+    parser.add_argument("--eval_train_size", type=int, required=True)
+
+
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
 
     return parser.parse_args()
 
 
-def evaluate_finetune_anomaly_quality(
-    args,
-    model,
-    normal_train_set,
-    anomaly_train_set,
-    ema_state_dict
-    ):
-    device = torch.device("cuda:%d" % args.gpu_id)
-    model.load_state_dict(ema_state_dict)
-    model.eval()
-
-    num_samples = len(normal_train_set.slide_windows)
-    num_cycle = int(num_samples // args.batch_size) + 1
-    all_samples = []
-    all_anomaly_labels = []
-    normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
-    normal_train_iterator = iter(normal_train_loader)
-    for _ in tqdm(range(num_cycle), desc="Generating samples"):
-        anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device).squeeze()
-        samples = model.generate_mts(
-            batch_size=args.batch_size,
-            anomaly_label=anomaly_label,
-        ).cpu()
-        all_samples.append(samples)
-        all_anomaly_labels.append(anomaly_label)
-    all_samples = torch.cat(all_samples, dim=0)
-    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
-    os.makedirs(args.generated_path, exist_ok=True)
-    to_save = {
-        "all_samples": all_samples,
-        "all_anomaly_labels": all_anomaly_labels,
-    }
-    torch.save(to_save,f"{args.generated_path}/generated_anomaly.pt")
-
-
-    orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
-    orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
-
-
-    precisions = []
-    recalls = []
-    f1s = []
-    for _ in range(5):
-        precision, recall, f1 = calculate_robustTAD(
-            anomaly_weight=5.0,
-            feature_size=args.feature_size,
-            ori_data=orig_data,
-            ori_labels=orig_labels,
-            gen_data=all_samples,
-            gen_labels=all_anomaly_labels,
-            device=device,
-            lr=1e-4,
-            max_epochs=2000,
-            batch_size=64,
-            patience=20)
-        precisions.append(precision)
-        recalls.append(recall)
-        f1s.append(f1)
-
-    mean_precision = np.mean(precisions)
-    mean_recall = np.mean(recalls)
-    mean_f1 = np.mean(f1s)
-    std_precision = np.std(precisions)
-    std_recall = np.std(recalls)
-    std_f1 = np.std(f1s)
-    print(f"precision: {mean_precision}+-{std_precision}")
-    print(f"recall: {mean_recall}+-{std_recall}")
-    print(f"f1: {mean_f1}+-{std_f1}")
-
-    result = {
-        "precision_mean": float(mean_precision),
-        "precision_std": float(std_precision),
-        "recall_mean": float(mean_recall),
-        "recall_std": float(std_recall),
-        "f1_mean": float(mean_f1),
-        "f1_std": float(std_f1),
-        "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
-    }
-
-    output_record = {
-        "args": vars(args),
-        "result": result,
-    }
-
-    save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
-    os.makedirs(args.generated_path, exist_ok=True)
-
-    with open(save_path, "a") as f:
-        f.write(json.dumps(output_record) + "\n")
+# def evaluate_finetune_anomaly_quality(
+#     args,
+#     model,
+#     normal_train_set,
+#     anomaly_train_set,
+#     ema_state_dict
+#     ):
+#     device = torch.device("cuda:%d" % args.gpu_id)
+#     model.load_state_dict(ema_state_dict)
+#     model.eval()
+#
+#     num_samples = len(normal_train_set.slide_windows)
+#     num_cycle = int(num_samples // args.batch_size) + 1
+#     all_samples = []
+#     all_anomaly_labels = []
+#     normal_train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size)
+#     normal_train_iterator = iter(normal_train_loader)
+#     for _ in tqdm(range(num_cycle), desc="Generating samples"):
+#         anomaly_label = next(normal_train_iterator)['random_anomaly_label'].to(device).squeeze()
+#         samples = model.generate_mts(
+#             batch_size=args.batch_size,
+#             anomaly_label=anomaly_label,
+#         ).cpu()
+#         all_samples.append(samples)
+#         all_anomaly_labels.append(anomaly_label)
+#     all_samples = torch.cat(all_samples, dim=0)
+#     all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+#     os.makedirs(args.generated_path, exist_ok=True)
+#     to_save = {
+#         "all_samples": all_samples,
+#         "all_anomaly_labels": all_anomaly_labels,
+#     }
+#     torch.save(to_save,f"{args.generated_path}/generated_anomaly.pt")
+#
+#
+#     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
+#     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
+#
+#
+#     precisions = []
+#     recalls = []
+#     f1s = []
+#     for _ in range(5):
+#         precision, recall, f1 = calculate_robustTAD(
+#             anomaly_weight=5.0,
+#             feature_size=args.feature_size,
+#             ori_data=orig_data,
+#             ori_labels=orig_labels,
+#             gen_data=all_samples,
+#             gen_labels=all_anomaly_labels,
+#             device=device,
+#             lr=1e-4,
+#             max_epochs=2000,
+#             batch_size=64,
+#             patience=20)
+#         precisions.append(precision)
+#         recalls.append(recall)
+#         f1s.append(f1)
+#
+#     mean_precision = np.mean(precisions)
+#     mean_recall = np.mean(recalls)
+#     mean_f1 = np.mean(f1s)
+#     std_precision = np.std(precisions)
+#     std_recall = np.std(recalls)
+#     std_f1 = np.std(f1s)
+#     print(f"precision: {mean_precision}+-{std_precision}")
+#     print(f"recall: {mean_recall}+-{std_recall}")
+#     print(f"f1: {mean_f1}+-{std_f1}")
+#
+#     result = {
+#         "precision_mean": float(mean_precision),
+#         "precision_std": float(std_precision),
+#         "recall_mean": float(mean_recall),
+#         "recall_std": float(std_recall),
+#         "f1_mean": float(mean_f1),
+#         "f1_std": float(std_f1),
+#         "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
+#     }
+#
+#     output_record = {
+#         "args": vars(args),
+#         "result": result,
+#     }
+#
+#     save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
+#     os.makedirs(args.generated_path, exist_ok=True)
+#
+#     with open(save_path, "a") as f:
+#         f.write(json.dumps(output_record) + "\n")
 
 
 
@@ -295,7 +299,7 @@ def unconditional_train(args):
         optimizer,
         mode='min',
         factor=0.8,  # multiply LR by 0.5
-        patience=5,  # wait 3 epochs with no improvement
+        patience=2,  # wait 3 epochs with no improvement
         threshold=1e-4,  # improvement threshold
         min_lr=1e-6,  # min LR clamp
     )
@@ -435,15 +439,85 @@ def conditional_sample(args):
     all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
     all_real = torch.cat(all_real, dim=0)
     to_save = {
-        "all_samples": all_samples,
-        "all_real": all_real,
-        "all_anomaly_labels": all_anomaly_labels,
+        "samples": all_samples,
+        "real": all_real,
+        "anomaly_labels": all_anomaly_labels,
     }
     os.makedirs(args.generated_path, exist_ok=True)
     torch.save(to_save, f"{args.generated_path}/generated_anomaly.pt")
 
 
 
+def anomaly_evaluate(args):
+    all_anomalies = torch.load(to_save,f"{args.generated_path}/generated_anomaly.pt")
+    gen_data = all_anomalies['samples']
+    gen_labels = all_anomalies['anomaly_labels']
+
+    anomaly_train_set = build_dataset(
+        args.dataset_name,
+        'iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+    )
+    orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
+    orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
+
+    precisions = []
+    recalls = []
+    f1s = []
+    for _ in range(5):
+        random_indices = torch.randperm(len(gen_data))[:args.eval_train_size]
+        sampled_gen_data = gen_data[random_indices]
+        sampled_gen_labels = gen_labels[random_indices]
+
+        precision, recall, f1 = calculate_robustTAD(
+            anomaly_weight=5.0,
+            feature_size=args.feature_size,
+            ori_data=orig_data,
+            ori_labels=orig_labels,
+            gen_data=sampled_gen_data,
+            gen_labels=sampled_gen_labels,
+            device=device,
+            lr=1e-4,
+            max_epochs=2000,
+            batch_size=64,
+            patience=20)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)
+
+    mean_precision = np.mean(precisions)
+    mean_recall = np.mean(recalls)
+    mean_f1 = np.mean(f1s)
+    std_precision = np.std(precisions)
+    std_recall = np.std(recalls)
+    std_f1 = np.std(f1s)
+    print(f"precision: {mean_precision}+-{std_precision}")
+    print(f"recall: {mean_recall}+-{std_recall}")
+    print(f"f1: {mean_f1}+-{std_f1}")
+
+    result = {
+        "precision_mean": float(mean_precision),
+        "precision_std": float(std_precision),
+        "recall_mean": float(mean_recall),
+        "recall_std": float(std_recall),
+        "f1_mean": float(mean_f1),
+        "f1_std": float(std_f1),
+        "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
+    }
+
+    output_record = {
+        "args": vars(args),
+        "result": result,
+    }
+
+    save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
+    os.makedirs(args.generated_path, exist_ok=True)
+
+    with open(save_path, "a") as f:
+        f.write(json.dumps(output_record) + "\n")
 
 
 
@@ -453,8 +527,8 @@ def main():
         conditional_train(args)
     elif args.what_to_do == "conditional_sample":
         conditional_sample(args)
-    elif args.what_to_do == "conditional_evaluate":
-        conditional_evaluate(args)
+    elif args.what_to_do == "anomaly_evaluate":
+        anomaly_evaluate(args)
     elif args.what_to_do == "unconditional_training":
         unconditional_train(args)
     else:

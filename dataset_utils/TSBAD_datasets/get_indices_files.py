@@ -147,26 +147,26 @@ if __name__ == "__main__":
 
     folder = "./raw_data/selected_uts"
 
-    for name in os.listdir(folder):
-        # print(name)
-        full_path = os.path.join(folder, name)
-        df = pd.read_csv(full_path)
-        signal = df["Data"].values
-        plt.plot(signal[3000:3200])
-        plt.title(name)
-        plt.show()
-        anomaly_labels = df["Label"].values
-        stats = build_single_ts_train_val(
-            signal=f"./raw_data/{name}.npz",
-            anomaly_label=anomaly_labels,
-            source_name=name.split(".")[0],
-            output_dir=f"./indices/slide_windows_{name.split(".")[0]}",
-            window_size=200,
-            stride=10,
-            train_ratio=1.0,
-            max_anomaly_ratio=0.2
-        )
-        print(name)
+    for seq_len in [100, 300, 400]:
+        for name in os.listdir(folder):
+            # print(name)
+            full_path = os.path.join(folder, name)
+            df = pd.read_csv(full_path)
+            signal = df["Data"].values
+            # plt.plot(signal[3000:3200])
+            # plt.title(name)
+            # plt.show()
+            anomaly_labels = df["Label"].values
+            stats = build_single_ts_train_val(
+                signal=f"./raw_data/{name}.npz",
+                anomaly_label=anomaly_labels,
+                source_name=name.split(".")[0],
+                output_dir=f"./indices_len{seq_len}/slide_windows_{name.split(".")[0]}",
+                window_size=seq_len,
+                stride=10,
+                train_ratio=1.0,
+                max_anomaly_ratio=0.2
+            )
 
 
     # for name in range(100, 235):
