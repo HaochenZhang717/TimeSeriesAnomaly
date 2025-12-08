@@ -95,7 +95,7 @@ class FM_TS_Two_Together(nn.Module):
 
         return zt
 
-    def generate_mts(self, batch_size=16, model_kwargs=None, cond_fn=None):
+    def generate_mts(self, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
         return self.sample((batch_size, seq_length, feature_size))
 

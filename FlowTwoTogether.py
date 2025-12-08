@@ -62,13 +62,16 @@ def get_args():
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
 
-    """parameters for conditional evaluation"""
+    """parameters for conditional sample"""
     parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
     parser.add_argument("--generated_path", type=str, required=True)
 
+    """parameters for unconditional sample"""
+    parser.add_argument("--uncond_eval_model_ckpt", type=str, required=True)
+    parser.add_argument("--uncond_num_samples", type=int, required=True)
+
     """parameters for anomaly evaluation"""
     parser.add_argument("--eval_train_size", type=int, required=True)
-
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
@@ -448,6 +451,37 @@ def conditional_sample(args):
 
 
 
+def unconditional_sample(args):
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model = FM_TS_Two_Together(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    )
+    model.load_state_dict(torch.load(args.uncond_eval_model_ckpt))
+    model.to(device)
+    model.eval()
+
+    num_cycle = int(args.uncond_num_samples // args.batch_size) + 1
+
+    all_samples = []
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        samples = model.generate_mts(batch_size=args.batch_size).cpu()
+        all_samples.append(samples)
+
+    all_samples = torch.cat(all_samples, dim=0)
+    to_save = {
+        "samples": all_samples,
+    }
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(to_save, f"{args.generated_path}/generated_normal.pt")
+
+
+
 def anomaly_evaluate(args):
     all_anomalies = torch.load(to_save,f"{args.generated_path}/generated_anomaly.pt")
     gen_data = all_anomalies['samples']
@@ -527,6 +561,8 @@ def main():
         conditional_train(args)
     elif args.what_to_do == "conditional_sample":
         conditional_sample(args)
+    elif args.what_to_do == "unconditional_sample":
+        unconditional_sample(args)
     elif args.what_to_do == "anomaly_evaluate":
         anomaly_evaluate(args)
     elif args.what_to_do == "unconditional_training":
