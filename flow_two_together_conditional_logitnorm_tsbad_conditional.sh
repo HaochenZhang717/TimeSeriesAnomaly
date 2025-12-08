@@ -72,40 +72,42 @@
 
 export hucfg_t_sampling=logitnorm
 subsets=("041_WSD_id_13_WebService_tr_4296_1st_5196" "128_WSD_id_100_WebService_tr_4068_1st_4168" "178_SMD_id_1_Facility_tr_6000_1st_10609" "182_SMD_id_5_Facility_tr_7174_1st_21230")
-for subset in "${subsets[@]}"; do
-  python FlowTwoTogether.py \
-    --what_to_do "conditional_training" \
-    \
-    --seq_len 800 \
-    --feature_size 1 \
-    \
-    --n_layer_enc 4 \
-    --n_layer_dec 4 \
-    --d_model 64 \
-    --n_heads 4 \
-    \
-    --dataset_name "TSBAD" \
-    --max_anomaly_length 10 \
-    --raw_data_paths_train "./dataset_utils/TSBAD_datasets/raw_data/${subset}.csv" \
-    --raw_data_paths_val "none" \
-    --indices_paths_train "./dataset_utils/TSBAD_datasets/indices/slide_windows_${subset}/train/normal.jsonl" \
-    --indices_paths_val "none" \
-    \
-    --lr 1e-3 \
-    --batch_size 64 \
-    --max_epochs 1000 \
-    --grad_clip_norm 1.0 \
-    --early_stop "true" \
-    --patience 50 \
-    \
-    --wandb_project "flow_conditional" \
-    --wandb_run "logit_norm_${subset}" \
-    \
-    --ckpt_dir "../TSA-ckpts/flow_conditional_logit_norm/${subset}" \
-    --gpu_id 3 \
-    \
-    --cond_eval_model_ckpt "none" \
-    --generated_path "none"
+SEQLENS=(100 200 400)
+for seq_len in "${SEQLENS[@]}"; do
+  for subset in "${subsets[@]}"; do
+    python FlowTwoTogether.py \
+      --what_to_do "conditional_training" \
+      \
+      --seq_len ${seq_len} \
+      --feature_size 1 \
+      \
+      --n_layer_enc 4 \
+      --n_layer_dec 4 \
+      --d_model 64 \
+      --n_heads 4 \
+      \
+      --dataset_name "TSBAD" \
+      --max_anomaly_length 10 \
+      --raw_data_paths_train "./dataset_utils/TSBAD_datasets/raw_data/${subset}.csv" \
+      --raw_data_paths_val "none" \
+      --indices_paths_train "./dataset_utils/TSBAD_datasets/indices/slide_windows_${subset}/train/normal.jsonl" \
+      --indices_paths_val "none" \
+      \
+      --lr 5e-4 \
+      --batch_size 64 \
+      --max_epochs 1000 \
+      --grad_clip_norm 1.0 \
+      --early_stop "true" \
+      --patience 50 \
+      \
+      --wandb_project "flow_conditional" \
+      --wandb_run "logit_norm_len${seq_len}_${subset}" \
+      \
+      --ckpt_dir "../TSA-ckpts/flow_conditional_logit_norm/len${seq_len}/${subset}" \
+      --gpu_id 0 \
+      \
+      --cond_eval_model_ckpt "none" \
+      --generated_path "none"
+  done
 done
-
 
