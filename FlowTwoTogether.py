@@ -359,7 +359,7 @@ def conditional_evaluate(args):
     all_real = []
     all_anomaly_labels = []
     for _ in tqdm(range(num_cycle), desc="Generating samples"):
-        a_batch = next(normal_train_iterator)
+        a_batch = next(train_iterator)
         anomaly_label = a_batch['anomaly_label'].to(device).squeeze()
         real_signal = a_batch['real_signal'].to(device)
         samples = model.impute(
