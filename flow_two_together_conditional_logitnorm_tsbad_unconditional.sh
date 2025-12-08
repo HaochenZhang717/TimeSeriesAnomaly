@@ -108,6 +108,6 @@ for seq_len in "${SEQLENS[@]}"; do
       \
       --cond_eval_model_ckpt "none" \
       --generated_path "none" \
-      --eval_train_set -1
+      --eval_train_size -1
   done
 done
