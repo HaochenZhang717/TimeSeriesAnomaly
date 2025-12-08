@@ -90,7 +90,7 @@ for seq_len in "${SEQLENS[@]}"; do
       --max_anomaly_length 10 \
       --raw_data_paths_train "./dataset_utils/TSBAD_datasets/raw_data/selected_uts/${subset}.csv" \
       --raw_data_paths_val "none" \
-      --indices_paths_train "./dataset_utils/TSBAD_datasets/indices_len${seq_len}/slide_windows_${subset}/train/normal.jsonl" \
+      --indices_paths_train "./dataset_utils/TSBAD_datasets/indices_len${seq_len}/slide_windows_${subset}/train/anomaly.jsonl" \
       --indices_paths_val "none" \
       \
       --lr 5e-4 \
