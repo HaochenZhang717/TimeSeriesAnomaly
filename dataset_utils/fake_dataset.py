@@ -14,7 +14,7 @@ class FakeDataset(torch.utils.data.Dataset):
         return self.num_data
 
     def __getitem__(self, index):
-        normal_data = self.normal_data[index]
+        normal_data = self.normal_data['samples'][index]
 
         random_anomaly_length = np.random.randint(0, self.max_anomaly_length)
         anomaly_start = np.random.randint(0, self.max_anomaly_length - random_anomaly_length)
