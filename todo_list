@@ -1,2 +1,4 @@
 12/07/2025
 evaluate imputation and see it the result is good
+# to notice, 12/08 morning, I changed some squeeze() and .view(-1) operations,
+# I need to be carful about the potential problem

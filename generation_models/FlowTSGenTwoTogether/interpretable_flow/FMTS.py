@@ -59,7 +59,7 @@ class FM_TS_Two_Together(nn.Module):
 
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
-            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).cuda().squeeze()
+            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).cuda().view(-1)
             v = self.output(zt.clone(), t_input, padding_masks=None)
             zt = zt.clone() + step * v 
 
@@ -84,7 +84,7 @@ class FM_TS_Two_Together(nn.Module):
         # 2) Integrate ODE from t=1 → t=0
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
-            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).squeeze()
+            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).view(-1)
             v = self.output(zt.clone(), t_input, padding_masks=None)
 
             #update missing region ONLY
@@ -109,7 +109,7 @@ class FM_TS_Two_Together(nn.Module):
 
         z_t =  t * z1 + (1.-t) * z0
         target = z1 - z0
-        model_out = self.output(z_t, t.squeeze()*self.time_scalar, None)
+        model_out = self.output(z_t, t.view(-1) * self.time_scalar, None)
         train_loss = F.mse_loss(model_out, target, reduction='none')
 
         train_loss = reduce(train_loss, 'b ... -> b (...)', 'mean')
@@ -130,8 +130,7 @@ class FM_TS_Two_Together(nn.Module):
         z_t = t * z1 + (1. - t) * z0_impute # [1,2,3+noise,4+noise,5+noise,6]
 
         target = (z1 - z0_impute) * anomaly_label.unsqueeze(-1) # [0,0,3-noise, 4-noise, 5-noise, 0]
-        breakpoint()
-        model_out = self.output(z_t, t.squeeze() * self.time_scalar, None)
+        model_out = self.output(z_t, t.view(-1) * self.time_scalar, None)
         model_out = model_out * anomaly_label.unsqueeze(-1)
 
         # train_loss: (B, ..., ...)
