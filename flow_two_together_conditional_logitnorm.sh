@@ -99,7 +99,7 @@ python FlowTwoTogether.py \
   --wandb_project "flow_unconditional" \
   --wandb_run "mitdb_unconditional_logit_norm" \
   \
-  --ckpt_dir "../TSA-ckpts/flow_imputation_logit_norm" \
+  --ckpt_dir "../TSA-ckpts/flow_unconditional_logit_norm" \
   --gpu_id 1 \
   \
   --cond_eval_model_ckpt "none" \

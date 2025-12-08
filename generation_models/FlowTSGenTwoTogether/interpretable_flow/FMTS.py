@@ -105,7 +105,7 @@ class FM_TS_Two_Together(nn.Module):
 
         t = torch.rand(z0.shape[0], 1, 1).to(z0.device)
         if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
-            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0_impute.device)
+            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0.device)
 
         z_t =  t * z1 + (1.-t) * z0
         target = z1 - z0
