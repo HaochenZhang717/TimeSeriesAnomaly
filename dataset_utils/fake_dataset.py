@@ -5,7 +5,7 @@ import numpy as np
 class FakeDataset(torch.utils.data.Dataset):
     def __init__(self, normal_data_path, maximum_anomaly_length):
         self.normal_data = torch.load(normal_data_path)
-        num_data, seq_len, feat_size = self.normal_data.shape
+        num_data, seq_len, feat_size = self.normal_data['samples'].shape
         self.num_data = num_data
         self.seq_len = seq_len
         self.max_anomaly_length = maximum_anomaly_length
