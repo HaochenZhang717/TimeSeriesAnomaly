@@ -143,7 +143,7 @@ class IterableTSBADDataset(IterableDataset):
             signal_random_occluded = signal * (1 - random_anomaly_label[:, None])
             original_occluded_signal = signal * (1 - anomaly_label[:, None])
             sample = {
-                "orig_signal": signal,
+                "orig_signal": signal.astype(np.float32),
                 "anomaly_label": anomaly_label,
                 "original_occluded_signal": original_occluded_signal,
                 "random_anomaly_label": random_anomaly_label,
