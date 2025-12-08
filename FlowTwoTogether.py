@@ -378,6 +378,7 @@ def conditional_evaluate(args):
         "all_real": all_real,
         "all_anomaly_labels": all_anomaly_labels,
     }
+    os.makedirs(args.generated_path, exist_ok=True)
     torch.save(to_save, f"{args.generated_path}/generated_anomaly.pt")
 
 
