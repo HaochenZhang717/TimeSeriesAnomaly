@@ -335,12 +335,6 @@ class EncoderBlock(nn.Module):
         )
 
     def forward(self, x, timestep, mask=None):
-        if not self.training:
-            print("---"*20)
-            print(x.shape)
-            print(timestep.shape)
-            print("---"*20)
-
         # breakpoint()
         a, att = self.attn(self.ln1(x, timestep), mask=mask)
         x = x + a
