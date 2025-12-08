@@ -47,10 +47,10 @@ class FM_TS_Two_Together(nn.Module):
     @torch.no_grad()
     def sample(self, shape):
         
-        
+        model_device = next(self.parameters()).device
         self.eval()
 
-        zt = torch.randn(shape).cuda()  ## init the noise 
+        zt = torch.randn(shape).to(model_device)  ## init the noise
 
         ## t shifting from stable diffusion 3
         timesteps = torch.linspace(0, 1, self.num_timesteps+1)
@@ -59,7 +59,7 @@ class FM_TS_Two_Together(nn.Module):
 
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
-            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).cuda().view(-1)
+            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(model_device).view(-1)
             v = self.output(zt.clone(), t_input, padding_masks=None)
             zt = zt.clone() + step * v 
 
