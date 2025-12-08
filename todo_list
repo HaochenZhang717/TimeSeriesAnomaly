@@ -1,6 +1,2 @@
-finish CGATS-finetune and full CGATS-training pipeline
-
-
-
-1) write last layer perturbation for anomaly generation
-2) change code to make it compatible for multiple dataset.
+12/07/2025
+evaluate imputation and see it the result is good

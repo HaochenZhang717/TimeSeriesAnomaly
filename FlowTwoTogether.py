@@ -61,7 +61,10 @@ def get_args():
 
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
+
+    """parameters for conditional evaluation"""
     parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
+    parser.add_argument("--generated_path", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
@@ -257,8 +260,8 @@ def evaluate_finetune_anomaly_quality(
 
 
 
-def conditional_train():
-    args = get_args()
+def conditional_train(args):
+    # args = get_args()
 
     # timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
     # args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
@@ -319,9 +322,9 @@ def conditional_train():
 
 
 
-def conditional_evaluate():
-    args = get_args()
-
+def conditional_evaluate(args):
+    # args = get_args()
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     model = FM_TS_Two_Together(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
@@ -332,23 +335,62 @@ def conditional_evaluate():
         mlp_hidden_times=4,
     )
     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
-
+    model.to(device)
+    model.eval()
     anomaly_train_set = build_dataset(
         args.dataset_name,
-        'non_iterable',
+        'iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
     )
 
-    train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
-    # val_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+    train_loader = torch.utils.data.DataLoader(
+        anomaly_train_set,
+        batch_size=args.batch_size,
+        shuffle=True,
+        drop_last=True
+    )
+
+    num_samples = len(anomaly_train_set.slide_windows)
+    num_cycle = int(num_samples // args.batch_size) + 1
+    train_iterator = iter(train_loader)
+
+    all_samples = []
+    all_real = []
+    all_anomaly_labels = []
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        a_batch = next(normal_train_iterator)
+        anomaly_label = a_batch['anomaly_label'].to(device).squeeze()
+        real_signal = a_batch['real_signal'].to(device)
+        samples = model.impute(
+            x_start=real_signal,
+            anomaly_label=anomaly_label,
+        ).cpu()
+        all_samples.append(samples)
+        all_real.append(real_signal)
+        all_anomaly_labels.append(anomaly_label)
+
+    all_samples = torch.cat(all_samples, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    all_real = torch.cat(all_real, dim=0)
+    to_save = {
+        "all_samples": all_samples,
+        "all_real": all_real,
+        "all_anomaly_labels": all_anomaly_labels,
+    }
+    torch.save(to_save, f"{args.generated_path}/generated_anomaly.pt")
 
 
-    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
-
-
+def main():
+    args = get_args()
+    if args.what_to_do == "conditional_training":
+        conditional_train(args)
+    elif args.what_to_do == "conditional_evaluate":
+        conditional_evaluate(args)
+    else:
+        raise NotImplementedError
 
 if __name__ == "__main__":
-    conditional_train()
+    main()
