@@ -104,5 +104,5 @@ python FlowTwoTogether.py \
   \
   --cond_eval_model_ckpt "none" \
   --generated_path "none" \
-  -eval_train_size -1
+  --eval_train_size -1
 
