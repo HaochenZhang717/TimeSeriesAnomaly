@@ -74,7 +74,7 @@ class FM_TS_Two_Together(nn.Module):
         self.eval()
         # 1) Init z_t: missing is noise
         noise = torch.randn_like(x_start)
-        zt = noise * anomaly_label + x_start * (1 - anomaly_label)
+        zt = noise * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         # --- identical timestep shifting as unconditional sample ---
         timesteps = torch.linspace(0, 1, self.num_timesteps + 1)
@@ -88,10 +88,10 @@ class FM_TS_Two_Together(nn.Module):
             v = self.output(zt.clone(), t_input, padding_masks=None)
 
             #update missing region ONLY
-            zt = zt + step * v * anomaly_label
+            zt = zt + step * v * anomaly_label.unsqueeze(-1)
 
             #restore known region
-            zt = zt * anomaly_label + x_start * (1 - anomaly_label)
+            zt = zt * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         return zt
 
