@@ -454,7 +454,7 @@ def conditional_sample_on_real(args):
         "anomaly_labels": all_anomaly_labels,
     }
     os.makedirs(args.generated_path, exist_ok=True)
-    torch.save(to_save, f"{args.generated_path}/generated_anomaly.pt")
+    torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real.pt")
 
 
 def conditional_sample_on_fake(args):
