@@ -259,6 +259,67 @@ def evaluate_finetune_anomaly_quality(
 #     )
 
 
+def unconditional_train(args):
+    # args = get_args()
+
+    # timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
+    # args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = FM_TS_Two_Together(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    )
+
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+    )
+
+    train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
+    val_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=5,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-6,  # min LR clamp
+    )
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    trainer = FlowTSTrainerTwoTogether(
+        optimizer=optimizer,
+        scheduler=scheduler,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
+        device=device,
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+        early_stop=args.early_stop,
+        patience=args.patience,
+    )
+
+    trainer.unconditional_train(config=vars(args))
+
+
 
 def conditional_train(args):
     # args = get_args()
@@ -322,7 +383,7 @@ def conditional_train(args):
 
 
 
-def conditional_evaluate(args):
+def conditional_sample(args):
     # args = get_args()
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     model = FM_TS_Two_Together(
@@ -382,12 +443,20 @@ def conditional_evaluate(args):
     torch.save(to_save, f"{args.generated_path}/generated_anomaly.pt")
 
 
+
+
+
+
 def main():
     args = get_args()
     if args.what_to_do == "conditional_training":
         conditional_train(args)
+    elif args.what_to_do == "conditional_sample":
+        conditional_sample(args)
     elif args.what_to_do == "conditional_evaluate":
         conditional_evaluate(args)
+    elif args.what_to_do == "unconditional_training":
+        unconditional_train(args)
     else:
         raise NotImplementedError
 
