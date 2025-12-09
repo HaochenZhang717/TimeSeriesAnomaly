@@ -78,5 +78,7 @@ python CGATSFinetuneEvaluate.py \
   \
   --model_ckpt "../TSA-ckpts/cgats_finetune_mitdb106_ckpt/2025-12-01-05:49:18/ckpt.pth" \
   --gpu_id 0 \
-  --need_to_generate 1 \
+  \
+  --eval_train_size 10000 \
+  --num_samples 50000 \
   --generated_path "../samples_path/cgats_anomaly_mitdb106"
