@@ -13,14 +13,13 @@ python CGATSPretrainPipeline.py \
   --max_anomaly_length 629 \
   --min_anomaly_length 74 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --raw_data_paths_val "none" \
   --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
-  --indices_paths_val "none" \
   \
   --lr 1e-5 \
   --batch_size 64 \
   --epochs 1000 \
   --grad_clip_norm 1.0 \
+  --early_stop "true" \
   \
   --wandb_project cgats_pretrain \
   --wandb_run cgats_pretrain_mitdb1800 \

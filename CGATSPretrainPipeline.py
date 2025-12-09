@@ -38,9 +38,7 @@ def get_pretrain_args():
     parser.add_argument("--max_anomaly_length", type=float, required=True)
     parser.add_argument("--min_anomaly_length", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
-    parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--indices_paths_train", type=str, required=True)
-    parser.add_argument("--indices_paths_val", type=str, required=True)
 
     """training parameters"""
     parser.add_argument("--lr", type=float, required=True)
