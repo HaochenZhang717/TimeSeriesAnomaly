@@ -19,7 +19,7 @@ python FlowTwoTogether.py \
   --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
   --indices_paths_val "none" \
   \
-  --lr 5e-4 \
+  --lr 1e-4 \
   --batch_size 64 \
   --max_epochs 1000 \
   --grad_clip_norm 1.0 \
@@ -66,7 +66,7 @@ python FlowTwoTogether.py \
   --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
   --indices_paths_val "none" \
   \
-  --lr 5e-4 \
+  --lr 1e-4 \
   --batch_size 64 \
   --max_epochs 1000 \
   --grad_clip_norm 1.0 \
