@@ -160,7 +160,7 @@ def evaluate_finetune_anomaly_quality():
             gen_data=sampled_gen_data,
             gen_labels=sampled_gen_labels,
             device=device,
-            lr=1e-4,
+            lr=1e-5,
             max_epochs=2000,
             batch_size=64,
             patience=20)
