@@ -184,13 +184,17 @@ def calculate_robustTAD(
     for epoch in range(max_epochs):
         model.train()
         # for Xb, yb in tqdm(train_loader, desc=f"Epoch{epoch}"):
+        train_loss = 0.0
+        train_seen = 0
         for Xb, yb in train_loader:
             Xb, yb = Xb.to(device), yb.to(device)
             loss = model(Xb, yb)
+            train_loss += loss.item()
+            train_seen += Xb.shape[0]
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
+        train_loss_avg = train_loss / train_seen
         model.eval()
         val_loss = 0.0
         val_seen = 0
@@ -201,7 +205,7 @@ def calculate_robustTAD(
             val_loss += loss.item()
             val_seen += Xb.shape[0]
         val_loss_avg = val_loss / val_seen
-        print(f"Epoch{epoch}: val_loss={val_loss_avg}")
+        print(f"Epoch{epoch}: train_loss: {train_loss_avg} | val_loss: {val_loss_avg} | lr: {optimizer.param_groups[0]['lr']} ||")
         scheduler.step(val_loss_avg)
 
         if best_val_loss > val_loss_avg:
