@@ -29,7 +29,7 @@ def get_args():
         choices=["conditional_training", "unconditional_training",
                  "conditional_evaluate", "conditional_sample_on_real",
                  "conditional_sample_on_fake", "unconditional_sample",
-                 "evaluate_anomaly"],
+                 "anomaly_evaluate"],
         help="what to do"
     )
 
