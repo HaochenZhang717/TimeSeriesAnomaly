@@ -28,7 +28,8 @@ def get_args():
         "--what_to_do", type=str, required=True,
         choices=["conditional_training", "unconditional_training",
                  "conditional_evaluate", "conditional_sample_on_real",
-                 "conditional_sample_on_fake", "unconditional_sample"],
+                 "conditional_sample_on_fake", "unconditional_sample",
+                 "evaluate_anomaly"],
         help="what to do"
     )
 
