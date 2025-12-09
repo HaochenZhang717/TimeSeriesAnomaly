@@ -164,6 +164,18 @@ def calculate_robustTAD(
 
     model = RobustTAD(in_ch=feature_size, anomaly_weight=anomaly_weight).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=2,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-6,  # min LR clamp
+    )
+
+
+
     best_val_loss = float("inf")
     best_state = None
     patience_counter = 0
@@ -188,6 +200,9 @@ def calculate_robustTAD(
             val_loss += loss.item()
             val_seen += Xb.shape[0]
         val_loss_avg = val_loss / val_seen
+        print(f"Epoch{epoch}: val_loss={val_loss_avg}")
+        scheduler.step(val_loss_avg)
+
         if best_val_loss > val_loss_avg:
             best_val_loss = val_loss_avg
             best_state = model.state_dict()

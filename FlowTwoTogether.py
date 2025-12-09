@@ -580,7 +580,7 @@ def anomaly_evaluate(args):
             gen_data=sampled_gen_data,
             gen_labels=sampled_gen_labels,
             device=device,
-            lr=1e-5,
+            lr=1e-4,
             max_epochs=2000,
             batch_size=64,
             patience=20)
