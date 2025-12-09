@@ -25,6 +25,8 @@ python FlowFinetuneEvaluateAnomaly.py \
   \
   --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v2-anomaly-only" \
+  --num_samples -1 \
+  --eval_train_size 10000
 
 ####################################################################
 python FlowFinetuneEvaluateAnomaly.py \
@@ -53,6 +55,8 @@ python FlowFinetuneEvaluateAnomaly.py \
   \
   --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v2-mixed-data" \
+  --num_samples -1 \
+  --eval_train_size 10000
 
 
 ####################################################################
@@ -82,6 +86,8 @@ python FlowFinetuneEvaluateAnomaly.py \
   \
   --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v3-anomaly-only" \
+  --num_samples -1 \
+  --eval_train_size 10000
 
 ####################################################################
 python FlowFinetuneEvaluateAnomaly.py \
@@ -110,3 +116,5 @@ python FlowFinetuneEvaluateAnomaly.py \
   \
   --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v3-mixed-data" \
+  --num_samples -1 \
+  --eval_train_size 10000
