@@ -541,7 +541,12 @@ def unconditional_sample(args):
 
 
 def anomaly_evaluate(args):
-    all_anomalies = torch.load(to_save,f"{args.generated_path}/generated_anomaly.pt")
+
+    device = torch.device(f"cuda:{args.gpu_id}")
+    all_anomalies = torch.load(
+        f"{args.generated_path}/generated_anomaly_on_fake.pt",
+        map_location=device
+    )
     gen_data = all_anomalies['samples']
     gen_labels = all_anomalies['anomaly_labels']
 
@@ -553,8 +558,8 @@ def anomaly_evaluate(args):
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
     )
-    orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
-    orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
+    orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0)).to(device)
+    orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0)).to(device)
 
     precisions = []
     recalls = []
