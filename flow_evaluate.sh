@@ -23,7 +23,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --model_ckpt "../TSA-ckpts/flow_mitdb106v_finetune_ckpt_v2_anomaly_only/2025-12-05-12:50:54/ckpt.pth" \
   --gpu_id 2 \
   \
-  --need_to_generate 1 \
+  --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v2-anomaly-only" \
 
 ####################################################################
@@ -51,7 +51,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --model_ckpt "../TSA-ckpts/flow_mitdb106v_finetune_ckpt_v2_mixed_data/2025-12-05-15:09:46/ckpt.pth" \
   --gpu_id 2 \
   \
-  --need_to_generate 1 \
+  --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v2-mixed-data" \
 
 
@@ -80,7 +80,7 @@ python FlowFinetuneEvaluateAnomaly.py \
   --model_ckpt "../TSA-ckpts/flow_mitdb106v_finetune_ckpt_v3_anomaly_only/2025-12-05-12:50:10/ckpt.pth" \
   --gpu_id 2 \
   \
-  --need_to_generate 1 \
+  --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v3-anomaly-only" \
 
 ####################################################################
@@ -108,5 +108,5 @@ python FlowFinetuneEvaluateAnomaly.py \
   --model_ckpt "../TSA-ckpts/flow_mitdb106v_finetune_ckpt_v3_mixed_data/2025-12-05-15:03:35/ckpt.pth" \
   --gpu_id 2 \
   \
-  --need_to_generate 1 \
+  --need_to_generate 0 \
   --generated_path "../samples_path/flow/mitdb106v-flow-finetuned-v3-mixed-data" \
