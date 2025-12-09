@@ -1,734 +1,906 @@
-{"source_file": "./raw_data/106.npz", "start": 53120, "end": 53920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53130, "end": 53930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53140, "end": 53940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53150, "end": 53950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53160, "end": 53960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53170, "end": 53970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53180, "end": 53980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53190, "end": 53990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53200, "end": 54000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53210, "end": 54010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53220, "end": 54020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53230, "end": 54030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53240, "end": 54040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53250, "end": 54050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53260, "end": 54060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53270, "end": 54070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53280, "end": 54080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53290, "end": 54090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53300, "end": 54100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53310, "end": 54110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53320, "end": 54120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53330, "end": 54130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53340, "end": 54140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53350, "end": 54150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53360, "end": 54160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53370, "end": 54170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53380, "end": 54180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53390, "end": 54190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53400, "end": 54200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53410, "end": 54210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53420, "end": 54220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 53430, "end": 54230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56890, "end": 57690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56900, "end": 57700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56910, "end": 57710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56920, "end": 57720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56930, "end": 57730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56940, "end": 57740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56950, "end": 57750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56960, "end": 57760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56970, "end": 57770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56980, "end": 57780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 56990, "end": 57790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 57000, "end": 57800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 57010, "end": 57810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 57020, "end": 57820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 57030, "end": 57830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 57040, "end": 57840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61350, "end": 62150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61360, "end": 62160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61370, "end": 62170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61380, "end": 62180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61390, "end": 62190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61400, "end": 62200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61410, "end": 62210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61420, "end": 62220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61430, "end": 62230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61440, "end": 62240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61450, "end": 62250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61460, "end": 62260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61470, "end": 62270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61480, "end": 62280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61490, "end": 62290, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 61500, "end": 62300, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65130, "end": 65930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65140, "end": 65940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65150, "end": 65950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65160, "end": 65960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65170, "end": 65970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65180, "end": 65980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65190, "end": 65990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65200, "end": 66000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65210, "end": 66010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65220, "end": 66020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65230, "end": 66030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65240, "end": 66040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65250, "end": 66050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65260, "end": 66060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65270, "end": 66070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 65280, "end": 66080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95110, "end": 95910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95120, "end": 95920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95130, "end": 95930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95140, "end": 95940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95150, "end": 95950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95160, "end": 95960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95170, "end": 95970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95180, "end": 95980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95190, "end": 95990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95200, "end": 96000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95210, "end": 96010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95220, "end": 96020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95230, "end": 96030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95240, "end": 96040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95250, "end": 96050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 95260, "end": 96060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96180, "end": 96980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96190, "end": 96990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96200, "end": 97000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96210, "end": 97010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96220, "end": 97020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96230, "end": 97030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96240, "end": 97040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96250, "end": 97050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96260, "end": 97060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96270, "end": 97070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96280, "end": 97080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96290, "end": 97090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96300, "end": 97100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96310, "end": 97110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96320, "end": 97120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 96330, "end": 97130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159860, "end": 160660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159870, "end": 160670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159880, "end": 160680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159890, "end": 160690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159900, "end": 160700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159910, "end": 160710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159920, "end": 160720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159930, "end": 160730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159940, "end": 160740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159950, "end": 160750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159960, "end": 160760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159970, "end": 160770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159980, "end": 160780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 159990, "end": 160790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160000, "end": 160800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160010, "end": 160810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160920, "end": 161720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160930, "end": 161730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160940, "end": 161740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160950, "end": 161750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160960, "end": 161760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160970, "end": 161770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160980, "end": 161780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 160990, "end": 161790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161000, "end": 161800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161010, "end": 161810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161020, "end": 161820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161030, "end": 161830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161040, "end": 161840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161050, "end": 161850, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161060, "end": 161860, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 161070, "end": 161870, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162160, "end": 162960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162170, "end": 162970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162180, "end": 162980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162190, "end": 162990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162200, "end": 163000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162210, "end": 163010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162220, "end": 163020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162230, "end": 163030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162240, "end": 163040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162250, "end": 163050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162260, "end": 163060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162270, "end": 163070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162280, "end": 163080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162290, "end": 163090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162300, "end": 163100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 162310, "end": 163110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255310, "end": 256110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255320, "end": 256120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255330, "end": 256130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255340, "end": 256140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255350, "end": 256150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255360, "end": 256160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255370, "end": 256170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255380, "end": 256180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255390, "end": 256190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255400, "end": 256200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255410, "end": 256210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255420, "end": 256220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255430, "end": 256230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255440, "end": 256240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255450, "end": 256250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 255460, "end": 256260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256350, "end": 257150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256360, "end": 257160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256370, "end": 257170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256380, "end": 257180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256390, "end": 257190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256400, "end": 257200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256410, "end": 257210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256420, "end": 257220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256430, "end": 257230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256440, "end": 257240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256450, "end": 257250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256460, "end": 257260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256470, "end": 257270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256480, "end": 257280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256490, "end": 257290, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256500, "end": 257300, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256790, "end": 257590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256800, "end": 257600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256810, "end": 257610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256820, "end": 257620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256830, "end": 257630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256840, "end": 257640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256850, "end": 257650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256860, "end": 257660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256870, "end": 257670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256880, "end": 257680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256890, "end": 257690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256900, "end": 257700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256910, "end": 257710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256920, "end": 257720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256930, "end": 257730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 256940, "end": 257740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258770, "end": 259570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258780, "end": 259580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258790, "end": 259590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258800, "end": 259600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258810, "end": 259610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258820, "end": 259620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258830, "end": 259630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258840, "end": 259640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258850, "end": 259650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258860, "end": 259660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258870, "end": 259670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258880, "end": 259680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258890, "end": 259690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258900, "end": 259700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258910, "end": 259710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258920, "end": 259720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258930, "end": 259730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258940, "end": 259740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258950, "end": 259750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 258960, "end": 259760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 260440, "end": 261240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 260450, "end": 261250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 260460, "end": 261260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 260470, "end": 261270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 260480, "end": 261280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261890, "end": 262690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261900, "end": 262700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261910, "end": 262710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261920, "end": 262720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261930, "end": 262730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261940, "end": 262740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261950, "end": 262750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261960, "end": 262760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261970, "end": 262770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261980, "end": 262780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 261990, "end": 262790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262000, "end": 262800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262010, "end": 262810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262020, "end": 262820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262030, "end": 262830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262040, "end": 262840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262050, "end": 262850, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262060, "end": 262860, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262070, "end": 262870, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262080, "end": 262880, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262090, "end": 262890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 262100, "end": 262900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264600, "end": 265400, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264610, "end": 265410, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264620, "end": 265420, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264630, "end": 265430, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264640, "end": 265440, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264650, "end": 265450, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264660, "end": 265460, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264670, "end": 265470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264680, "end": 265480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264690, "end": 265490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264700, "end": 265500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264710, "end": 265510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264720, "end": 265520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264730, "end": 265530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264740, "end": 265540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264750, "end": 265550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264760, "end": 265560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264770, "end": 265570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264780, "end": 265580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264790, "end": 265590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264800, "end": 265600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264810, "end": 265610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264820, "end": 265620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264830, "end": 265630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264840, "end": 265640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264850, "end": 265650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264860, "end": 265660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264870, "end": 265670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 264880, "end": 265680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323710, "end": 324510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323720, "end": 324520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323730, "end": 324530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323740, "end": 324540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323750, "end": 324550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323760, "end": 324560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323770, "end": 324570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323780, "end": 324580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323790, "end": 324590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323800, "end": 324600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323810, "end": 324610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323820, "end": 324620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323830, "end": 324630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323840, "end": 324640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323850, "end": 324650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 323860, "end": 324660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324270, "end": 325070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324280, "end": 325080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324290, "end": 325090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324300, "end": 325100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324310, "end": 325110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324320, "end": 325120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324330, "end": 325130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324340, "end": 325140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324350, "end": 325150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324360, "end": 325160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324370, "end": 325170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324380, "end": 325180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324390, "end": 325190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324400, "end": 325200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324410, "end": 325210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 324420, "end": 325220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325470, "end": 326270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325480, "end": 326280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325490, "end": 326290, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325500, "end": 326300, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325510, "end": 326310, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325520, "end": 326320, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325530, "end": 326330, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325540, "end": 326340, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325550, "end": 326350, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325560, "end": 326360, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325570, "end": 326370, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325580, "end": 326380, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325590, "end": 326390, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325600, "end": 326400, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325610, "end": 326410, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325620, "end": 326420, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325850, "end": 326650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325860, "end": 326660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325870, "end": 326670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325880, "end": 326680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325890, "end": 326690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325900, "end": 326700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325910, "end": 326710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325920, "end": 326720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325930, "end": 326730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325940, "end": 326740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325950, "end": 326750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325960, "end": 326760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325970, "end": 326770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325980, "end": 326780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 325990, "end": 326790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 326000, "end": 326800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327820, "end": 328620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327830, "end": 328630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327840, "end": 328640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327850, "end": 328650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327860, "end": 328660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327870, "end": 328670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327880, "end": 328680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327890, "end": 328690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327900, "end": 328700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327910, "end": 328710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327920, "end": 328720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327930, "end": 328730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327940, "end": 328740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327950, "end": 328750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327960, "end": 328760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327970, "end": 328770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 327980, "end": 328780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 330210, "end": 331010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 330220, "end": 331020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 330230, "end": 331030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332020, "end": 332820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332030, "end": 332830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332040, "end": 332840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332050, "end": 332850, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332060, "end": 332860, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332070, "end": 332870, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332080, "end": 332880, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332090, "end": 332890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332100, "end": 332900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332110, "end": 332910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332120, "end": 332920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332130, "end": 332930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332140, "end": 332940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332150, "end": 332950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332160, "end": 332960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 332170, "end": 332970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347160, "end": 347960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347170, "end": 347970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347180, "end": 347980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347190, "end": 347990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347200, "end": 348000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347210, "end": 348010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347220, "end": 348020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347230, "end": 348030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347240, "end": 348040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347250, "end": 348050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347260, "end": 348060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347270, "end": 348070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347280, "end": 348080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347290, "end": 348090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347300, "end": 348100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 347310, "end": 348110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352090, "end": 352890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352100, "end": 352900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352110, "end": 352910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352120, "end": 352920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352130, "end": 352930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352140, "end": 352940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352150, "end": 352950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352160, "end": 352960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352170, "end": 352970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352180, "end": 352980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352190, "end": 352990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352200, "end": 353000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352210, "end": 353010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352220, "end": 353020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352230, "end": 353030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352240, "end": 353040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352250, "end": 353050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352260, "end": 353060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352270, "end": 353070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352280, "end": 353080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352290, "end": 353090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352300, "end": 353100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 352310, "end": 353110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354590, "end": 355390, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354600, "end": 355400, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354610, "end": 355410, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354620, "end": 355420, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354630, "end": 355430, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354640, "end": 355440, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354650, "end": 355450, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354660, "end": 355460, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354670, "end": 355470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354680, "end": 355480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354690, "end": 355490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354700, "end": 355500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354710, "end": 355510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354720, "end": 355520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354730, "end": 355530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 354740, "end": 355540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355820, "end": 356620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355830, "end": 356630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355840, "end": 356640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355850, "end": 356650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355860, "end": 356660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355870, "end": 356670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355880, "end": 356680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355890, "end": 356690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355900, "end": 356700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355910, "end": 356710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355920, "end": 356720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355930, "end": 356730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355940, "end": 356740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355950, "end": 356750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355960, "end": 356760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 355970, "end": 356770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356860, "end": 357660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356870, "end": 357670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356880, "end": 357680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356890, "end": 357690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356900, "end": 357700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356910, "end": 357710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356920, "end": 357720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356930, "end": 357730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356940, "end": 357740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356950, "end": 357750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356960, "end": 357760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356970, "end": 357770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356980, "end": 357780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 356990, "end": 357790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357000, "end": 357800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357010, "end": 357810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357620, "end": 358420, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357630, "end": 358430, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357640, "end": 358440, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357650, "end": 358450, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357660, "end": 358460, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357670, "end": 358470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357680, "end": 358480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357690, "end": 358490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357700, "end": 358500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357710, "end": 358510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357720, "end": 358520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357730, "end": 358530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357740, "end": 358540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357750, "end": 358550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357760, "end": 358560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 357770, "end": 358570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358670, "end": 359470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358680, "end": 359480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358690, "end": 359490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358700, "end": 359500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358710, "end": 359510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358720, "end": 359520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358730, "end": 359530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358740, "end": 359540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358750, "end": 359550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358760, "end": 359560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358770, "end": 359570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358780, "end": 359580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358790, "end": 359590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358800, "end": 359600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358810, "end": 359610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358820, "end": 359620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358830, "end": 359630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358840, "end": 359640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358850, "end": 359650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358860, "end": 359660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358870, "end": 359670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358880, "end": 359680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358890, "end": 359690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358900, "end": 359700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358910, "end": 359710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358920, "end": 359720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358930, "end": 359730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358940, "end": 359740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358950, "end": 359750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 358960, "end": 359760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360660, "end": 361460, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360670, "end": 361470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360680, "end": 361480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360690, "end": 361490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360700, "end": 361500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360710, "end": 361510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360720, "end": 361520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360730, "end": 361530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360740, "end": 361540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360750, "end": 361550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360760, "end": 361560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360770, "end": 361570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360780, "end": 361580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360790, "end": 361590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360800, "end": 361600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360810, "end": 361610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360820, "end": 361620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360830, "end": 361630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360840, "end": 361640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360850, "end": 361650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360860, "end": 361660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360870, "end": 361670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360880, "end": 361680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360890, "end": 361690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360900, "end": 361700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360910, "end": 361710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 360920, "end": 361720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362620, "end": 363420, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362630, "end": 363430, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362640, "end": 363440, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362650, "end": 363450, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362660, "end": 363460, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362670, "end": 363470, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362680, "end": 363480, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362690, "end": 363490, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362700, "end": 363500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362710, "end": 363510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362720, "end": 363520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362730, "end": 363530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362740, "end": 363540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362750, "end": 363550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362760, "end": 363560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 362770, "end": 363570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 376970, "end": 377770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 376980, "end": 377780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 376990, "end": 377790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377000, "end": 377800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377010, "end": 377810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377020, "end": 377820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377030, "end": 377830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377040, "end": 377840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377050, "end": 377850, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377060, "end": 377860, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377070, "end": 377870, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377080, "end": 377880, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377090, "end": 377890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377100, "end": 377900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377110, "end": 377910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 377120, "end": 377920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378700, "end": 379500, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378710, "end": 379510, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378720, "end": 379520, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378730, "end": 379530, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378740, "end": 379540, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378750, "end": 379550, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378760, "end": 379560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378770, "end": 379570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378780, "end": 379580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378790, "end": 379590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378800, "end": 379600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378810, "end": 379610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378820, "end": 379620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378830, "end": 379630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378840, "end": 379640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 378850, "end": 379650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379190, "end": 379990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379200, "end": 380000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379210, "end": 380010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379220, "end": 380020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379230, "end": 380030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379240, "end": 380040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379250, "end": 380050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379260, "end": 380060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379270, "end": 380070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379280, "end": 380080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379290, "end": 380090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379300, "end": 380100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379310, "end": 380110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379320, "end": 380120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379330, "end": 380130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 379340, "end": 380140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388870, "end": 389670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388880, "end": 389680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388890, "end": 389690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388900, "end": 389700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388910, "end": 389710, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388920, "end": 389720, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388930, "end": 389730, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388940, "end": 389740, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388950, "end": 389750, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388960, "end": 389760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388970, "end": 389770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388980, "end": 389780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 388990, "end": 389790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389000, "end": 389800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389010, "end": 389810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389020, "end": 389820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389310, "end": 390110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389320, "end": 390120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389330, "end": 390130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389340, "end": 390140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389350, "end": 390150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389360, "end": 390160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389370, "end": 390170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389380, "end": 390180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389390, "end": 390190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389400, "end": 390200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389410, "end": 390210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389420, "end": 390220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389430, "end": 390230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389440, "end": 390240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389450, "end": 390250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 389460, "end": 390260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397250, "end": 398050, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397260, "end": 398060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397270, "end": 398070, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397280, "end": 398080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397290, "end": 398090, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397300, "end": 398100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397310, "end": 398110, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397320, "end": 398120, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397330, "end": 398130, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397340, "end": 398140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397350, "end": 398150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397360, "end": 398160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397370, "end": 398170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397380, "end": 398180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397390, "end": 398190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397400, "end": 398200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397410, "end": 398210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397420, "end": 398220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397430, "end": 398230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397440, "end": 398240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397450, "end": 398250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397460, "end": 398260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397470, "end": 398270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397480, "end": 398280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397490, "end": 398290, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397500, "end": 398300, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397510, "end": 398310, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397520, "end": 398320, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397530, "end": 398330, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 397540, "end": 398340, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399340, "end": 400140, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399350, "end": 400150, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399360, "end": 400160, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399370, "end": 400170, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399380, "end": 400180, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399390, "end": 400190, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399400, "end": 400200, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399410, "end": 400210, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399420, "end": 400220, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399430, "end": 400230, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399440, "end": 400240, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399450, "end": 400250, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399460, "end": 400260, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399470, "end": 400270, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399480, "end": 400280, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399490, "end": 400290, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399960, "end": 400760, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399970, "end": 400770, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399980, "end": 400780, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 399990, "end": 400790, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400000, "end": 400800, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400010, "end": 400810, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400020, "end": 400820, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400030, "end": 400830, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400040, "end": 400840, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400050, "end": 400850, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400060, "end": 400860, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400070, "end": 400870, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400080, "end": 400880, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400090, "end": 400890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400100, "end": 400900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 400110, "end": 400910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401080, "end": 401880, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401090, "end": 401890, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401100, "end": 401900, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401110, "end": 401910, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401120, "end": 401920, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401130, "end": 401930, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401140, "end": 401940, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401150, "end": 401950, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401160, "end": 401960, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401170, "end": 401970, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401180, "end": 401980, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401190, "end": 401990, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401200, "end": 402000, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401210, "end": 402010, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401220, "end": 402020, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401230, "end": 402030, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401760, "end": 402560, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401770, "end": 402570, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401780, "end": 402580, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401790, "end": 402590, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401800, "end": 402600, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401810, "end": 402610, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401820, "end": 402620, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401830, "end": 402630, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401840, "end": 402640, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401850, "end": 402650, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401860, "end": 402660, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401870, "end": 402670, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401880, "end": 402680, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401890, "end": 402690, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401900, "end": 402700, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 401910, "end": 402710, "anomaly_type": 1}
+{"start": 39414, "end": 41214, "anomaly_type": 1}
+{"start": 39514, "end": 41314, "anomaly_type": 1}
+{"start": 39614, "end": 41414, "anomaly_type": 1}
+{"start": 52275, "end": 54075, "anomaly_type": 1}
+{"start": 52375, "end": 54175, "anomaly_type": 1}
+{"start": 52475, "end": 54275, "anomaly_type": 1}
+{"start": 52575, "end": 54375, "anomaly_type": 1}
+{"start": 52675, "end": 54475, "anomaly_type": 1}
+{"start": 53116, "end": 54916, "anomaly_type": 1}
+{"start": 53216, "end": 55016, "anomaly_type": 1}
+{"start": 53316, "end": 55116, "anomaly_type": 1}
+{"start": 56645, "end": 58445, "anomaly_type": 1}
+{"start": 56745, "end": 58545, "anomaly_type": 1}
+{"start": 56845, "end": 58645, "anomaly_type": 1}
+{"start": 56945, "end": 58745, "anomaly_type": 1}
+{"start": 60282, "end": 62082, "anomaly_type": 1}
+{"start": 60382, "end": 62182, "anomaly_type": 1}
+{"start": 60482, "end": 62282, "anomaly_type": 1}
+{"start": 60582, "end": 62382, "anomaly_type": 1}
+{"start": 60303, "end": 62103, "anomaly_type": 1}
+{"start": 60403, "end": 62203, "anomaly_type": 1}
+{"start": 60503, "end": 62303, "anomaly_type": 1}
+{"start": 60603, "end": 62403, "anomaly_type": 1}
+{"start": 60703, "end": 62503, "anomaly_type": 1}
+{"start": 60803, "end": 62603, "anomaly_type": 1}
+{"start": 60903, "end": 62703, "anomaly_type": 1}
+{"start": 61003, "end": 62803, "anomaly_type": 1}
+{"start": 61103, "end": 62903, "anomaly_type": 1}
+{"start": 61203, "end": 63003, "anomaly_type": 1}
+{"start": 63987, "end": 65787, "anomaly_type": 1}
+{"start": 64087, "end": 65887, "anomaly_type": 1}
+{"start": 64187, "end": 65987, "anomaly_type": 1}
+{"start": 64287, "end": 66087, "anomaly_type": 1}
+{"start": 64387, "end": 66187, "anomaly_type": 1}
+{"start": 64487, "end": 66287, "anomaly_type": 1}
+{"start": 64587, "end": 66387, "anomaly_type": 1}
+{"start": 64687, "end": 66487, "anomaly_type": 1}
+{"start": 94535, "end": 96335, "anomaly_type": 1}
+{"start": 94635, "end": 96435, "anomaly_type": 1}
+{"start": 94735, "end": 96535, "anomaly_type": 1}
+{"start": 94835, "end": 96635, "anomaly_type": 1}
+{"start": 94935, "end": 96735, "anomaly_type": 1}
+{"start": 95035, "end": 96835, "anomaly_type": 1}
+{"start": 95135, "end": 96935, "anomaly_type": 1}
+{"start": 95235, "end": 97035, "anomaly_type": 1}
+{"start": 95335, "end": 97135, "anomaly_type": 1}
+{"start": 95435, "end": 97235, "anomaly_type": 1}
+{"start": 95535, "end": 97335, "anomaly_type": 1}
+{"start": 95635, "end": 97435, "anomaly_type": 1}
+{"start": 95735, "end": 97535, "anomaly_type": 1}
+{"start": 95835, "end": 97635, "anomaly_type": 1}
+{"start": 159275, "end": 161075, "anomaly_type": 1}
+{"start": 159375, "end": 161175, "anomaly_type": 1}
+{"start": 159475, "end": 161275, "anomaly_type": 1}
+{"start": 159575, "end": 161375, "anomaly_type": 1}
+{"start": 159675, "end": 161475, "anomaly_type": 1}
+{"start": 159775, "end": 161575, "anomaly_type": 1}
+{"start": 159875, "end": 161675, "anomaly_type": 1}
+{"start": 159975, "end": 161775, "anomaly_type": 1}
+{"start": 160075, "end": 161875, "anomaly_type": 1}
+{"start": 160175, "end": 161975, "anomaly_type": 1}
+{"start": 160275, "end": 162075, "anomaly_type": 1}
+{"start": 160375, "end": 162175, "anomaly_type": 1}
+{"start": 160475, "end": 162275, "anomaly_type": 1}
+{"start": 160575, "end": 162375, "anomaly_type": 1}
+{"start": 161479, "end": 163279, "anomaly_type": 1}
+{"start": 254708, "end": 256508, "anomaly_type": 1}
+{"start": 254808, "end": 256608, "anomaly_type": 1}
+{"start": 254908, "end": 256708, "anomaly_type": 1}
+{"start": 255008, "end": 256808, "anomaly_type": 1}
+{"start": 255108, "end": 256908, "anomaly_type": 1}
+{"start": 255208, "end": 257008, "anomaly_type": 1}
+{"start": 255308, "end": 257108, "anomaly_type": 1}
+{"start": 255408, "end": 257208, "anomaly_type": 1}
+{"start": 255508, "end": 257308, "anomaly_type": 1}
+{"start": 255608, "end": 257408, "anomaly_type": 1}
+{"start": 255708, "end": 257508, "anomaly_type": 1}
+{"start": 255808, "end": 257608, "anomaly_type": 1}
+{"start": 255908, "end": 257708, "anomaly_type": 1}
+{"start": 255970, "end": 257770, "anomaly_type": 1}
+{"start": 258033, "end": 259833, "anomaly_type": 1}
+{"start": 258021, "end": 259821, "anomaly_type": 1}
+{"start": 258321, "end": 260121, "anomaly_type": 1}
+{"start": 258421, "end": 260221, "anomaly_type": 1}
+{"start": 258521, "end": 260321, "anomaly_type": 1}
+{"start": 258621, "end": 260421, "anomaly_type": 1}
+{"start": 258291, "end": 260091, "anomaly_type": 1}
+{"start": 258391, "end": 260191, "anomaly_type": 1}
+{"start": 258491, "end": 260291, "anomaly_type": 1}
+{"start": 258591, "end": 260391, "anomaly_type": 1}
+{"start": 258891, "end": 260691, "anomaly_type": 1}
+{"start": 258991, "end": 260791, "anomaly_type": 1}
+{"start": 259091, "end": 260891, "anomaly_type": 1}
+{"start": 259191, "end": 260991, "anomaly_type": 1}
+{"start": 259291, "end": 261091, "anomaly_type": 1}
+{"start": 259391, "end": 261191, "anomaly_type": 1}
+{"start": 258896, "end": 260696, "anomaly_type": 1}
+{"start": 258996, "end": 260796, "anomaly_type": 1}
+{"start": 259096, "end": 260896, "anomaly_type": 1}
+{"start": 259196, "end": 260996, "anomaly_type": 1}
+{"start": 259296, "end": 261096, "anomaly_type": 1}
+{"start": 259396, "end": 261196, "anomaly_type": 1}
+{"start": 261755, "end": 263555, "anomaly_type": 1}
+{"start": 261855, "end": 263655, "anomaly_type": 1}
+{"start": 261955, "end": 263755, "anomaly_type": 1}
+{"start": 262055, "end": 263855, "anomaly_type": 1}
+{"start": 262155, "end": 263955, "anomaly_type": 1}
+{"start": 262255, "end": 264055, "anomaly_type": 1}
+{"start": 263311, "end": 265111, "anomaly_type": 1}
+{"start": 263411, "end": 265211, "anomaly_type": 1}
+{"start": 263511, "end": 265311, "anomaly_type": 1}
+{"start": 263611, "end": 265411, "anomaly_type": 1}
+{"start": 263711, "end": 265511, "anomaly_type": 1}
+{"start": 263811, "end": 265611, "anomaly_type": 1}
+{"start": 263259, "end": 265059, "anomaly_type": 1}
+{"start": 263359, "end": 265159, "anomaly_type": 1}
+{"start": 263459, "end": 265259, "anomaly_type": 1}
+{"start": 263559, "end": 265359, "anomaly_type": 1}
+{"start": 263659, "end": 265459, "anomaly_type": 1}
+{"start": 263759, "end": 265559, "anomaly_type": 1}
+{"start": 263859, "end": 265659, "anomaly_type": 1}
+{"start": 263959, "end": 265759, "anomaly_type": 1}
+{"start": 264059, "end": 265859, "anomaly_type": 1}
+{"start": 264159, "end": 265959, "anomaly_type": 1}
+{"start": 264259, "end": 266059, "anomaly_type": 1}
+{"start": 264359, "end": 266159, "anomaly_type": 1}
+{"start": 264132, "end": 265932, "anomaly_type": 1}
+{"start": 264232, "end": 266032, "anomaly_type": 1}
+{"start": 264332, "end": 266132, "anomaly_type": 1}
+{"start": 264432, "end": 266232, "anomaly_type": 1}
+{"start": 264532, "end": 266332, "anomaly_type": 1}
+{"start": 264632, "end": 266432, "anomaly_type": 1}
+{"start": 264732, "end": 266532, "anomaly_type": 1}
+{"start": 264832, "end": 266632, "anomaly_type": 1}
+{"start": 264932, "end": 266732, "anomaly_type": 1}
+{"start": 265032, "end": 266832, "anomaly_type": 1}
+{"start": 319265, "end": 321065, "anomaly_type": 1}
+{"start": 319365, "end": 321165, "anomaly_type": 1}
+{"start": 319465, "end": 321265, "anomaly_type": 1}
+{"start": 319565, "end": 321365, "anomaly_type": 1}
+{"start": 319665, "end": 321465, "anomaly_type": 1}
+{"start": 319316, "end": 321116, "anomaly_type": 1}
+{"start": 319416, "end": 321216, "anomaly_type": 1}
+{"start": 319516, "end": 321316, "anomaly_type": 1}
+{"start": 319616, "end": 321416, "anomaly_type": 1}
+{"start": 320116, "end": 321916, "anomaly_type": 1}
+{"start": 320216, "end": 322016, "anomaly_type": 1}
+{"start": 320058, "end": 321858, "anomaly_type": 1}
+{"start": 320158, "end": 321958, "anomaly_type": 1}
+{"start": 322672, "end": 324472, "anomaly_type": 1}
+{"start": 322772, "end": 324572, "anomaly_type": 1}
+{"start": 322872, "end": 324672, "anomaly_type": 1}
+{"start": 322972, "end": 324772, "anomaly_type": 1}
+{"start": 322669, "end": 324469, "anomaly_type": 1}
+{"start": 322769, "end": 324569, "anomaly_type": 1}
+{"start": 322869, "end": 324669, "anomaly_type": 1}
+{"start": 322969, "end": 324769, "anomaly_type": 1}
+{"start": 323069, "end": 324869, "anomaly_type": 1}
+{"start": 323169, "end": 324969, "anomaly_type": 1}
+{"start": 323269, "end": 325069, "anomaly_type": 1}
+{"start": 323369, "end": 325169, "anomaly_type": 1}
+{"start": 323469, "end": 325269, "anomaly_type": 1}
+{"start": 323569, "end": 325369, "anomaly_type": 1}
+{"start": 323669, "end": 325469, "anomaly_type": 1}
+{"start": 323822, "end": 325622, "anomaly_type": 1}
+{"start": 323922, "end": 325722, "anomaly_type": 1}
+{"start": 324022, "end": 325822, "anomaly_type": 1}
+{"start": 324122, "end": 325922, "anomaly_type": 1}
+{"start": 324222, "end": 326022, "anomaly_type": 1}
+{"start": 324322, "end": 326122, "anomaly_type": 1}
+{"start": 324422, "end": 326222, "anomaly_type": 1}
+{"start": 324522, "end": 326322, "anomaly_type": 1}
+{"start": 324622, "end": 326422, "anomaly_type": 1}
+{"start": 324722, "end": 326522, "anomaly_type": 1}
+{"start": 324822, "end": 326622, "anomaly_type": 1}
+{"start": 324922, "end": 326722, "anomaly_type": 1}
+{"start": 325022, "end": 326822, "anomaly_type": 1}
+{"start": 325226, "end": 327026, "anomaly_type": 1}
+{"start": 325326, "end": 327126, "anomaly_type": 1}
+{"start": 325426, "end": 327226, "anomaly_type": 1}
+{"start": 325526, "end": 327326, "anomaly_type": 1}
+{"start": 325626, "end": 327426, "anomaly_type": 1}
+{"start": 325726, "end": 327526, "anomaly_type": 1}
+{"start": 325826, "end": 327626, "anomaly_type": 1}
+{"start": 325926, "end": 327726, "anomaly_type": 1}
+{"start": 326026, "end": 327826, "anomaly_type": 1}
+{"start": 326126, "end": 327926, "anomaly_type": 1}
+{"start": 325778, "end": 327578, "anomaly_type": 1}
+{"start": 325878, "end": 327678, "anomaly_type": 1}
+{"start": 325978, "end": 327778, "anomaly_type": 1}
+{"start": 326078, "end": 327878, "anomaly_type": 1}
+{"start": 326778, "end": 328578, "anomaly_type": 1}
+{"start": 326878, "end": 328678, "anomaly_type": 1}
+{"start": 326978, "end": 328778, "anomaly_type": 1}
+{"start": 327078, "end": 328878, "anomaly_type": 1}
+{"start": 326777, "end": 328577, "anomaly_type": 1}
+{"start": 326877, "end": 328677, "anomaly_type": 1}
+{"start": 326977, "end": 328777, "anomaly_type": 1}
+{"start": 327077, "end": 328877, "anomaly_type": 1}
+{"start": 327477, "end": 329277, "anomaly_type": 1}
+{"start": 327577, "end": 329377, "anomaly_type": 1}
+{"start": 327677, "end": 329477, "anomaly_type": 1}
+{"start": 327508, "end": 329308, "anomaly_type": 1}
+{"start": 327608, "end": 329408, "anomaly_type": 1}
+{"start": 327708, "end": 329508, "anomaly_type": 1}
+{"start": 329166, "end": 330966, "anomaly_type": 1}
+{"start": 329168, "end": 330968, "anomaly_type": 1}
+{"start": 331273, "end": 333073, "anomaly_type": 1}
+{"start": 331373, "end": 333173, "anomaly_type": 1}
+{"start": 331473, "end": 333273, "anomaly_type": 1}
+{"start": 331573, "end": 333373, "anomaly_type": 1}
+{"start": 331673, "end": 333473, "anomaly_type": 1}
+{"start": 346714, "end": 348514, "anomaly_type": 1}
+{"start": 346814, "end": 348614, "anomaly_type": 1}
+{"start": 346914, "end": 348714, "anomaly_type": 1}
+{"start": 347014, "end": 348814, "anomaly_type": 1}
+{"start": 347114, "end": 348914, "anomaly_type": 1}
+{"start": 347214, "end": 349014, "anomaly_type": 1}
+{"start": 349089, "end": 350889, "anomaly_type": 1}
+{"start": 349189, "end": 350989, "anomaly_type": 1}
+{"start": 349024, "end": 350824, "anomaly_type": 1}
+{"start": 349124, "end": 350924, "anomaly_type": 1}
+{"start": 349224, "end": 351024, "anomaly_type": 1}
+{"start": 349324, "end": 351124, "anomaly_type": 1}
+{"start": 349424, "end": 351224, "anomaly_type": 1}
+{"start": 349524, "end": 351324, "anomaly_type": 1}
+{"start": 349624, "end": 351424, "anomaly_type": 1}
+{"start": 349089, "end": 350889, "anomaly_type": 1}
+{"start": 349189, "end": 350989, "anomaly_type": 1}
+{"start": 349289, "end": 351089, "anomaly_type": 1}
+{"start": 349389, "end": 351189, "anomaly_type": 1}
+{"start": 349489, "end": 351289, "anomaly_type": 1}
+{"start": 349589, "end": 351389, "anomaly_type": 1}
+{"start": 349989, "end": 351789, "anomaly_type": 1}
+{"start": 350089, "end": 351889, "anomaly_type": 1}
+{"start": 350189, "end": 351989, "anomaly_type": 1}
+{"start": 350052, "end": 351852, "anomaly_type": 1}
+{"start": 350152, "end": 351952, "anomaly_type": 1}
+{"start": 351243, "end": 353043, "anomaly_type": 1}
+{"start": 351343, "end": 353143, "anomaly_type": 1}
+{"start": 351443, "end": 353243, "anomaly_type": 1}
+{"start": 351543, "end": 353343, "anomaly_type": 1}
+{"start": 351643, "end": 353443, "anomaly_type": 1}
+{"start": 351946, "end": 353746, "anomaly_type": 1}
+{"start": 352046, "end": 353846, "anomaly_type": 1}
+{"start": 352146, "end": 353946, "anomaly_type": 1}
+{"start": 352246, "end": 354046, "anomaly_type": 1}
+{"start": 353556, "end": 355356, "anomaly_type": 1}
+{"start": 353656, "end": 355456, "anomaly_type": 1}
+{"start": 353548, "end": 355348, "anomaly_type": 1}
+{"start": 353648, "end": 355448, "anomaly_type": 1}
+{"start": 353748, "end": 355548, "anomaly_type": 1}
+{"start": 353848, "end": 355648, "anomaly_type": 1}
+{"start": 353948, "end": 355748, "anomaly_type": 1}
+{"start": 354048, "end": 355848, "anomaly_type": 1}
+{"start": 354148, "end": 355948, "anomaly_type": 1}
+{"start": 354248, "end": 356048, "anomaly_type": 1}
+{"start": 354348, "end": 356148, "anomaly_type": 1}
+{"start": 355213, "end": 357013, "anomaly_type": 1}
+{"start": 355313, "end": 357113, "anomaly_type": 1}
+{"start": 355413, "end": 357213, "anomaly_type": 1}
+{"start": 355513, "end": 357313, "anomaly_type": 1}
+{"start": 355613, "end": 357413, "anomaly_type": 1}
+{"start": 355713, "end": 357513, "anomaly_type": 1}
+{"start": 355813, "end": 357613, "anomaly_type": 1}
+{"start": 355913, "end": 357713, "anomaly_type": 1}
+{"start": 356013, "end": 357813, "anomaly_type": 1}
+{"start": 356113, "end": 357913, "anomaly_type": 1}
+{"start": 356213, "end": 358013, "anomaly_type": 1}
+{"start": 356313, "end": 358113, "anomaly_type": 1}
+{"start": 356413, "end": 358213, "anomaly_type": 1}
+{"start": 356513, "end": 358313, "anomaly_type": 1}
+{"start": 357030, "end": 358830, "anomaly_type": 1}
+{"start": 357130, "end": 358930, "anomaly_type": 1}
+{"start": 357230, "end": 359030, "anomaly_type": 1}
+{"start": 357330, "end": 359130, "anomaly_type": 1}
+{"start": 357430, "end": 359230, "anomaly_type": 1}
+{"start": 357530, "end": 359330, "anomaly_type": 1}
+{"start": 357630, "end": 359430, "anomaly_type": 1}
+{"start": 357730, "end": 359530, "anomaly_type": 1}
+{"start": 357830, "end": 359630, "anomaly_type": 1}
+{"start": 357930, "end": 359730, "anomaly_type": 1}
+{"start": 358030, "end": 359830, "anomaly_type": 1}
+{"start": 358130, "end": 359930, "anomaly_type": 1}
+{"start": 358230, "end": 360030, "anomaly_type": 1}
+{"start": 358602, "end": 360402, "anomaly_type": 1}
+{"start": 358702, "end": 360502, "anomaly_type": 1}
+{"start": 358802, "end": 360602, "anomaly_type": 1}
+{"start": 359817, "end": 361617, "anomaly_type": 1}
+{"start": 359917, "end": 361717, "anomaly_type": 1}
+{"start": 360017, "end": 361817, "anomaly_type": 1}
+{"start": 360117, "end": 361917, "anomaly_type": 1}
+{"start": 360217, "end": 362017, "anomaly_type": 1}
+{"start": 360544, "end": 362344, "anomaly_type": 1}
+{"start": 360644, "end": 362444, "anomaly_type": 1}
+{"start": 360744, "end": 362544, "anomaly_type": 1}
+{"start": 360844, "end": 362644, "anomaly_type": 1}
+{"start": 361777, "end": 363577, "anomaly_type": 1}
+{"start": 361877, "end": 363677, "anomaly_type": 1}
+{"start": 361977, "end": 363777, "anomaly_type": 1}
+{"start": 362077, "end": 363877, "anomaly_type": 1}
+{"start": 362177, "end": 363977, "anomaly_type": 1}
+{"start": 362277, "end": 364077, "anomaly_type": 1}
+{"start": 376446, "end": 378246, "anomaly_type": 1}
+{"start": 376546, "end": 378346, "anomaly_type": 1}
+{"start": 376646, "end": 378446, "anomaly_type": 1}
+{"start": 376746, "end": 378546, "anomaly_type": 1}
+{"start": 376846, "end": 378646, "anomaly_type": 1}
+{"start": 376946, "end": 378746, "anomaly_type": 1}
+{"start": 377046, "end": 378846, "anomaly_type": 1}
+{"start": 377146, "end": 378946, "anomaly_type": 1}
+{"start": 377246, "end": 379046, "anomaly_type": 1}
+{"start": 377346, "end": 379146, "anomaly_type": 1}
+{"start": 377446, "end": 379246, "anomaly_type": 1}
+{"start": 377546, "end": 379346, "anomaly_type": 1}
+{"start": 377646, "end": 379446, "anomaly_type": 1}
+{"start": 377746, "end": 379546, "anomaly_type": 1}
+{"start": 377056, "end": 378856, "anomaly_type": 1}
+{"start": 377156, "end": 378956, "anomaly_type": 1}
+{"start": 377256, "end": 379056, "anomaly_type": 1}
+{"start": 377356, "end": 379156, "anomaly_type": 1}
+{"start": 377456, "end": 379256, "anomaly_type": 1}
+{"start": 377556, "end": 379356, "anomaly_type": 1}
+{"start": 377656, "end": 379456, "anomaly_type": 1}
+{"start": 377756, "end": 379556, "anomaly_type": 1}
+{"start": 377856, "end": 379656, "anomaly_type": 1}
+{"start": 377956, "end": 379756, "anomaly_type": 1}
+{"start": 378056, "end": 379856, "anomaly_type": 1}
+{"start": 378156, "end": 379956, "anomaly_type": 1}
+{"start": 378256, "end": 380056, "anomaly_type": 1}
+{"start": 378356, "end": 380156, "anomaly_type": 1}
+{"start": 378825, "end": 380625, "anomaly_type": 1}
+{"start": 378925, "end": 380725, "anomaly_type": 1}
+{"start": 379025, "end": 380825, "anomaly_type": 1}
+{"start": 379125, "end": 380925, "anomaly_type": 1}
+{"start": 379225, "end": 381025, "anomaly_type": 1}
+{"start": 387792, "end": 389592, "anomaly_type": 1}
+{"start": 387892, "end": 389692, "anomaly_type": 1}
+{"start": 387992, "end": 389792, "anomaly_type": 1}
+{"start": 388092, "end": 389892, "anomaly_type": 1}
+{"start": 387822, "end": 389622, "anomaly_type": 1}
+{"start": 387922, "end": 389722, "anomaly_type": 1}
+{"start": 388022, "end": 389822, "anomaly_type": 1}
+{"start": 388122, "end": 389922, "anomaly_type": 1}
+{"start": 388222, "end": 390022, "anomaly_type": 1}
+{"start": 388322, "end": 390122, "anomaly_type": 1}
+{"start": 388422, "end": 390222, "anomaly_type": 1}
+{"start": 388522, "end": 390322, "anomaly_type": 1}
+{"start": 388622, "end": 390422, "anomaly_type": 1}
+{"start": 388722, "end": 390522, "anomaly_type": 1}
+{"start": 388980, "end": 390780, "anomaly_type": 1}
+{"start": 389080, "end": 390880, "anomaly_type": 1}
+{"start": 389180, "end": 390980, "anomaly_type": 1}
+{"start": 389280, "end": 391080, "anomaly_type": 1}
+{"start": 389380, "end": 391180, "anomaly_type": 1}
+{"start": 396177, "end": 397977, "anomaly_type": 1}
+{"start": 396277, "end": 398077, "anomaly_type": 1}
+{"start": 396377, "end": 398177, "anomaly_type": 1}
+{"start": 396477, "end": 398277, "anomaly_type": 1}
+{"start": 396210, "end": 398010, "anomaly_type": 1}
+{"start": 396310, "end": 398110, "anomaly_type": 1}
+{"start": 396410, "end": 398210, "anomaly_type": 1}
+{"start": 396510, "end": 398310, "anomaly_type": 1}
+{"start": 396610, "end": 398410, "anomaly_type": 1}
+{"start": 396710, "end": 398510, "anomaly_type": 1}
+{"start": 396810, "end": 398610, "anomaly_type": 1}
+{"start": 396910, "end": 398710, "anomaly_type": 1}
+{"start": 397010, "end": 398810, "anomaly_type": 1}
+{"start": 397110, "end": 398910, "anomaly_type": 1}
+{"start": 397015, "end": 398815, "anomaly_type": 1}
+{"start": 397115, "end": 398915, "anomaly_type": 1}
+{"start": 397215, "end": 399015, "anomaly_type": 1}
+{"start": 397315, "end": 399115, "anomaly_type": 1}
+{"start": 397415, "end": 399215, "anomaly_type": 1}
+{"start": 398493, "end": 400293, "anomaly_type": 1}
+{"start": 398593, "end": 400393, "anomaly_type": 1}
+{"start": 398693, "end": 400493, "anomaly_type": 1}
+{"start": 398793, "end": 400593, "anomaly_type": 1}
+{"start": 398893, "end": 400693, "anomaly_type": 1}
+{"start": 398993, "end": 400793, "anomaly_type": 1}
+{"start": 399434, "end": 401234, "anomaly_type": 1}
+{"start": 399534, "end": 401334, "anomaly_type": 1}
+{"start": 399634, "end": 401434, "anomaly_type": 1}
+{"start": 399734, "end": 401534, "anomaly_type": 1}
+{"start": 399834, "end": 401634, "anomaly_type": 1}
+{"start": 399934, "end": 401734, "anomaly_type": 1}
+{"start": 400034, "end": 401834, "anomaly_type": 1}
+{"start": 400134, "end": 401934, "anomaly_type": 1}
+{"start": 400234, "end": 402034, "anomaly_type": 1}
+{"start": 400334, "end": 402134, "anomaly_type": 1}
+{"start": 400434, "end": 402234, "anomaly_type": 1}
+{"start": 400534, "end": 402334, "anomaly_type": 1}
+{"start": 400634, "end": 402434, "anomaly_type": 1}
+{"start": 400734, "end": 402534, "anomaly_type": 1}
+{"start": 401203, "end": 403003, "anomaly_type": 1}
+{"start": 401303, "end": 403103, "anomaly_type": 1}
+{"start": 401403, "end": 403203, "anomaly_type": 1}
+{"start": 401503, "end": 403303, "anomaly_type": 1}
+{"start": 401603, "end": 403403, "anomaly_type": 1}
+{"start": 401703, "end": 403503, "anomaly_type": 1}
+{"start": 401803, "end": 403603, "anomaly_type": 1}
+{"start": 401903, "end": 403703, "anomaly_type": 1}
+{"start": 402003, "end": 403803, "anomaly_type": 1}
+{"start": 402103, "end": 403903, "anomaly_type": 1}
+{"start": 402203, "end": 404003, "anomaly_type": 1}
+{"start": 404707, "end": 406507, "anomaly_type": 1}
+{"start": 404807, "end": 406607, "anomaly_type": 1}
+{"start": 404907, "end": 406707, "anomaly_type": 1}
+{"start": 405007, "end": 406807, "anomaly_type": 1}
+{"start": 404663, "end": 406463, "anomaly_type": 1}
+{"start": 404763, "end": 406563, "anomaly_type": 1}
+{"start": 404863, "end": 406663, "anomaly_type": 1}
+{"start": 404963, "end": 406763, "anomaly_type": 1}
+{"start": 405063, "end": 406863, "anomaly_type": 1}
+{"start": 405163, "end": 406963, "anomaly_type": 1}
+{"start": 405263, "end": 407063, "anomaly_type": 1}
+{"start": 405363, "end": 407163, "anomaly_type": 1}
+{"start": 405463, "end": 407263, "anomaly_type": 1}
+{"start": 405563, "end": 407363, "anomaly_type": 1}
+{"start": 405663, "end": 407463, "anomaly_type": 1}
+{"start": 405549, "end": 407349, "anomaly_type": 1}
+{"start": 405649, "end": 407449, "anomaly_type": 1}
+{"start": 405749, "end": 407549, "anomaly_type": 1}
+{"start": 405849, "end": 407649, "anomaly_type": 1}
+{"start": 405949, "end": 407749, "anomaly_type": 1}
+{"start": 426240, "end": 428040, "anomaly_type": 1}
+{"start": 426340, "end": 428140, "anomaly_type": 1}
+{"start": 426440, "end": 428240, "anomaly_type": 1}
+{"start": 426540, "end": 428340, "anomaly_type": 1}
+{"start": 426258, "end": 428058, "anomaly_type": 1}
+{"start": 426358, "end": 428158, "anomaly_type": 1}
+{"start": 426458, "end": 428258, "anomaly_type": 1}
+{"start": 426558, "end": 428358, "anomaly_type": 1}
+{"start": 426658, "end": 428458, "anomaly_type": 1}
+{"start": 426758, "end": 428558, "anomaly_type": 1}
+{"start": 426858, "end": 428658, "anomaly_type": 1}
+{"start": 426958, "end": 428758, "anomaly_type": 1}
+{"start": 427058, "end": 428858, "anomaly_type": 1}
+{"start": 427158, "end": 428958, "anomaly_type": 1}
+{"start": 427196, "end": 428996, "anomaly_type": 1}
+{"start": 427296, "end": 429096, "anomaly_type": 1}
+{"start": 427396, "end": 429196, "anomaly_type": 1}
+{"start": 427496, "end": 429296, "anomaly_type": 1}
+{"start": 427596, "end": 429396, "anomaly_type": 1}
+{"start": 427696, "end": 429496, "anomaly_type": 1}
+{"start": 427796, "end": 429596, "anomaly_type": 1}
+{"start": 427896, "end": 429696, "anomaly_type": 1}
+{"start": 427996, "end": 429796, "anomaly_type": 1}
+{"start": 428096, "end": 429896, "anomaly_type": 1}
+{"start": 428196, "end": 429996, "anomaly_type": 1}
+{"start": 428296, "end": 430096, "anomaly_type": 1}
+{"start": 428396, "end": 430196, "anomaly_type": 1}
+{"start": 428496, "end": 430296, "anomaly_type": 1}
+{"start": 428876, "end": 430676, "anomaly_type": 1}
+{"start": 428976, "end": 430776, "anomaly_type": 1}
+{"start": 429076, "end": 430876, "anomaly_type": 1}
+{"start": 429176, "end": 430976, "anomaly_type": 1}
+{"start": 429276, "end": 431076, "anomaly_type": 1}
+{"start": 429376, "end": 431176, "anomaly_type": 1}
+{"start": 429476, "end": 431276, "anomaly_type": 1}
+{"start": 429576, "end": 431376, "anomaly_type": 1}
+{"start": 429676, "end": 431476, "anomaly_type": 1}
+{"start": 429776, "end": 431576, "anomaly_type": 1}
+{"start": 429876, "end": 431676, "anomaly_type": 1}
+{"start": 429976, "end": 431776, "anomaly_type": 1}
+{"start": 430076, "end": 431876, "anomaly_type": 1}
+{"start": 430176, "end": 431976, "anomaly_type": 1}
+{"start": 432027, "end": 433827, "anomaly_type": 1}
+{"start": 432127, "end": 433927, "anomaly_type": 1}
+{"start": 432227, "end": 434027, "anomaly_type": 1}
+{"start": 432327, "end": 434127, "anomaly_type": 1}
+{"start": 432427, "end": 434227, "anomaly_type": 1}
+{"start": 432527, "end": 434327, "anomaly_type": 1}
+{"start": 432627, "end": 434427, "anomaly_type": 1}
+{"start": 432727, "end": 434527, "anomaly_type": 1}
+{"start": 432827, "end": 434627, "anomaly_type": 1}
+{"start": 432927, "end": 434727, "anomaly_type": 1}
+{"start": 433027, "end": 434827, "anomaly_type": 1}
+{"start": 433127, "end": 434927, "anomaly_type": 1}
+{"start": 433227, "end": 435027, "anomaly_type": 1}
+{"start": 433327, "end": 435127, "anomaly_type": 1}
+{"start": 434207, "end": 436007, "anomaly_type": 1}
+{"start": 434307, "end": 436107, "anomaly_type": 1}
+{"start": 434407, "end": 436207, "anomaly_type": 1}
+{"start": 434507, "end": 436307, "anomaly_type": 1}
+{"start": 434607, "end": 436407, "anomaly_type": 1}
+{"start": 434707, "end": 436507, "anomaly_type": 1}
+{"start": 434807, "end": 436607, "anomaly_type": 1}
+{"start": 434907, "end": 436707, "anomaly_type": 1}
+{"start": 435007, "end": 436807, "anomaly_type": 1}
+{"start": 435107, "end": 436907, "anomaly_type": 1}
+{"start": 435207, "end": 437007, "anomaly_type": 1}
+{"start": 435654, "end": 437454, "anomaly_type": 1}
+{"start": 435754, "end": 437554, "anomaly_type": 1}
+{"start": 435854, "end": 437654, "anomaly_type": 1}
+{"start": 435954, "end": 437754, "anomaly_type": 1}
+{"start": 436054, "end": 437854, "anomaly_type": 1}
+{"start": 436154, "end": 437954, "anomaly_type": 1}
+{"start": 436254, "end": 438054, "anomaly_type": 1}
+{"start": 443363, "end": 445163, "anomaly_type": 1}
+{"start": 443463, "end": 445263, "anomaly_type": 1}
+{"start": 443563, "end": 445363, "anomaly_type": 1}
+{"start": 443663, "end": 445463, "anomaly_type": 1}
+{"start": 443388, "end": 445188, "anomaly_type": 1}
+{"start": 443488, "end": 445288, "anomaly_type": 1}
+{"start": 443588, "end": 445388, "anomaly_type": 1}
+{"start": 443688, "end": 445488, "anomaly_type": 1}
+{"start": 443788, "end": 445588, "anomaly_type": 1}
+{"start": 443888, "end": 445688, "anomaly_type": 1}
+{"start": 443988, "end": 445788, "anomaly_type": 1}
+{"start": 444088, "end": 445888, "anomaly_type": 1}
+{"start": 444188, "end": 445988, "anomaly_type": 1}
+{"start": 444288, "end": 446088, "anomaly_type": 1}
+{"start": 444017, "end": 445817, "anomaly_type": 1}
+{"start": 444117, "end": 445917, "anomaly_type": 1}
+{"start": 444217, "end": 446017, "anomaly_type": 1}
+{"start": 444317, "end": 446117, "anomaly_type": 1}
+{"start": 444417, "end": 446217, "anomaly_type": 1}
+{"start": 444517, "end": 446317, "anomaly_type": 1}
+{"start": 444617, "end": 446417, "anomaly_type": 1}
+{"start": 444717, "end": 446517, "anomaly_type": 1}
+{"start": 444817, "end": 446617, "anomaly_type": 1}
+{"start": 444647, "end": 446447, "anomaly_type": 1}
+{"start": 444747, "end": 446547, "anomaly_type": 1}
+{"start": 444847, "end": 446647, "anomaly_type": 1}
+{"start": 446879, "end": 448679, "anomaly_type": 1}
+{"start": 446979, "end": 448779, "anomaly_type": 1}
+{"start": 447079, "end": 448879, "anomaly_type": 1}
+{"start": 447179, "end": 448979, "anomaly_type": 1}
+{"start": 447279, "end": 449079, "anomaly_type": 1}
+{"start": 446880, "end": 448680, "anomaly_type": 1}
+{"start": 446980, "end": 448780, "anomaly_type": 1}
+{"start": 447080, "end": 448880, "anomaly_type": 1}
+{"start": 447180, "end": 448980, "anomaly_type": 1}
+{"start": 447280, "end": 449080, "anomaly_type": 1}
+{"start": 447380, "end": 449180, "anomaly_type": 1}
+{"start": 447480, "end": 449280, "anomaly_type": 1}
+{"start": 447580, "end": 449380, "anomaly_type": 1}
+{"start": 447680, "end": 449480, "anomaly_type": 1}
+{"start": 447780, "end": 449580, "anomaly_type": 1}
+{"start": 447488, "end": 449288, "anomaly_type": 1}
+{"start": 447588, "end": 449388, "anomaly_type": 1}
+{"start": 447688, "end": 449488, "anomaly_type": 1}
+{"start": 447788, "end": 449588, "anomaly_type": 1}
+{"start": 447888, "end": 449688, "anomaly_type": 1}
+{"start": 447988, "end": 449788, "anomaly_type": 1}
+{"start": 448088, "end": 449888, "anomaly_type": 1}
+{"start": 449771, "end": 451571, "anomaly_type": 1}
+{"start": 449871, "end": 451671, "anomaly_type": 1}
+{"start": 449971, "end": 451771, "anomaly_type": 1}
+{"start": 450071, "end": 451871, "anomaly_type": 1}
+{"start": 449797, "end": 451597, "anomaly_type": 1}
+{"start": 449897, "end": 451697, "anomaly_type": 1}
+{"start": 449997, "end": 451797, "anomaly_type": 1}
+{"start": 450097, "end": 451897, "anomaly_type": 1}
+{"start": 450197, "end": 451997, "anomaly_type": 1}
+{"start": 450297, "end": 452097, "anomaly_type": 1}
+{"start": 450397, "end": 452197, "anomaly_type": 1}
+{"start": 450497, "end": 452297, "anomaly_type": 1}
+{"start": 450597, "end": 452397, "anomaly_type": 1}
+{"start": 450697, "end": 452497, "anomaly_type": 1}
+{"start": 450436, "end": 452236, "anomaly_type": 1}
+{"start": 450536, "end": 452336, "anomaly_type": 1}
+{"start": 450636, "end": 452436, "anomaly_type": 1}
+{"start": 450736, "end": 452536, "anomaly_type": 1}
+{"start": 450836, "end": 452636, "anomaly_type": 1}
+{"start": 450936, "end": 452736, "anomaly_type": 1}
+{"start": 451036, "end": 452836, "anomaly_type": 1}
+{"start": 451136, "end": 452936, "anomaly_type": 1}
+{"start": 451236, "end": 453036, "anomaly_type": 1}
+{"start": 451336, "end": 453136, "anomaly_type": 1}
+{"start": 457800, "end": 459600, "anomaly_type": 1}
+{"start": 457900, "end": 459700, "anomaly_type": 1}
+{"start": 458000, "end": 459800, "anomaly_type": 1}
+{"start": 458100, "end": 459900, "anomaly_type": 1}
+{"start": 457801, "end": 459601, "anomaly_type": 1}
+{"start": 457901, "end": 459701, "anomaly_type": 1}
+{"start": 458001, "end": 459801, "anomaly_type": 1}
+{"start": 458101, "end": 459901, "anomaly_type": 1}
+{"start": 458201, "end": 460001, "anomaly_type": 1}
+{"start": 458301, "end": 460101, "anomaly_type": 1}
+{"start": 458401, "end": 460201, "anomaly_type": 1}
+{"start": 458501, "end": 460301, "anomaly_type": 1}
+{"start": 458601, "end": 460401, "anomaly_type": 1}
+{"start": 458701, "end": 460501, "anomaly_type": 1}
+{"start": 458783, "end": 460583, "anomaly_type": 1}
+{"start": 458883, "end": 460683, "anomaly_type": 1}
+{"start": 458983, "end": 460783, "anomaly_type": 1}
+{"start": 459083, "end": 460883, "anomaly_type": 1}
+{"start": 459183, "end": 460983, "anomaly_type": 1}
+{"start": 459283, "end": 461083, "anomaly_type": 1}
+{"start": 459383, "end": 461183, "anomaly_type": 1}
+{"start": 459483, "end": 461283, "anomaly_type": 1}
+{"start": 459583, "end": 461383, "anomaly_type": 1}
+{"start": 459683, "end": 461483, "anomaly_type": 1}
+{"start": 459783, "end": 461583, "anomaly_type": 1}
+{"start": 459883, "end": 461683, "anomaly_type": 1}
+{"start": 459983, "end": 461783, "anomaly_type": 1}
+{"start": 460083, "end": 461883, "anomaly_type": 1}
+{"start": 515593, "end": 517393, "anomaly_type": 1}
+{"start": 515693, "end": 517493, "anomaly_type": 1}
+{"start": 515793, "end": 517593, "anomaly_type": 1}
+{"start": 515893, "end": 517693, "anomaly_type": 1}
+{"start": 515993, "end": 517793, "anomaly_type": 1}
+{"start": 516093, "end": 517893, "anomaly_type": 1}
+{"start": 516193, "end": 517993, "anomaly_type": 1}
+{"start": 516293, "end": 518093, "anomaly_type": 1}
+{"start": 516393, "end": 518193, "anomaly_type": 1}
+{"start": 516493, "end": 518293, "anomaly_type": 1}
+{"start": 516593, "end": 518393, "anomaly_type": 1}
+{"start": 516693, "end": 518493, "anomaly_type": 1}
+{"start": 516793, "end": 518593, "anomaly_type": 1}
+{"start": 516893, "end": 518693, "anomaly_type": 1}
+{"start": 516563, "end": 518363, "anomaly_type": 1}
+{"start": 516663, "end": 518463, "anomaly_type": 1}
+{"start": 516763, "end": 518563, "anomaly_type": 1}
+{"start": 516863, "end": 518663, "anomaly_type": 1}
+{"start": 516963, "end": 518763, "anomaly_type": 1}
+{"start": 517063, "end": 518863, "anomaly_type": 1}
+{"start": 517163, "end": 518963, "anomaly_type": 1}
+{"start": 517263, "end": 519063, "anomaly_type": 1}
+{"start": 517363, "end": 519163, "anomaly_type": 1}
+{"start": 517463, "end": 519263, "anomaly_type": 1}
+{"start": 517563, "end": 519363, "anomaly_type": 1}
+{"start": 517663, "end": 519463, "anomaly_type": 1}
+{"start": 517527, "end": 519327, "anomaly_type": 1}
+{"start": 517627, "end": 519427, "anomaly_type": 1}
+{"start": 517727, "end": 519527, "anomaly_type": 1}
+{"start": 518327, "end": 520127, "anomaly_type": 1}
+{"start": 518348, "end": 520148, "anomaly_type": 1}
+{"start": 538265, "end": 540065, "anomaly_type": 1}
+{"start": 538365, "end": 540165, "anomaly_type": 1}
+{"start": 538465, "end": 540265, "anomaly_type": 1}
+{"start": 538565, "end": 540365, "anomaly_type": 1}
+{"start": 538280, "end": 540080, "anomaly_type": 1}
+{"start": 538380, "end": 540180, "anomaly_type": 1}
+{"start": 538480, "end": 540280, "anomaly_type": 1}
+{"start": 538580, "end": 540380, "anomaly_type": 1}
+{"start": 538680, "end": 540480, "anomaly_type": 1}
+{"start": 538780, "end": 540580, "anomaly_type": 1}
+{"start": 538880, "end": 540680, "anomaly_type": 1}
+{"start": 538980, "end": 540780, "anomaly_type": 1}
+{"start": 539080, "end": 540880, "anomaly_type": 1}
+{"start": 539180, "end": 540980, "anomaly_type": 1}
+{"start": 539070, "end": 540870, "anomaly_type": 1}
+{"start": 539170, "end": 540970, "anomaly_type": 1}
+{"start": 539270, "end": 541070, "anomaly_type": 1}
+{"start": 539370, "end": 541170, "anomaly_type": 1}
+{"start": 539470, "end": 541270, "anomaly_type": 1}
+{"start": 562501, "end": 564301, "anomaly_type": 1}
+{"start": 562601, "end": 564401, "anomaly_type": 1}
+{"start": 562701, "end": 564501, "anomaly_type": 1}
+{"start": 562801, "end": 564601, "anomaly_type": 1}
+{"start": 562901, "end": 564701, "anomaly_type": 1}
+{"start": 563001, "end": 564801, "anomaly_type": 1}
+{"start": 563539, "end": 565339, "anomaly_type": 1}
+{"start": 563639, "end": 565439, "anomaly_type": 1}
+{"start": 563739, "end": 565539, "anomaly_type": 1}
+{"start": 563839, "end": 565639, "anomaly_type": 1}
+{"start": 563939, "end": 565739, "anomaly_type": 1}
+{"start": 564039, "end": 565839, "anomaly_type": 1}
+{"start": 564139, "end": 565939, "anomaly_type": 1}
+{"start": 564239, "end": 566039, "anomaly_type": 1}
+{"start": 564339, "end": 566139, "anomaly_type": 1}
+{"start": 566457, "end": 568257, "anomaly_type": 1}
+{"start": 566557, "end": 568357, "anomaly_type": 1}
+{"start": 566657, "end": 568457, "anomaly_type": 1}
+{"start": 566757, "end": 568557, "anomaly_type": 1}
+{"start": 567592, "end": 569392, "anomaly_type": 1}
+{"start": 567692, "end": 569492, "anomaly_type": 1}
+{"start": 567792, "end": 569592, "anomaly_type": 1}
+{"start": 567892, "end": 569692, "anomaly_type": 1}
+{"start": 567992, "end": 569792, "anomaly_type": 1}
+{"start": 568092, "end": 569892, "anomaly_type": 1}
+{"start": 568192, "end": 569992, "anomaly_type": 1}
+{"start": 568292, "end": 570092, "anomaly_type": 1}
+{"start": 568392, "end": 570192, "anomaly_type": 1}
+{"start": 568492, "end": 570292, "anomaly_type": 1}
+{"start": 568592, "end": 570392, "anomaly_type": 1}
+{"start": 568692, "end": 570492, "anomaly_type": 1}
+{"start": 580334, "end": 582134, "anomaly_type": 1}
+{"start": 580434, "end": 582234, "anomaly_type": 1}
+{"start": 580534, "end": 582334, "anomaly_type": 1}
+{"start": 580634, "end": 582434, "anomaly_type": 1}
+{"start": 580734, "end": 582534, "anomaly_type": 1}
+{"start": 580834, "end": 582634, "anomaly_type": 1}
+{"start": 580934, "end": 582734, "anomaly_type": 1}
+{"start": 581034, "end": 582834, "anomaly_type": 1}
+{"start": 581134, "end": 582934, "anomaly_type": 1}
+{"start": 581234, "end": 583034, "anomaly_type": 1}
+{"start": 581334, "end": 583134, "anomaly_type": 1}
+{"start": 581434, "end": 583234, "anomaly_type": 1}
+{"start": 582264, "end": 584064, "anomaly_type": 1}
+{"start": 582364, "end": 584164, "anomaly_type": 1}
+{"start": 582464, "end": 584264, "anomaly_type": 1}
+{"start": 582564, "end": 584364, "anomaly_type": 1}
+{"start": 582664, "end": 584464, "anomaly_type": 1}
+{"start": 582764, "end": 584564, "anomaly_type": 1}
+{"start": 582864, "end": 584664, "anomaly_type": 1}
+{"start": 582964, "end": 584764, "anomaly_type": 1}
+{"start": 583064, "end": 584864, "anomaly_type": 1}
+{"start": 583164, "end": 584964, "anomaly_type": 1}
+{"start": 583264, "end": 585064, "anomaly_type": 1}
+{"start": 583364, "end": 585164, "anomaly_type": 1}
+{"start": 583978, "end": 585778, "anomaly_type": 1}
+{"start": 584078, "end": 585878, "anomaly_type": 1}
+{"start": 584178, "end": 585978, "anomaly_type": 1}
+{"start": 584278, "end": 586078, "anomaly_type": 1}
+{"start": 584378, "end": 586178, "anomaly_type": 1}
+{"start": 584478, "end": 586278, "anomaly_type": 1}
+{"start": 584578, "end": 586378, "anomaly_type": 1}
+{"start": 584678, "end": 586478, "anomaly_type": 1}
+{"start": 585671, "end": 587471, "anomaly_type": 1}
+{"start": 585771, "end": 587571, "anomaly_type": 1}
+{"start": 585871, "end": 587671, "anomaly_type": 1}
+{"start": 585971, "end": 587771, "anomaly_type": 1}
+{"start": 586071, "end": 587871, "anomaly_type": 1}
+{"start": 586894, "end": 588694, "anomaly_type": 1}
+{"start": 586994, "end": 588794, "anomaly_type": 1}
+{"start": 587094, "end": 588894, "anomaly_type": 1}
+{"start": 587194, "end": 588994, "anomaly_type": 1}
+{"start": 587294, "end": 589094, "anomaly_type": 1}
+{"start": 587394, "end": 589194, "anomaly_type": 1}
+{"start": 590526, "end": 592326, "anomaly_type": 1}
+{"start": 590626, "end": 592426, "anomaly_type": 1}
+{"start": 590726, "end": 592526, "anomaly_type": 1}
+{"start": 590826, "end": 592626, "anomaly_type": 1}
+{"start": 590926, "end": 592726, "anomaly_type": 1}
+{"start": 591713, "end": 593513, "anomaly_type": 1}
+{"start": 591813, "end": 593613, "anomaly_type": 1}
+{"start": 591913, "end": 593713, "anomaly_type": 1}
+{"start": 592013, "end": 593813, "anomaly_type": 1}
+{"start": 592113, "end": 593913, "anomaly_type": 1}
+{"start": 592213, "end": 594013, "anomaly_type": 1}
+{"start": 593050, "end": 594850, "anomaly_type": 1}
+{"start": 593150, "end": 594950, "anomaly_type": 1}
+{"start": 593250, "end": 595050, "anomaly_type": 1}
+{"start": 593350, "end": 595150, "anomaly_type": 1}
+{"start": 593450, "end": 595250, "anomaly_type": 1}
+{"start": 593550, "end": 595350, "anomaly_type": 1}
+{"start": 594346, "end": 596146, "anomaly_type": 1}
+{"start": 594446, "end": 596246, "anomaly_type": 1}
+{"start": 594546, "end": 596346, "anomaly_type": 1}
+{"start": 594646, "end": 596446, "anomaly_type": 1}
+{"start": 594746, "end": 596546, "anomaly_type": 1}
+{"start": 594846, "end": 596646, "anomaly_type": 1}
+{"start": 600072, "end": 601872, "anomaly_type": 1}
+{"start": 600172, "end": 601972, "anomaly_type": 1}
+{"start": 600272, "end": 602072, "anomaly_type": 1}
+{"start": 600372, "end": 602172, "anomaly_type": 1}
+{"start": 600472, "end": 602272, "anomaly_type": 1}
+{"start": 600572, "end": 602372, "anomaly_type": 1}
+{"start": 601402, "end": 603202, "anomaly_type": 1}
+{"start": 601502, "end": 603302, "anomaly_type": 1}
+{"start": 601602, "end": 603402, "anomaly_type": 1}
+{"start": 601702, "end": 603502, "anomaly_type": 1}
+{"start": 601802, "end": 603602, "anomaly_type": 1}
+{"start": 602746, "end": 604546, "anomaly_type": 1}
+{"start": 602846, "end": 604646, "anomaly_type": 1}
+{"start": 602946, "end": 604746, "anomaly_type": 1}
+{"start": 603046, "end": 604846, "anomaly_type": 1}
+{"start": 603146, "end": 604946, "anomaly_type": 1}
+{"start": 603952, "end": 605752, "anomaly_type": 1}
+{"start": 604052, "end": 605852, "anomaly_type": 1}
+{"start": 604152, "end": 605952, "anomaly_type": 1}
+{"start": 604252, "end": 606052, "anomaly_type": 1}
+{"start": 604352, "end": 606152, "anomaly_type": 1}
+{"start": 605299, "end": 607099, "anomaly_type": 1}
+{"start": 605399, "end": 607199, "anomaly_type": 1}
+{"start": 605499, "end": 607299, "anomaly_type": 1}
+{"start": 605599, "end": 607399, "anomaly_type": 1}
+{"start": 605699, "end": 607499, "anomaly_type": 1}
+{"start": 613759, "end": 615559, "anomaly_type": 1}
+{"start": 613859, "end": 615659, "anomaly_type": 1}
+{"start": 613959, "end": 615759, "anomaly_type": 1}
+{"start": 614059, "end": 615859, "anomaly_type": 1}
+{"start": 614159, "end": 615959, "anomaly_type": 1}
+{"start": 614259, "end": 616059, "anomaly_type": 1}
+{"start": 614359, "end": 616159, "anomaly_type": 1}
+{"start": 614811, "end": 616611, "anomaly_type": 1}
+{"start": 614911, "end": 616711, "anomaly_type": 1}
+{"start": 615011, "end": 616811, "anomaly_type": 1}
+{"start": 615111, "end": 616911, "anomaly_type": 1}
+{"start": 615211, "end": 617011, "anomaly_type": 1}
+{"start": 615311, "end": 617111, "anomaly_type": 1}
+{"start": 616047, "end": 617847, "anomaly_type": 1}
+{"start": 616147, "end": 617947, "anomaly_type": 1}
+{"start": 616247, "end": 618047, "anomaly_type": 1}
+{"start": 616347, "end": 618147, "anomaly_type": 1}
+{"start": 616447, "end": 618247, "anomaly_type": 1}
+{"start": 616817, "end": 618617, "anomaly_type": 1}
+{"start": 616917, "end": 618717, "anomaly_type": 1}
+{"start": 617017, "end": 618817, "anomaly_type": 1}
+{"start": 617117, "end": 618917, "anomaly_type": 1}
+{"start": 617217, "end": 619017, "anomaly_type": 1}
+{"start": 617317, "end": 619117, "anomaly_type": 1}
+{"start": 617417, "end": 619217, "anomaly_type": 1}
+{"start": 617517, "end": 619317, "anomaly_type": 1}
+{"start": 618151, "end": 619951, "anomaly_type": 1}
+{"start": 618251, "end": 620051, "anomaly_type": 1}
+{"start": 618351, "end": 620151, "anomaly_type": 1}
+{"start": 618451, "end": 620251, "anomaly_type": 1}
+{"start": 619275, "end": 621075, "anomaly_type": 1}
+{"start": 619375, "end": 621175, "anomaly_type": 1}
+{"start": 619475, "end": 621275, "anomaly_type": 1}
+{"start": 619575, "end": 621375, "anomaly_type": 1}
+{"start": 619675, "end": 621475, "anomaly_type": 1}
+{"start": 620662, "end": 622462, "anomaly_type": 1}
+{"start": 620762, "end": 622562, "anomaly_type": 1}
+{"start": 620862, "end": 622662, "anomaly_type": 1}
+{"start": 620962, "end": 622762, "anomaly_type": 1}
+{"start": 621062, "end": 622862, "anomaly_type": 1}
+{"start": 621162, "end": 622962, "anomaly_type": 1}
+{"start": 621262, "end": 623062, "anomaly_type": 1}
+{"start": 621924, "end": 623724, "anomaly_type": 1}
+{"start": 622024, "end": 623824, "anomaly_type": 1}
+{"start": 622124, "end": 623924, "anomaly_type": 1}
+{"start": 622224, "end": 624024, "anomaly_type": 1}
+{"start": 622324, "end": 624124, "anomaly_type": 1}
+{"start": 622424, "end": 624224, "anomaly_type": 1}
+{"start": 622524, "end": 624324, "anomaly_type": 1}
+{"start": 622624, "end": 624424, "anomaly_type": 1}
+{"start": 622724, "end": 624524, "anomaly_type": 1}
+{"start": 623517, "end": 625317, "anomaly_type": 1}
+{"start": 623617, "end": 625417, "anomaly_type": 1}
+{"start": 623717, "end": 625517, "anomaly_type": 1}
+{"start": 623817, "end": 625617, "anomaly_type": 1}
+{"start": 623917, "end": 625717, "anomaly_type": 1}
+{"start": 625017, "end": 626817, "anomaly_type": 1}
+{"start": 625117, "end": 626917, "anomaly_type": 1}
+{"start": 625217, "end": 627017, "anomaly_type": 1}
+{"start": 625317, "end": 627117, "anomaly_type": 1}
+{"start": 625417, "end": 627217, "anomaly_type": 1}
+{"start": 625517, "end": 627317, "anomaly_type": 1}
+{"start": 625075, "end": 626875, "anomaly_type": 1}
+{"start": 625175, "end": 626975, "anomaly_type": 1}
+{"start": 625275, "end": 627075, "anomaly_type": 1}
+{"start": 625375, "end": 627175, "anomaly_type": 1}
+{"start": 625475, "end": 627275, "anomaly_type": 1}
+{"start": 625575, "end": 627375, "anomaly_type": 1}
+{"start": 625675, "end": 627475, "anomaly_type": 1}
+{"start": 625775, "end": 627575, "anomaly_type": 1}
+{"start": 625875, "end": 627675, "anomaly_type": 1}
+{"start": 625975, "end": 627775, "anomaly_type": 1}
+{"start": 626075, "end": 627875, "anomaly_type": 1}
+{"start": 626175, "end": 627975, "anomaly_type": 1}
+{"start": 626693, "end": 628493, "anomaly_type": 1}
+{"start": 626793, "end": 628593, "anomaly_type": 1}
+{"start": 626893, "end": 628693, "anomaly_type": 1}
+{"start": 626993, "end": 628793, "anomaly_type": 1}
+{"start": 627093, "end": 628893, "anomaly_type": 1}
+{"start": 628017, "end": 629817, "anomaly_type": 1}
+{"start": 628117, "end": 629917, "anomaly_type": 1}
+{"start": 628217, "end": 630017, "anomaly_type": 1}
+{"start": 628317, "end": 630117, "anomaly_type": 1}
+{"start": 628417, "end": 630217, "anomaly_type": 1}
+{"start": 628517, "end": 630317, "anomaly_type": 1}
+{"start": 628617, "end": 630417, "anomaly_type": 1}
+{"start": 629601, "end": 631401, "anomaly_type": 1}
+{"start": 629701, "end": 631501, "anomaly_type": 1}
+{"start": 629801, "end": 631601, "anomaly_type": 1}
+{"start": 629901, "end": 631701, "anomaly_type": 1}
+{"start": 630001, "end": 631801, "anomaly_type": 1}
+{"start": 639892, "end": 641692, "anomaly_type": 1}
+{"start": 639992, "end": 641792, "anomaly_type": 1}
+{"start": 639892, "end": 641692, "anomaly_type": 1}
+{"start": 639992, "end": 641792, "anomaly_type": 1}
+{"start": 640092, "end": 641892, "anomaly_type": 1}
+{"start": 640192, "end": 641992, "anomaly_type": 1}
+{"start": 640292, "end": 642092, "anomaly_type": 1}
+{"start": 640392, "end": 642192, "anomaly_type": 1}
+{"start": 640492, "end": 642292, "anomaly_type": 1}
+{"start": 640592, "end": 642392, "anomaly_type": 1}
+{"start": 640692, "end": 642492, "anomaly_type": 1}
+{"start": 640792, "end": 642592, "anomaly_type": 1}
+{"start": 640600, "end": 642400, "anomaly_type": 1}
+{"start": 640700, "end": 642500, "anomaly_type": 1}
+{"start": 640800, "end": 642600, "anomaly_type": 1}
+{"start": 642760, "end": 644560, "anomaly_type": 1}
+{"start": 642860, "end": 644660, "anomaly_type": 1}
+{"start": 642960, "end": 644760, "anomaly_type": 1}
+{"start": 643060, "end": 644860, "anomaly_type": 1}
+{"start": 642750, "end": 644550, "anomaly_type": 1}
+{"start": 642850, "end": 644650, "anomaly_type": 1}
+{"start": 642950, "end": 644750, "anomaly_type": 1}
+{"start": 643050, "end": 644850, "anomaly_type": 1}
+{"start": 643450, "end": 645250, "anomaly_type": 1}
+{"start": 643550, "end": 645350, "anomaly_type": 1}
+{"start": 643650, "end": 645450, "anomaly_type": 1}
+{"start": 643487, "end": 645287, "anomaly_type": 1}
+{"start": 643587, "end": 645387, "anomaly_type": 1}
+{"start": 643687, "end": 645487, "anomaly_type": 1}
+{"start": 646665, "end": 648465, "anomaly_type": 1}
+{"start": 646765, "end": 648565, "anomaly_type": 1}
+{"start": 646865, "end": 648665, "anomaly_type": 1}
+{"start": 646965, "end": 648765, "anomaly_type": 1}
+{"start": 647065, "end": 648865, "anomaly_type": 1}
+{"start": 647165, "end": 648965, "anomaly_type": 1}
+{"start": 647265, "end": 649065, "anomaly_type": 1}
+{"start": 647365, "end": 649165, "anomaly_type": 1}
+{"start": 647465, "end": 649265, "anomaly_type": 1}
+{"start": 647565, "end": 649365, "anomaly_type": 1}
+{"start": 647665, "end": 649465, "anomaly_type": 1}
+{"start": 647765, "end": 649565, "anomaly_type": 1}
+{"start": 648091, "end": 649891, "anomaly_type": 1}
+{"start": 648191, "end": 649991, "anomaly_type": 1}

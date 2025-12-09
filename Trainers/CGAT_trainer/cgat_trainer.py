@@ -5,11 +5,13 @@ from tqdm import tqdm
 
 class CGATPretrain(object):
     def __init__(
-            self,optimizer, model, train_loader,
+            self,optimizer, scheduler, model, train_loader,
             val_loader, max_epochs, device, save_dir,
-            wandb_project_name, wandb_run_name, grad_clip_norm
+            wandb_project_name, wandb_run_name, grad_clip_norm,
+            early_stop
     ):
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -19,6 +21,7 @@ class CGATPretrain(object):
         self.wandb_project_name = wandb_project_name
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
+        self.early_stop = early_stop
 
     def pretrain(self, config):
         # freeze encoder
@@ -106,27 +109,34 @@ class CGATPretrain(object):
                     "lr": self.optimizer.param_groups[0]["lr"],
                 })
 
-                if val_total < best_val_loss:
-                    best_val_loss = val_total
-                    no_improve_epochs = 0
-                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
-                else:
-                    no_improve_epochs += 1
+                if self.early_stop == "true":
+                    if val_total < best_val_loss:
+                        best_val_loss = val_total
+                        no_improve_epochs = 0
+                        torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                    else:
+                        no_improve_epochs += 1
 
-                if no_improve_epochs >= 10:
-                    print(f"⛔ Early stopping triggered at Step {global_steps}.")
-                    break
+                    if no_improve_epochs >= 10:
+                        print(f"⛔ Early stopping triggered at Step {global_steps}.")
+                        break
+                else:
+                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+
+                self.scheduler.step(val_total)
 
         wandb.finish()
 
 
 class CGATFinetune(object):
     def __init__(
-            self, optimizer, model, train_loader,
+            self, optimizer, scheduler, model, train_loader,
             val_loader, max_epochs, device, save_dir,
-            wandb_project_name, wandb_run_name, grad_clip_norm
+            wandb_project_name, wandb_run_name, grad_clip_norm,
+            early_stop
     ):
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -136,6 +146,7 @@ class CGATFinetune(object):
         self.wandb_project_name = wandb_project_name
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
+        self.early_stop = early_stop
 
     def finetune(self, config):
         # freeze encoder
@@ -216,17 +227,21 @@ class CGATFinetune(object):
                 "step": global_steps
             })
 
-            if val_total < best_val_loss:
-                best_val_loss = val_total
-                no_improve_epochs = 0
-                torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+            if self.early_stop == "true":
+                if val_total < best_val_loss:
+                    best_val_loss = val_total
+                    no_improve_epochs = 0
+                    torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+                else:
+                    no_improve_epochs += 1
+
+
+                if no_improve_epochs >= 100 and  epoch > self.max_epochs//4:
+                    print(f"⛔ Early stopping triggered at Step {global_steps}.")
+                    break
             else:
-                no_improve_epochs += 1
-
-
-            if no_improve_epochs >= 100 and  epoch > self.max_epochs//4:
-                print(f"⛔ Early stopping triggered at Step {global_steps}.")
-                break
+                torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
+            self.scheduler.step(val_total)
 
         wandb.finish()
 

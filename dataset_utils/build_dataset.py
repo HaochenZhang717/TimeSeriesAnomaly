@@ -18,7 +18,16 @@ def build_dataset(
         indices_paths,
         seq_len,
         max_anomaly_length,
+        min_anomaly_length,
+        one_channel,
     ):
     assert dataset_name in dataset_name_map.keys()
-    dataset_cls = dataset_name_map[dataset_name][dataset_type]
-    return dataset_cls(raw_data_paths, indices_paths, seq_len, max_anomaly_length)
+
+    if dataset_name in ['ECG']:
+        dataset_cls = dataset_name_map[dataset_name][dataset_type]
+        return dataset_cls(raw_data_paths, indices_paths, seq_len, max_anomaly_length, min_anomaly_length, one_channel)
+    elif dataset_name in ['TSBAD']:
+        dataset_cls = dataset_name_map[dataset_name][dataset_type]
+        return dataset_cls(raw_data_paths, indices_paths, seq_len, max_anomaly_length, min_anomaly_length)
+    else:
+        raise ValueError(f'Unknown dataset {dataset_name}')

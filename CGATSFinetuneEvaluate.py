@@ -19,6 +19,7 @@ def get_evaluate_args():
     """time series general parameters"""
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
+    parser.add_argument("--one_channel", type=int, required=True)
 
     """model parameters"""
     parser.add_argument("--latent_dim", type=int, required=True)
@@ -29,13 +30,13 @@ def get_evaluate_args():
 
 
     """data parameters"""
+    parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--max_anomaly_length", type=float, required=True)
+    parser.add_argument("--min_anomaly_length", type=float, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--normal_indices_paths_train", type=str, required=True)
-    parser.add_argument("--normal_indices_paths_val", type=str, required=True)
     parser.add_argument("--anomaly_indices_paths_train", type=str, required=True)
-    parser.add_argument("--anomaly_indices_paths_val", type=str, required=True)
 
     """training parameters"""
     parser.add_argument("--batch_size", type=int, required=True)

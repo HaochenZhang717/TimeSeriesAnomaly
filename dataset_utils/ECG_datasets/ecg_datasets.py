@@ -3,6 +3,9 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import Dataset, IterableDataset
 import json
+import matplotlib.pyplot as plt
+
+
 
 
 def load_jsonl(path):
@@ -20,11 +23,15 @@ class ECGDataset(Dataset):
             indices_paths,
             seq_len,
             max_anomaly_length,
+            min_anomaly_length,
+            one_channel,
     ):
         super(ECGDataset, self).__init__()
         self.seq_len = seq_len
         # self.max_anomaly_ratio = max_anomaly_ratio
         self.max_anomaly_length = max_anomaly_length
+        self.min_anomaly_length = min_anomaly_length
+        self.one_channel = one_channel
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -50,7 +57,7 @@ class ECGDataset(Dataset):
         signal = self.slide_windows[index]
         anomaly_label = self.anomaly_labels[index]
 
-        random_anomaly_length = np.random.randint(0, self.max_anomaly_length)
+        random_anomaly_length = np.random.randint(self.min_anomaly_length, self.max_anomaly_length)
         anomaly_start = np.random.randint(0, self.max_anomaly_length - random_anomaly_length)
         anomaly_end = anomaly_start + random_anomaly_length
 
@@ -58,20 +65,22 @@ class ECGDataset(Dataset):
         random_anomaly_label[anomaly_start:anomaly_end] = 1
         signal_random_occluded = signal * (1 - random_anomaly_label[:, None])
         original_occluded_signal = signal * (1 - anomaly_label[:, None])
-        sample = {
-            "orig_signal": signal,
-            "anomaly_label": anomaly_label,
-            "original_occluded_signal": original_occluded_signal,
-            "random_anomaly_label": random_anomaly_label,
-            "signal_random_occluded": signal_random_occluded,
-        }
-        # sample = {
-        #     "orig_signal": signal[:24],
-        #     "anomaly_label": anomaly_label[:24],
-        #     "original_occluded_signal": original_occluded_signal[:24],
-        #     "random_anomaly_label": random_anomaly_label[:24],
-        #     "signal_random_occluded": signal_random_occluded[:24],
-        # }
+        if not self.one_channel:
+            sample = {
+                "orig_signal": signal,
+                "anomaly_label": anomaly_label,
+                "original_occluded_signal": original_occluded_signal,
+                "random_anomaly_label": random_anomaly_label,
+                "signal_random_occluded": signal_random_occluded,
+            }
+        else:
+            sample = {
+                "orig_signal": signal[:, :1],
+                "anomaly_label": anomaly_label,
+                "original_occluded_signal": original_occluded_signal[:, :1],
+                "random_anomaly_label": random_anomaly_label,
+                "signal_random_occluded": signal_random_occluded[:, :1],
+            }
         return sample
 
     def __len__(self):
@@ -86,11 +95,15 @@ class IterableECGDataset(IterableDataset):
             indices_paths,
             seq_len,
             max_anomaly_length,
+            min_anomaly_length,
+            one_channel: bool
     ):
         super(IterableECGDataset, self).__init__()
         self.seq_len = seq_len
+        self.one_channel = one_channel
         # self.max_anomaly_ratio = max_anomaly_ratio
         self.max_anomaly_length = max_anomaly_length
+        self.min_anomaly_length = min_anomaly_length
         self.slide_windows = []
         self.anomaly_labels = []
 
@@ -118,7 +131,7 @@ class IterableECGDataset(IterableDataset):
             signal = self.slide_windows[index]
             anomaly_label = self.anomaly_labels[index]
 
-            random_anomaly_length = np.random.randint(0, self.max_anomaly_length)
+            random_anomaly_length = np.random.randint(self.min_anomaly_length, self.max_anomaly_length)
             anomaly_start = np.random.randint(0, self.max_anomaly_length - random_anomaly_length)
             anomaly_end = anomaly_start + random_anomaly_length
 
@@ -126,21 +139,35 @@ class IterableECGDataset(IterableDataset):
             random_anomaly_label[anomaly_start:anomaly_end] = 1
             signal_random_occluded = signal * (1 - random_anomaly_label[:, None])
             original_occluded_signal = signal * (1 - anomaly_label[:, None])
-            sample = {
-                "orig_signal": signal,
-                "anomaly_label": anomaly_label,
-                "original_occluded_signal": original_occluded_signal,
-                "random_anomaly_label": random_anomaly_label,
-                "signal_random_occluded": signal_random_occluded,
-            }
+            if not self.one_channel:
+                sample = {
+                    "orig_signal": signal,
+                    "anomaly_label": anomaly_label,
+                    "original_occluded_signal": original_occluded_signal,
+                    "random_anomaly_label": random_anomaly_label,
+                    "signal_random_occluded": signal_random_occluded,
+                }
+            else:
+                sample = {
+                    "orig_signal": signal[:, :1],
+                    "anomaly_label": anomaly_label,
+                    "original_occluded_signal": original_occluded_signal[:, :1],
+                    "random_anomaly_label": random_anomaly_label,
+                    "signal_random_occluded": signal_random_occluded[:, :1],
+                }
 
             yield sample
 
 if __name__ == "__main__":
 
-    dataset = ECGDataset(
-        raw_data_paths="./raw_data/106.npz",
-        indices_paths="./indices/slide_windows_106npz/train/normal.jsonl",
-        seq_len=800,
-        max_anomaly_length=80
-    )
+    # dataset = ECGDataset(
+    #     raw_data_paths="./raw_data/106.npz",
+    #     indices_paths="./indices/slide_windows_106npz/train/normal.jsonl",
+    #     seq_len=800,
+    #     max_anomaly_length=80
+    # )
+
+
+    raw_data = np.load("./raw_data/106.npz")
+    raw_signal = raw_data["signal"]
+    anomaly_label = raw_data["anomaly_label"]

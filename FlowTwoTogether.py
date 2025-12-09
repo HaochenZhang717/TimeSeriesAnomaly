@@ -37,6 +37,8 @@ def get_args():
     """time series general parameters"""
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
+    parser.add_argument("--one_channel", type=int, required=True)
+
 
     """model parameters"""
     parser.add_argument("--n_layer_enc", type=int, required=True)
@@ -48,6 +50,7 @@ def get_args():
     """data parameters"""
     parser.add_argument("--dataset_name", type=str, required=True)
     parser.add_argument("--max_anomaly_length", type=int, required=True)
+    parser.add_argument("--min_anomaly_length", type=int, required=True)
     parser.add_argument("--raw_data_paths_train", type=str, required=True)
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--indices_paths_train", type=str, required=True)
@@ -299,6 +302,8 @@ def unconditional_train(args):
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
     )
 
     train_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
@@ -361,6 +366,8 @@ def conditional_train(args):
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
     )
 
     train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
@@ -420,6 +427,8 @@ def conditional_sample_on_real(args):
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
     )
 
     train_loader = torch.utils.data.DataLoader(
@@ -476,6 +485,7 @@ def conditional_sample_on_fake(args):
     fake_normal_data = FakeDataset(
         normal_data_path=args.normal_data_path,
         maximum_anomaly_length=args.max_anomaly_length,
+        minimum_anomaly_length=args.min_anomaly_length,
     )
 
     fake_normal_loader = torch.utils.data.DataLoader(
@@ -558,6 +568,8 @@ def anomaly_evaluate(args):
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
     )
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0)).to(device)
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0)).to(device)
