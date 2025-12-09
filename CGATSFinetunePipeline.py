@@ -24,7 +24,7 @@ def get_args():
     parser = argparse.ArgumentParser(description="parameters for TimeVAE-CGATS pretraining")
     parser.add_argument(
         "--what_to_do",
-        type=int,
+        type=str,
         required=True,
         choices=["finetune", "sample_anomaly"]
     )
