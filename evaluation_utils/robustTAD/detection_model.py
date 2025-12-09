@@ -183,7 +183,8 @@ def calculate_robustTAD(
 
     for epoch in range(max_epochs):
         model.train()
-        for Xb, yb in tqdm(train_loader, desc=f"Epoch{epoch}"):
+        # for Xb, yb in tqdm(train_loader, desc=f"Epoch{epoch}"):
+        for Xb, yb in train_loader:
             Xb, yb = Xb.to(device), yb.to(device)
             loss = model(Xb, yb)
             optimizer.zero_grad()
