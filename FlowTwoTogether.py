@@ -565,12 +565,14 @@ def anomaly_evaluate(args):
     precisions = []
     recalls = []
     f1s = []
+    normal_accuracies = []
+    anomaly_accuracies = []
     for _ in range(5):
         random_indices = torch.randperm(len(gen_data))[:args.eval_train_size]
         sampled_gen_data = gen_data[random_indices]
         sampled_gen_labels = gen_labels[random_indices]
 
-        precision, recall, f1 = calculate_robustTAD(
+        normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
             anomaly_weight=5.0,
             feature_size=args.feature_size,
             ori_data=orig_data,
@@ -585,16 +587,27 @@ def anomaly_evaluate(args):
         precisions.append(precision)
         recalls.append(recall)
         f1s.append(f1)
+        normal_accuracies.append(normal_accuracy)
+        anomaly_accuracies.append(anomaly_accuracy)
 
     mean_precision = np.mean(precisions)
     mean_recall = np.mean(recalls)
     mean_f1 = np.mean(f1s)
+    mean_normal_accuracy = np.mean(normal_accuracies)
+    mean_anomaly_accuracy = np.mean(anomaly_accuracies)
+
     std_precision = np.std(precisions)
     std_recall = np.std(recalls)
     std_f1 = np.std(f1s)
+    std_normal_accuracy = np.std(normal_accuracies)
+    std_anomaly_accuracy = np.std(anomaly_accuracies)
+
     print(f"precision: {mean_precision}+-{std_precision}")
     print(f"recall: {mean_recall}+-{std_recall}")
     print(f"f1: {mean_f1}+-{std_f1}")
+    print(f"normal_accuracy: {mean_normal_accuracy}+-{std_normal_accuracy}")
+    print(f"anomaly_accuracy: {mean_anomaly_accuracy}+-{std_anomaly_accuracy}")
+
 
     result = {
         "precision_mean": float(mean_precision),
@@ -603,6 +616,10 @@ def anomaly_evaluate(args):
         "recall_std": float(std_recall),
         "f1_mean": float(mean_f1),
         "f1_std": float(std_f1),
+        "normal_accuracy_mean": float(mean_normal_accuracy),
+        "normal_accuracy_std": float(std_normal_accuracy),
+        "anomaly_accuracy_mean": float(mean_anomaly_accuracy),
+        "anomaly_accuracy_std": float(std_anomaly_accuracy),
         "timestamp": datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
     }
 

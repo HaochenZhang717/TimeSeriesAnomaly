@@ -229,7 +229,7 @@ def calculate_robustTAD(
     recall = recall_score(all_labels, all_preds, zero_division=0)
     f1 = f1_score(all_labels, all_preds, zero_division=0)
 
-    return precision, recall, f1
+    return normal_accuracy, anomaly_accuracy, precision, recall, f1
 
 
 
