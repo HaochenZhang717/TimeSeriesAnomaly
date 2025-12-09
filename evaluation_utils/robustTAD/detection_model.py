@@ -189,7 +189,7 @@ def calculate_robustTAD(
         for Xb, yb in train_loader:
             Xb, yb = Xb.to(device), yb.to(device)
             loss = model(Xb, yb)
-            train_loss += loss.item()
+            train_loss += loss.item() * Xb.shape[0]
             train_seen += Xb.shape[0]
             optimizer.zero_grad()
             loss.backward()
@@ -202,7 +202,7 @@ def calculate_robustTAD(
             Xb, yb = Xb.to(device), yb.to(device)
             with torch.no_grad():
                 loss = model(Xb, yb)
-            val_loss += loss.item()
+            val_loss += loss.item() * Xb.shape[0]
             val_seen += Xb.shape[0]
         val_loss_avg = val_loss / val_seen
         print(f"Epoch{epoch}: train_loss: {train_loss_avg} | val_loss: {val_loss_avg} | lr: {optimizer.param_groups[0]['lr']} ||")
