@@ -233,7 +233,6 @@ def sample_anomaly(args):
             max_epochs=2000,
             batch_size=64,
             patience=20,
-            feat_size=args.feature_size,
         )
         precisions.append(precision)
         recalls.append(recall)

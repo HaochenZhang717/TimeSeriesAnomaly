@@ -576,6 +576,7 @@ def anomaly_evaluate(args):
     )
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0)).to(device)
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0)).to(device)
+    orig_data = orig_data[:, :, :args.feature_size]
 
     precisions = []
     recalls = []
