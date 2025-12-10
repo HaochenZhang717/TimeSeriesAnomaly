@@ -547,7 +547,6 @@ def conditional_sample_on_real_normal(args):
         for _ in range(args.batch_size):
             batch_fake_anomaly_labels.append(get_fake_anomaly_labels())
         batch_fake_anomaly_labels = torch.cat(batch_fake_anomaly_labels, dim=0)
-        breakpoint()
         return batch_fake_anomaly_labels
 
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
