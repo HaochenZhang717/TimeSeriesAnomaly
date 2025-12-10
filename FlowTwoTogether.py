@@ -449,7 +449,7 @@ def conditional_sample_on_real(args):
     for _ in tqdm(range(num_cycle), desc="Generating samples"):
         a_batch = next(train_iterator)
         anomaly_label = a_batch['anomaly_label'].to(device).squeeze(-1)#i changed this
-        real_signal = a_batch['orig_signal'].to(device)
+        real_signal = a_batch['orig_signal'].to(device)[:, :, : args.feature_size]
         samples = model.impute(
             x_start=real_signal,
             anomaly_label=anomaly_label,
