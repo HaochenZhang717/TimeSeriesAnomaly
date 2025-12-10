@@ -540,7 +540,6 @@ def conditional_sample_on_real_normal(args):
         anomaly_end = anomaly_start + random_anomaly_length
         random_anomaly_label = torch.zeros((1, args.seq_len))
         random_anomaly_label[0, anomaly_start:anomaly_end] = 1
-        breakpoint()
         return random_anomaly_label
 
     def get_batch_fake_anomaly_labels():
