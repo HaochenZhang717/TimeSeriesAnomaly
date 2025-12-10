@@ -555,7 +555,7 @@ def unconditional_sample(args):
 
 
 def unconditional_evaluate(args):
-    fake_normal_data = torch.load(args.fake_normal_data_path)
+    fake_normal_data = torch.load(args.normal_data_path)
     normal_train_set = build_dataset(
         args.dataset_name,
         'non_iterable',
