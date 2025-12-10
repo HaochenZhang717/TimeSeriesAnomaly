@@ -235,7 +235,7 @@
 
 export hucfg_t_sampling=logitnorm
 python FlowTwoTogether.py \
-  --what_to_do "conditional_sample_on_real_anomaly" \
+  --what_to_do "conditional_sample_on_real_normal" \
   \
   --seq_len 1800 \
   --feature_size 1 \
