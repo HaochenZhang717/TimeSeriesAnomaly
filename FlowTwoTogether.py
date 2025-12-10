@@ -578,6 +578,7 @@ def conditional_sample_on_real_normal(args):
     normal_loader = torch.utils.data.DataLoader(
         normal_train_set,
         batch_size=args.batch_size,
+        shuffle=True,
     )
 
 
