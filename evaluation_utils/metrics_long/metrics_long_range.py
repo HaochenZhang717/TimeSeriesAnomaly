@@ -205,7 +205,7 @@ def compute_classification_score(x_fake, x_real, get_optim_func, device):
 
             accuracy = correct / total
             dis_score = abs(accuracy - 0.5)
-            pbar.set_description(f'Epoch {i} Test loss: {test_loss / (ind + 1)}')
+            pbar.set_description(f'Epoch {i} Test loss: {test_loss / (ind + 1)}, Accuracy: {accuracy}, Dis: {dis_score}')
 
     return dis_score
 
