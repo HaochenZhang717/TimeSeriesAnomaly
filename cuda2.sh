@@ -55,9 +55,10 @@ for m in "${MODELS[@]}"; do
     --indices_paths_val "none" \
     \
     --lr 1e-4 \
-    --batch_size 64 \
+    --batch_size 8 \
     --max_epochs 1000 \
     --grad_clip_norm 1.0 \
+    --grad_accum_steps 8 \
     --early_stop "true" \
     --patience 50 \
     \
@@ -80,47 +81,48 @@ for m in "${MODELS[@]}"; do
   # ----------------------------------------------------
   # 2) Conditional Training
   # ----------------------------------------------------
-  python FlowTwoTogether.py \
-    --what_to_do "conditional_training" \
-    \
-    --seq_len 1800 \
-    --feature_size 1 \
-    --one_channel 1 \
-    \
-    --n_layer_enc $NLAY_ENC \
-    --n_layer_dec $NLAY_DEC \
-    --d_model $DMODEL \
-    --n_heads $NHEAD \
-    \
-    --dataset_name "ECG" \
-    --max_anomaly_length 629 \
-    --min_anomaly_length 74 \
-    --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-    --raw_data_paths_val "none" \
-    --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
-    --indices_paths_val "none" \
-    \
-    --lr 1e-4 \
-    --batch_size 64 \
-    --max_epochs 1000 \
-    --grad_clip_norm 1.0 \
-    --early_stop "true" \
-    --patience 50 \
-    \
-    --wandb_project "flow_conditional" \
-    --wandb_run "${NAME}_mitdb1800_conditional" \
-    \
-    --ckpt_dir "../TSA-ckpts/flow_two_together_logit_normal/${NAME}/conditional_ckpt" \
-    \
-    --cond_eval_model_ckpt "none" \
-    --generated_path "none" \
-    --normal_data_path "none" \
-    \
-    --uncond_eval_model_ckpt "none" \
-    --uncond_num_samples -1 \
-    \
-    --eval_train_size -1 \
-    --gpu_id 2
+#  python FlowTwoTogether.py \
+#    --what_to_do "conditional_training" \
+#    \
+#    --seq_len 1800 \
+#    --feature_size 1 \
+#    --one_channel 1 \
+#    \
+#    --n_layer_enc $NLAY_ENC \
+#    --n_layer_dec $NLAY_DEC \
+#    --d_model $DMODEL \
+#    --n_heads $NHEAD \
+#    \
+#    --dataset_name "ECG" \
+#    --max_anomaly_length 629 \
+#    --min_anomaly_length 74 \
+#    --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+#    --raw_data_paths_val "none" \
+#    --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+#    --indices_paths_val "none" \
+#    \
+#    --lr 1e-4 \
+#    --batch_size 16 \
+#    --max_epochs 1000 \
+#    --grad_clip_norm 1.0 \
+#    --grad_accum_steps 4 \
+#    --early_stop "true" \
+#    --patience 50 \
+#    \
+#    --wandb_project "flow_conditional" \
+#    --wandb_run "${NAME}_mitdb1800_conditional" \
+#    \
+#    --ckpt_dir "../TSA-ckpts/flow_two_together_logit_normal/${NAME}/conditional_ckpt" \
+#    \
+#    --cond_eval_model_ckpt "none" \
+#    --generated_path "none" \
+#    --normal_data_path "none" \
+#    \
+#    --uncond_eval_model_ckpt "none" \
+#    --uncond_num_samples -1 \
+#    \
+#    --eval_train_size -1 \
+#    --gpu_id 2
 
 done
 

@@ -61,6 +61,7 @@ def get_args():
     parser.add_argument("--batch_size", type=int, required=True)
     parser.add_argument("--max_epochs", type=int, required=True)
     parser.add_argument("--grad_clip_norm", type=float, required=True)
+    parser.add_argument("--grad_accum_steps", type=int, required=True)
     parser.add_argument("--early_stop", type=str, required=True)
     parser.add_argument("--patience", type=int, required=True)
 
@@ -333,6 +334,7 @@ def unconditional_train(args):
         wandb_run_name=args.wandb_run,
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
         early_stop=args.early_stop,
         patience=args.patience,
     )
@@ -381,7 +383,7 @@ def conditional_train(args):
         factor=0.8,  # multiply LR by 0.5
         patience=5,  # wait 3 epochs with no improvement
         threshold=1e-4,  # improvement threshold
-        min_lr=1e-6,  # min LR clamp
+        min_lr=1e-5,  # min LR clamp
     )
 
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")

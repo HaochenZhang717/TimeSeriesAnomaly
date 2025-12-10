@@ -394,7 +394,7 @@ class FlowTSTrainerTwoTogether(object):
             self,optimizer, scheduler, model, train_loader,
             val_loader, max_epochs, device, save_dir,
             wandb_project_name, wandb_run_name, grad_clip_norm,
-            early_stop, patience
+            grad_accum_steps, early_stop, patience
     ):
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -407,6 +407,7 @@ class FlowTSTrainerTwoTogether(object):
         self.wandb_project_name = wandb_project_name
         self.wandb_run_name = wandb_run_name
         self.grad_clip_norm = grad_clip_norm
+        self.grad_accum_steps = grad_accum_steps
         self.early_stop = early_stop
         self.patience = patience
 
@@ -430,25 +431,32 @@ class FlowTSTrainerTwoTogether(object):
             total_loss = 0
             tr_seen = 0
             self.model.train()
+            self.optimizer.zero_grad()
             for batch in tqdm(self.train_loader, desc=f"Epoch {epoch}"):
 
                 X_normal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
 
-                self.optimizer.zero_grad()
                 loss = self.model(X_normal, anomaly_label=None)
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
-                self.optimizer.step()
+                backward_loss = loss / self.grad_accum_steps
+                backward_loss.backward()
 
-                # 🔥 Update EMA after optimizer.step()
-                with torch.no_grad():
-                    model_state = self.model.state_dict()
-                    for key in model_state.keys():
-                        ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1 - ema_decay)
-                # -------------------------------
+                global_steps += 1
                 total_loss += loss.item()
                 tr_seen += 1
-                global_steps += 1
+
+                if global_steps % self.grad_accum_steps == 0:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+
+                    # 🔥 Update EMA after optimizer.step()
+                    with torch.no_grad():
+                        model_state = self.model.state_dict()
+                        for key in model_state.keys():
+                            ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1 - ema_decay)
+                    # -------------------------------
+
+
 
             train_total_avg = total_loss / tr_seen
 
@@ -511,24 +519,32 @@ class FlowTSTrainerTwoTogether(object):
             total_loss = 0
             tr_seen = 0
             self.model.train()
+            self.optimizer.zero_grad()
             for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
 
                 X_signal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
                 anomaly_label = batch["anomaly_label"].to(dtype=model_dtype, device=self.device)
-                self.optimizer.zero_grad()
+
                 loss = self.model(X_signal, anomaly_label=anomaly_label)
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
-                self.optimizer.step()
-                # 🔥 Update EMA after optimizer.step()
-                with torch.no_grad():
-                    model_state = self.model.state_dict()
-                    for key in model_state.keys():
-                        ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1 - ema_decay)
-                # -------------------------------
+
                 total_loss += loss.item()
                 tr_seen += 1
                 global_steps += 1
+                loss_backward = loss / self.grad_accum_steps
+                loss_backward.backward()
+
+                if global_steps % self.grad_accum_steps == 0:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip_norm)
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+
+                    # 🔥 Update EMA after optimizer.step()
+                    with torch.no_grad():
+                        model_state = self.model.state_dict()
+                        for key in model_state.keys():
+                            ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1 - ema_decay)
+                    # -------------------------------
+
 
             train_total_avg = total_loss / tr_seen
 

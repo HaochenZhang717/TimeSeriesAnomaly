@@ -55,9 +55,10 @@ for m in "${MODELS[@]}"; do
     --indices_paths_val "none" \
     \
     --lr 1e-4 \
-    --batch_size 64 \
+    --batch_size 32 \
     --max_epochs 1000 \
     --grad_clip_norm 1.0 \
+    --grad_accum_steps 2 \
     --early_stop "true" \
     --patience 50 \
     \
@@ -101,9 +102,10 @@ for m in "${MODELS[@]}"; do
     --indices_paths_val "none" \
     \
     --lr 1e-4 \
-    --batch_size 64 \
+    --batch_size 32 \
     --max_epochs 1000 \
     --grad_clip_norm 1.0 \
+    --grad_accum_steps 2 \
     --early_stop "true" \
     --patience 50 \
     \
