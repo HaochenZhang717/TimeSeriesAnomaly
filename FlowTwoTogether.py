@@ -27,7 +27,8 @@ def get_args():
     parser.add_argument(
         "--what_to_do", type=str, required=True,
         choices=["conditional_training", "unconditional_training",
-                 "conditional_evaluate", "conditional_sample_on_real",
+                 "conditional_evaluate",
+                 "conditional_sample_on_real_anomaly", "conditional_sample_on_real_normal"
                  "conditional_sample_on_fake", "unconditional_sample",
                  "anomaly_evaluate", "unconditional_evaluate"],
         help="what to do"
@@ -77,6 +78,7 @@ def get_args():
     parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
     parser.add_argument("--generated_path", type=str, required=True)
     parser.add_argument("--normal_data_path", type=str, required=True)
+    parser.add_argument("--cond_num_samples", type=int, required=True)
 
     """parameters for unconditional sample"""
     parser.add_argument("--uncond_eval_model_ckpt", type=str, required=True)
@@ -408,7 +410,7 @@ def conditional_train(args):
 
 
 
-def conditional_sample_on_real(args):
+def conditional_sample_on_real_anomaly(args):
     # args = get_args()
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     model = FM_TS_Two_Together(
@@ -526,6 +528,87 @@ def conditional_sample_on_fake(args):
     }
     os.makedirs(args.generated_path, exist_ok=True)
     torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_fake.pt")
+
+
+
+
+def conditional_sample_on_real_normal(args):
+
+    def get_fake_anomaly_labels():
+        random_anomaly_length = np.random.randint(args.min_anomaly_length, args.max_anomaly_length)
+        anomaly_start = np.random.randint(0, args.max_anomaly_length - random_anomaly_length)
+        anomaly_end = anomaly_start + random_anomaly_length
+        random_anomaly_label = torch.zeros((1, args.seq_len)).to(device)
+        random_anomaly_label[anomaly_start:anomaly_end] = 1
+        return random_anomaly_label
+
+    def get_batch_fake_anomaly_labels():
+        batch_fake_anomaly_labels = []
+        for _ in range(args.batch_size):
+            batch_fake_anomaly_labels.append(get_fake_anomaly_labels())
+        batch_fake_anomaly_labels = torch.cat(batch_fake_anomaly_labels, dim=0)
+        return batch_fake_anomaly_labels
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model = FM_TS_Two_Together(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    )
+    model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
+    model.to(device)
+    model.eval()
+
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
+    )
+
+
+    normal_loader = torch.utils.data.DataLoader(
+        normal_train_set,
+        batch_size=args.batch_size,
+    )
+
+
+    all_samples = []
+    all_real = []
+    all_anomaly_labels = []
+    num_generated = 0
+    for batch in tqdm(normal_loader, desc="Generating samples"):
+        anomaly_label = get_batch_fake_anomaly_labels().to(device)
+        real_signal = batch['original_signal'].to(device)
+        samples = model.impute(
+            x_start=real_signal,
+            anomaly_label=anomaly_label,
+        ).cpu()
+        num_generated += samples.shape[0]
+        all_samples.append(samples)
+        all_real.append(real_signal)
+        all_anomaly_labels.append(anomaly_label)
+        if num_generated >= args.cond_num_samples:
+            break
+
+    all_samples = torch.cat(all_samples, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    all_real = torch.cat(all_real, dim=0)
+    to_save = {
+        "samples": all_samples,
+        "real": all_real,
+        "anomaly_labels": all_anomaly_labels,
+    }
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real_normal.pt")
 
 
 def unconditional_sample(args):
@@ -686,8 +769,10 @@ def main():
     args = get_args()
     if args.what_to_do == "conditional_training":
         conditional_train(args)
-    elif args.what_to_do == "conditional_sample_on_real":
-        conditional_sample_on_real(args)
+    elif args.what_to_do == "conditional_sample_on_real_anomaly":
+        conditional_sample_on_real_anomaly(args)
+    elif args.what_to_do == "conditional_sample_on_real_normal":
+        conditional_sample_on_real_normal(args)
     elif args.what_to_do == "conditional_sample_on_fake":
         conditional_sample_on_fake(args)
     elif args.what_to_do == "unconditional_sample":
