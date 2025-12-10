@@ -441,7 +441,8 @@ def conditional_sample_on_real_anomaly(args):
         batch_size=args.batch_size,
     )
 
-    num_samples = len(anomaly_train_set.slide_windows)
+    # num_samples = len(anomaly_train_set.slide_windows)
+    num_samples = args.cond_num_samples
     num_cycle = int(num_samples // args.batch_size) + 1
     train_iterator = iter(train_loader)
 

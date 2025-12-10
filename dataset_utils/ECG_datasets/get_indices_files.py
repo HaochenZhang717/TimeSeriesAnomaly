@@ -481,7 +481,7 @@ def build_single_ts_train_val(
 
     stats = {}
 
-    for k in range(0, 1):
+    for k in range(0, 7):
         fname = f"{name_map[k]}.jsonl"
         windows = global_windows[k]
 
@@ -681,19 +681,19 @@ def extract_windows_containing_segments(
 # ----------------------- 使用示例 -----------------------
 if __name__ == "__main__":
 
-    for name in range(106, 107):
+    for name in range(200, 201):
         print('-'*100)
         print(name)
         print('-'*100)
 
-        stats = build_single_ts_train_val(
-            npz_file=f"./raw_data/{name}.npz",
-            output_dir=f"./indices/slide_windows_{name}npz",
-            window_size=1800,
-            stride=20,
-            train_ratio=0.99,
-            max_anomaly_ratio=0.2
-        )
+        # stats = build_single_ts_train_val(
+        #     npz_file=f"./raw_data/{name}.npz",
+        #     output_dir=f"./indices/slide_windows_{name}npz",
+        #     window_size=1800,
+        #     stride=20,
+        #     train_ratio=0.99,
+        #     max_anomaly_ratio=0.2
+        # )
 
         raw_data = np.load(f"./raw_data/{name}.npz")
         raw_signal = raw_data["signal"]

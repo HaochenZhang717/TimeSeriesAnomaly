@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from torch.utils.data import Dataset, IterableDataset
+from torch.utils.data import Dataset, IterableDataset, DataLoader
 import json
 import matplotlib.pyplot as plt
 
@@ -160,14 +160,23 @@ class IterableECGDataset(IterableDataset):
 
 if __name__ == "__main__":
 
-    # dataset = ECGDataset(
-    #     raw_data_paths="./raw_data/106.npz",
-    #     indices_paths="./indices/slide_windows_106npz/train/normal.jsonl",
-    #     seq_len=800,
-    #     max_anomaly_length=80
-    # )
+    dataset = ECGDataset(
+        raw_data_paths="./raw_data/200.npz",
+        indices_paths="./indices/slide_windows_200npz/train/V.jsonl",
+        seq_len=1800,
+        max_anomaly_length=1,
+        min_anomaly_length=0,
+        one_channel=1
+    )
+
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+    for batch in dataloader:
+        plt.plot(batch['orig_signal'].flatten(), label="Original")
+        plt.plot(batch['anomaly_label'].flatten(), label="anomaly label")
+        plt.show()
 
 
-    raw_data = np.load("./raw_data/106.npz")
-    raw_signal = raw_data["signal"]
-    anomaly_label = raw_data["anomaly_label"]
+
+    # raw_data = np.load("./raw_data/106.npz")
+    # raw_signal = raw_data["signal"]
+    # anomaly_label = raw_data["anomaly_label"]
