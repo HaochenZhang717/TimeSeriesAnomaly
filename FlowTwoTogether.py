@@ -593,6 +593,7 @@ def conditional_sample_on_real_normal(args):
             anomaly_label=anomaly_label,
         ).cpu()
         num_generated += samples.shape[0]
+        print(num_generated)
         all_samples.append(samples)
         all_real.append(real_signal)
         all_anomaly_labels.append(anomaly_label)
