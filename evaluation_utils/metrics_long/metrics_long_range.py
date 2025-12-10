@@ -189,6 +189,9 @@ def compute_classification_score(x_fake, x_real, get_optim_func, device):
             loss.backward()
             optimizer.step()
 
+
+        correct = 0
+        total = 0
         with torch.no_grad():
             test_loss = 0
             for ind, (data, label) in enumerate(testloader):
@@ -196,9 +199,15 @@ def compute_classification_score(x_fake, x_real, get_optim_func, device):
                 loss = torch.nn.BCEWithLogitsLoss()(pred.squeeze(-1), label.to(device)).detach().cpu()
                 test_loss += loss
 
+                pred_label = (torch.sigmoid(pred.squeeze(-1)) > 0.5).cpu().float()
+                correct += (pred_label == label).sum().item()
+                total += label.shape[0]
+
+            accuracy = correct / total
+            dis_score = abs(accuracy - 0.5)
             pbar.set_description(f'Epoch {i} Test loss: {test_loss / (ind + 1)}')
 
-    return test_loss
+    return dis_score
 
 
 def compute_predictive_score(x_real, x_fake, pred_step, get_optim_func, device, pred_activation):
@@ -250,7 +259,7 @@ def compute_all_metrics(x_real, gens, get_optim_func, pred_activation, device):
     cls = []
     pred = []
     marg = []
-    for i in range(10):
+    for i in range(5):
         clfscore = compute_classification_score(gens, x_real, get_optim_func, device)
         predscore = compute_predictive_score(x_real, gens, pred_step, get_optim_func, device, pred_activation)
         marginalscore = compute_test_metrics(gens, x_real)['marginal_loss']
