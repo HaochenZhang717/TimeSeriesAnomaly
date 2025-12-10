@@ -493,6 +493,7 @@ def conditional_sample_on_fake(args):
         normal_data_path=args.normal_data_path,
         maximum_anomaly_length=args.max_anomaly_length,
         minimum_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
     )
 
     fake_normal_loader = torch.utils.data.DataLoader(
