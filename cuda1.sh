@@ -64,6 +64,7 @@
 #  \
 #  --tuned_ckpt "none" \
 #  --num_samples -1 \
+#  --eval_train_size -1 \
 #  --generated_path "none" \
 #  \
 #  --gpu_id 1
@@ -104,6 +105,7 @@ python CGATSFinetunePipeline.py \
   \
   --tuned_ckpt "../TSA-ckpts/cgats/mitdb1800/finetune_ckpt/ckpt.pth" \
   --num_samples 50000 \
+  --eval_train_size 10000 \
   --generated_path "../samples_path/cgats/mitdb1800" \
   \
   --gpu_id 1
