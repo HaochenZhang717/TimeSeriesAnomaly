@@ -9,7 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
 from tqdm import tqdm
-from evaluation_utils import calculate_robustTAD
+from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
 import numpy as np
 
 
@@ -211,6 +211,12 @@ def sample_anomaly(args):
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
     orig_data = orig_data[:, :, :args.feature_size]
 
+
+    # do evaluation as in ImagenTime
+    scores = evaluate_model_long_sequence(orig_data, gen_data[:len(orig_data)], device)
+    breakpoint()
+
+    # do my evaluation
     precisions = []
     recalls = []
     f1s = []

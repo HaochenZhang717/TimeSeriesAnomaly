@@ -5,3 +5,4 @@ from .pytorch_anomaly_classification_metric import classification_metrics_torch
 
 from .general_ts_evaluate import predictive_score_metrics, discriminative_score_metrics
 from .robustTAD import calculate_robustTAD
+from .metrics_long_range import evaluate_model_long_sequence
