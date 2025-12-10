@@ -135,7 +135,7 @@ python FlowTwoTogether.py \
   --normal_data_path "none" \
   \
   --uncond_eval_model_ckpt "../TSA-ckpts/flow_two_together_logit_normal/mitdb1800/uncondition_ckpt/ema_ckpt.pth" \
-  --uncond_num_samples 50000 \
+  --uncond_num_samples 1000 \
   \
   --eval_train_size -1 \
   \
