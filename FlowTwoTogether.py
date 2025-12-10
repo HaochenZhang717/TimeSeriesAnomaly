@@ -28,7 +28,7 @@ def get_args():
         "--what_to_do", type=str, required=True,
         choices=["conditional_training", "unconditional_training",
                  "conditional_evaluate",
-                 "conditional_sample_on_real_anomaly", "conditional_sample_on_real_normal"
+                 "conditional_sample_on_real_anomaly", "conditional_sample_on_real_normal",
                  "conditional_sample_on_fake", "unconditional_sample",
                  "anomaly_evaluate", "unconditional_evaluate"],
         help="what to do"
