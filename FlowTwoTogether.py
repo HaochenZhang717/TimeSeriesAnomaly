@@ -679,8 +679,12 @@ def unconditional_evaluate(args):
 def anomaly_evaluate(args):
 
     device = torch.device(f"cuda:{args.gpu_id}")
+    # all_anomalies = torch.load(
+    #     f"{args.generated_path}/generated_anomaly_on_fake.pt",
+    #     map_location=device
+    # )
     all_anomalies = torch.load(
-        f"{args.generated_path}/generated_anomaly_on_fake.pt",
+        f"{args.generated_path}/generated_anomaly_on_real_normal.pt",
         map_location=device
     )
     gen_data = all_anomalies['samples']
@@ -766,7 +770,7 @@ def anomaly_evaluate(args):
         "result": result,
     }
 
-    save_path = os.path.join(args.generated_path, "evaluation_results.jsonl")
+    save_path = os.path.join(args.generated_path, "evaluation_results_generated_anomaly_on_real_normal.jsonl")
     os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
