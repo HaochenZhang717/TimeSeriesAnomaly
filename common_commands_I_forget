@@ -12,3 +12,4 @@ scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_imputation_logit_norm/
 scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_unconditional/mitdblen800_a_few_to_look/generated_normal.pt ./samples_path/mitdblen800
 scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_normal/mitdb1800/generated_anomaly_on_fake.pt ../samples_path/flow_two_together_logit_normal/mitdb1800/
 scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_normal/mitdb1800/generated_anomaly_on_real_normal.pt ../samples_path/flow_two_together_logit_normal/mitdb1800/
+scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_normal/mitdb1800_200npz/generated_anomaly_on_real.pt ../samples_path/flow_two_together_logit_normal/mitdb1800_200npz/

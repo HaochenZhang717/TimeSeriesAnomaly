@@ -77,6 +77,7 @@ def get_args():
     """parameters for conditional sample"""
     parser.add_argument("--cond_eval_model_ckpt", type=str, required=True)
     parser.add_argument("--generated_path", type=str, required=True)
+    parser.add_argument("--generated_file", type=str, required=True)
     parser.add_argument("--normal_data_path", type=str, required=True)
     parser.add_argument("--cond_num_samples", type=int, required=True)
 
@@ -470,11 +471,11 @@ def conditional_sample_on_real_anomaly(args):
         "anomaly_labels": all_anomaly_labels,
     }
     os.makedirs(args.generated_path, exist_ok=True)
-    torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real.pt")
+    torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real_anomaly.pt")
     scores = evaluate_model_long_sequence(to_save["real"], to_save["samples"], device)
     print(f"Scores: {scores}")
-    breakpoint()
-    print(f"Scores: {scores}")
+    # breakpoint()
+    # print(f"Scores: {scores}")
 
 
 def conditional_sample_on_fake(args):
@@ -529,8 +530,6 @@ def conditional_sample_on_fake(args):
     }
     os.makedirs(args.generated_path, exist_ok=True)
     torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_fake.pt")
-
-
 
 
 def conditional_sample_on_real_normal(args):
@@ -684,10 +683,15 @@ def anomaly_evaluate(args):
     #     f"{args.generated_path}/generated_anomaly_on_fake.pt",
     #     map_location=device
     # )
+    # all_anomalies = torch.load(
+    #     f"{args.generated_path}/generated_anomaly_on_real_normal.pt",
+    #     map_location=device
+    # )
     all_anomalies = torch.load(
-        f"{args.generated_path}/generated_anomaly_on_real_normal.pt",
+        f"{args.generated_path}/{args.generated_file}",
         map_location=device
     )
+
     gen_data = all_anomalies['samples']
     gen_labels = all_anomalies['anomaly_labels']
 
@@ -771,7 +775,7 @@ def anomaly_evaluate(args):
         "result": result,
     }
 
-    save_path = os.path.join(args.generated_path, "evaluation_results_generated_anomaly_on_real_normal.jsonl")
+    save_path = os.path.join(args.generated_path, f"evaluation_results_{args.generated_file}.jsonl")
     os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
@@ -799,6 +803,7 @@ def main():
         unconditional_train(args)
     else:
         raise NotImplementedError
+
 
 if __name__ == "__main__":
     main()
