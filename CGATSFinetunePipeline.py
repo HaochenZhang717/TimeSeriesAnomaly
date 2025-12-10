@@ -68,7 +68,7 @@ def get_args():
     """sample parameters"""
     parser.add_argument("--tuned_ckpt", type=str, required=True)
     parser.add_argument("--num_samples", type=int, required=True)
-    parser.add_argument("--generated_path", type=int, required=True)
+    parser.add_argument("--generated_path", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
