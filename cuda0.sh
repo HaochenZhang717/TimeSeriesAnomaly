@@ -329,53 +329,6 @@
 
 
 
-python FlowTwoTogether.py \
-  --what_to_do "anomaly_evaluate" \
-  \
-  --seq_len 1800 \
-  --feature_size 1 \
-  --one_channel 1 \
-  \
-  --n_layer_enc 4 \
-  --n_layer_dec 4 \
-  --d_model 64 \
-  --n_heads 4 \
-  \
-  --dataset_name "ECG" \
-  --max_anomaly_length 629 \
-  --min_anomaly_length 74 \
-  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
-  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl" \
-  \
-  --lr 5e-4 \
-  --batch_size 64 \
-  --max_epochs 1000 \
-  --grad_clip_norm 1.0 \
-  --grad_accum_steps 1 \
-  --early_stop "true" \
-  --patience 50 \
-  \
-  --wandb_project "none" \
-  --wandb_run "none" \
-  \
-  --ckpt_dir "none" \
-  \
-  --cond_eval_model_ckpt "none" \
-  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800" \
-  --generated_file "generated_anomaly_on_real_normal.pt" \
-  --normal_data_path "none" \
-  --cond_num_samples -1 \
-  \
-  --uncond_eval_model_ckpt "none" \
-  --uncond_num_samples -1 \
-  \
-  --eval_train_size 10000 \
-  --gpu_id 0
-
-
-
 #python FlowTwoTogether.py \
 #  --what_to_do "anomaly_evaluate" \
 #  \
@@ -410,8 +363,8 @@ python FlowTwoTogether.py \
 #  --ckpt_dir "none" \
 #  \
 #  --cond_eval_model_ckpt "none" \
-#  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_200npz" \
-#  --generated_file "generated_anomaly_on_real_anomaly.pt" \
+#  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800" \
+#  --generated_file "generated_anomaly_on_real_normal.pt" \
 #  --normal_data_path "none" \
 #  --cond_num_samples -1 \
 #  \
@@ -420,3 +373,49 @@ python FlowTwoTogether.py \
 #  \
 #  --eval_train_size 10000 \
 #  --gpu_id 0
+
+
+python FlowTwoTogether.py \
+  --what_to_do "anomaly_evaluate" \
+  \
+  --seq_len 1800 \
+  --feature_size 1 \
+  --one_channel 1 \
+  \
+  --n_layer_enc 4 \
+  --n_layer_dec 4 \
+  --d_model 64 \
+  --n_heads 4 \
+  \
+  --dataset_name "ECG" \
+  --max_anomaly_length 629 \
+  --min_anomaly_length 74 \
+  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+  --raw_data_paths_val "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+  --indices_paths_val "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/validation/V.jsonl" \
+  \
+  --lr 5e-4 \
+  --batch_size 64 \
+  --max_epochs 1000 \
+  --grad_clip_norm 1.0 \
+  --grad_accum_steps 1 \
+  --early_stop "true" \
+  --patience 50 \
+  \
+  --wandb_project "none" \
+  --wandb_run "none" \
+  \
+  --ckpt_dir "none" \
+  \
+  --cond_eval_model_ckpt "none" \
+  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_200npz" \
+  --generated_file "generated_anomaly_on_real_anomaly.pt" \
+  --normal_data_path "none" \
+  --cond_num_samples -1 \
+  \
+  --uncond_eval_model_ckpt "none" \
+  --uncond_num_samples -1 \
+  \
+  --eval_train_size 10000 \
+  --gpu_id 0
