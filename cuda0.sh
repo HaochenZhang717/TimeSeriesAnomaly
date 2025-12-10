@@ -256,7 +256,7 @@ python FlowTwoTogether.py \
   --indices_paths_val "none" \
   \
   --lr 5e-4 \
-  --batch_size 320 \
+  --batch_size 64 \
   --max_epochs -1 \
   --grad_clip_norm -1.0 \
   --grad_accum_steps 1 \
