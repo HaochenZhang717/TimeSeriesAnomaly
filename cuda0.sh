@@ -364,6 +364,7 @@ python FlowTwoTogether.py \
   --cond_eval_model_ckpt "none" \
   --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800" \
   --normal_data_path "none" \
+  --cond_num_samples -1 \
   \
   --uncond_eval_model_ckpt "none" \
   --uncond_num_samples -1 \
