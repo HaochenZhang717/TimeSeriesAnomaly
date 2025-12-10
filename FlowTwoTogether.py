@@ -399,6 +399,7 @@ def conditional_train(args):
         wandb_run_name=args.wandb_run,
         wandb_project_name=args.wandb_project,
         grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
         early_stop=args.early_stop,
         patience=args.patience,
     )
