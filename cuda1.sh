@@ -63,7 +63,7 @@ python CGATSFinetunePipeline.py \
   --pretrained_ckpt "../TSA-ckpts/cgats/mitdb1800/pretrain_ckpt/ckpt.pth" \
   \
   --tuned_ckpt "none" \
-  --num_smaples -1 \
+  --num_samples -1 \
   --generated_path "none" \
   \
   --gpu_id 1
