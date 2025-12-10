@@ -549,10 +549,7 @@ def conditional_sample_on_real_normal(args):
         batch_fake_anomaly_labels = torch.cat(batch_fake_anomaly_labels, dim=0)
         return batch_fake_anomaly_labels
 
-    # device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
-    local_rank = int(os.environ["LOCAL_RANK"])
-    torch.cuda.set_device(local_rank)
-    device = torch.device("cuda", local_rank)
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
 
     model = FM_TS_Two_Together(
         seq_length=args.seq_len,
@@ -566,9 +563,9 @@ def conditional_sample_on_real_normal(args):
     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
     model.to(device)
     model.eval()
-    if torch.cuda.device_count() > 1:
-        print(f"Using {torch.cuda.device_count()} GPUs! DataParallel enabled.")
-        model = torch.nn.DataParallel(model)
+    # if torch.cuda.device_count() > 1:
+    #     print(f"Using {torch.cuda.device_count()} GPUs! DataParallel enabled.")
+    #     model = torch.nn.DataParallel(model)
 
     normal_train_set = build_dataset(
         args.dataset_name,
@@ -600,9 +597,7 @@ def conditional_sample_on_real_normal(args):
         #     x_start=real_signal,
         #     anomaly_label=anomaly_label,
         # ).cpu()
-        samples = model.module.impute(real_signal, anomaly_label) \
-                  if isinstance(model, torch.nn.DataParallel) \
-                  else model.impute(real_signal, anomaly_label)
+        samples = model.impute(real_signal, anomaly_label)
         samples = samples.detach().cpu()
 
         num_generated += samples.shape[0]

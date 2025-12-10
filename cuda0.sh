@@ -233,9 +233,9 @@
 #  \
 #  --gpu_id 0
 
-export hucfg_t_sampling=logitnorm
-export CUDA_VISIBLE_DEVICES=0,1,5,6,7
-torchrun --nproc_per_node=5 FlowTwoTogether.py \
+#export hucfg_t_sampling=logitnorm
+#export CUDA_VISIBLE_DEVICES=0,1,5,6,7
+python FlowTwoTogether.py \
   --what_to_do "conditional_sample_on_real_normal" \
   \
   --seq_len 1800 \
@@ -278,7 +278,7 @@ torchrun --nproc_per_node=5 FlowTwoTogether.py \
   \
   --eval_train_size -1 \
   \
-  --gpu_id -1
+  --gpu_id 0
 
 #export hucfg_t_sampling=logitnorm
 #python FlowTwoTogether.py \
