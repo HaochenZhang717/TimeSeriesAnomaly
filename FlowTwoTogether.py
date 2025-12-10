@@ -556,6 +556,7 @@ def unconditional_sample(args):
 
 def unconditional_evaluate(args):
     fake_normal_data = torch.load(args.normal_data_path)
+    fake_normal_data = fake_normal_data['samples']
     normal_train_set = build_dataset(
         args.dataset_name,
         'non_iterable',
@@ -566,9 +567,10 @@ def unconditional_evaluate(args):
         min_anomaly_length=args.min_anomaly_length,
         one_channel=args.one_channel,
     )
-    real_normal_data = normal_train_set.slide_windows
+    real_normal_data = torch.from_numpy(np.stack(normal_train_set.slide_windows, axis=0))
+
     device = torch.device(f"cuda:{args.gpu_id}")
-    num_data = min(len(real_normal_data), len(normal_train_set))
+    num_data = min(len(real_normal_data), len(fake_normal_data))
     breakpoint()
     scores = evaluate_model_long_sequence(real_normal_data[:num_data], fake_normal_data[:num_data], device)
     print(scores)
