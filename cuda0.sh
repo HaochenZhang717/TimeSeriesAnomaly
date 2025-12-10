@@ -270,7 +270,7 @@ python FlowTwoTogether.py \
   --cond_eval_model_ckpt "../TSA-ckpts/flow_two_together_logit_normal/mitdb1800/conditional_ckpt/ema_ckpt.pth" \
   --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800" \
   --normal_data_path "none" \
-  --cond_num_samples 100 \
+  --cond_num_samples 10000 \
   \
   --uncond_eval_model_ckpt "none" \
   --uncond_num_samples -1 \
