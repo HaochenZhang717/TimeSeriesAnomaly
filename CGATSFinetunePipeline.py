@@ -76,6 +76,7 @@ def get_args():
 
     return parser.parse_args()
 
+
 def finetune(args):
     # timestamp = datetime.now(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d-%H:%M:%S")
     # args.ckpt_dir = f"{args.ckpt_dir}/{timestamp}"
@@ -213,8 +214,8 @@ def sample_anomaly(args):
 
 
     # do evaluation as in ImagenTime
-    scores = evaluate_model_long_sequence(orig_data, gen_data[:len(orig_data)], device)
-    breakpoint()
+    # scores = evaluate_model_long_sequence(orig_data, gen_data[:len(orig_data)], device)
+    # breakpoint()
 
     # do my evaluation
     precisions = []
