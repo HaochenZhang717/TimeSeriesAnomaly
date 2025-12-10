@@ -589,7 +589,7 @@ def conditional_sample_on_real_normal(args):
         anomaly_label = get_batch_fake_anomaly_labels().to(device)
         print(batch.keys())
         breakpoint()
-        real_signal = batch['original_signal'].to(device)
+        real_signal = batch['orig_signal'].to(device)
         samples = model.impute(
             x_start=real_signal,
             anomaly_label=anomaly_label,
