@@ -720,7 +720,7 @@ def anomaly_evaluate(args):
         sampled_gen_labels = gen_labels[random_indices]
 
         normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
-            anomaly_weight=1.0,
+            anomaly_weight=5.0,
             feature_size=args.feature_size,
             ori_data=orig_data,
             ori_labels=orig_labels,
