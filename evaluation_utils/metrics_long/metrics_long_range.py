@@ -4,7 +4,7 @@ import torch.optim as optim
 
 import numpy as np
 from tqdm.auto import tqdm
-from models.testing_models.s4d import S4D, dropout_fn
+from .s4d import S4D, dropout_fn
 
 
 class S4Model(nn.Module):
