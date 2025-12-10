@@ -569,6 +569,7 @@ def unconditional_evaluate(args):
     real_normal_data = normal_train_set.slide_windows
     device = torch.device(f"cuda:{args.gpu_id}")
     num_data = min(len(real_normal_data), len(normal_train_set))
+    breakpoint()
     scores = evaluate_model_long_sequence(real_normal_data[:num_data], fake_normal_data[:num_data], device)
     print(scores)
 
