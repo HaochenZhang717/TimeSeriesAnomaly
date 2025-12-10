@@ -9,7 +9,7 @@ import json
 import os
 from tqdm import tqdm
 import numpy as np
-from evaluation_utils import calculate_robustTAD
+from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
 
 
 def save_args_to_jsonl(args, output_path):
@@ -29,7 +29,7 @@ def get_args():
         choices=["conditional_training", "unconditional_training",
                  "conditional_evaluate", "conditional_sample_on_real",
                  "conditional_sample_on_fake", "unconditional_sample",
-                 "anomaly_evaluate"],
+                 "anomaly_evaluate", "unconditional_evaluate"],
         help="what to do"
     )
 
@@ -554,6 +554,27 @@ def unconditional_sample(args):
 
 
 
+def unconditional_evaluate(args):
+    fake_normal_data = torch.load(args.fake_normal_data_path)
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
+    )
+    real_normal_data = normal_train_set.slide_windows
+    device = torch.device(f"cuda:{args.gpu_id}")
+    num_data = min(len(real_normal_data), len(normal_train_set))
+    scores = evaluate_model_long_sequence(real_normal_data[:num_data], fake_normal_data[:num_data], device)
+    print(scores)
+
+
+
+
 def anomaly_evaluate(args):
 
     device = torch.device(f"cuda:{args.gpu_id}")
@@ -662,6 +683,8 @@ def main():
         conditional_sample_on_fake(args)
     elif args.what_to_do == "unconditional_sample":
         unconditional_sample(args)
+    elif args.what_to_do == "unconditional_evaluate":
+        unconditional_evaluate(args)
     elif args.what_to_do == "anomaly_evaluate":
         anomaly_evaluate(args)
     elif args.what_to_do == "unconditional_training":
