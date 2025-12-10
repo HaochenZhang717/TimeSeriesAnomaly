@@ -209,7 +209,7 @@ def sample_anomaly(args):
 
     orig_data = torch.from_numpy(np.stack(anomaly_train_set.slide_windows, axis=0))
     orig_labels = torch.from_numpy(np.stack(anomaly_train_set.anomaly_labels, axis=0))
-
+    breakpoint()
     precisions = []
     recalls = []
     f1s = []
@@ -231,7 +231,9 @@ def sample_anomaly(args):
             lr=1e-5,
             max_epochs=2000,
             batch_size=64,
-            patience=20)
+            patience=20,
+            feat_size=args.feature_size,
+        )
         precisions.append(precision)
         recalls.append(recall)
         f1s.append(f1)
