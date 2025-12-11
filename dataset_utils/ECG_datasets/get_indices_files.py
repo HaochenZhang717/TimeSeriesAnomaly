@@ -623,7 +623,7 @@ def extract_windows_containing_segments(
             end = start + window_size
 
             label_win = labels[start:end]
-            if -1 in label_win:
+            if not np.array_equal(np.unique(label_win), np.array([0, 1])):
                 continue
             anomaly_ratio = label_win.sum() / window_size
 

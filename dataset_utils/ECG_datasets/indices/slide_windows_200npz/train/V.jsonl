@@ -381,12 +381,6 @@
 {"start": 73439, "end": 75239, "anomaly_type": 1}
 {"start": 73539, "end": 75339, "anomaly_type": 1}
 {"start": 73639, "end": 75439, "anomaly_type": 1}
-{"start": 73739, "end": 75539, "anomaly_type": 1}
-{"start": 73839, "end": 75639, "anomaly_type": 1}
-{"start": 73939, "end": 75739, "anomaly_type": 1}
-{"start": 74039, "end": 75839, "anomaly_type": 1}
-{"start": 74139, "end": 75939, "anomaly_type": 1}
-{"start": 74239, "end": 76039, "anomaly_type": 1}
 {"start": 76056, "end": 77856, "anomaly_type": 1}
 {"start": 76156, "end": 77956, "anomaly_type": 1}
 {"start": 76256, "end": 78056, "anomaly_type": 1}
@@ -425,10 +419,6 @@
 {"start": 80262, "end": 82062, "anomaly_type": 1}
 {"start": 83219, "end": 85019, "anomaly_type": 1}
 {"start": 83319, "end": 85119, "anomaly_type": 1}
-{"start": 85866, "end": 87666, "anomaly_type": 1}
-{"start": 85966, "end": 87766, "anomaly_type": 1}
-{"start": 86066, "end": 87866, "anomaly_type": 1}
-{"start": 86166, "end": 87966, "anomaly_type": 1}
 {"start": 86266, "end": 88066, "anomaly_type": 1}
 {"start": 86366, "end": 88166, "anomaly_type": 1}
 {"start": 86466, "end": 88266, "anomaly_type": 1}
@@ -998,3 +988,13 @@
 {"start": 145057, "end": 146857, "anomaly_type": 1}
 {"start": 145157, "end": 146957, "anomaly_type": 1}
 {"start": 145257, "end": 147057, "anomaly_type": 1}
+{"start": 145357, "end": 147157, "anomaly_type": 1}
+{"start": 145457, "end": 147257, "anomaly_type": 1}
+{"start": 145557, "end": 147357, "anomaly_type": 1}
+{"start": 145657, "end": 147457, "anomaly_type": 1}
+{"start": 145757, "end": 147557, "anomaly_type": 1}
+{"start": 145857, "end": 147657, "anomaly_type": 1}
+{"start": 145415, "end": 147215, "anomaly_type": 1}
+{"start": 145515, "end": 147315, "anomaly_type": 1}
+{"start": 145615, "end": 147415, "anomaly_type": 1}
+
