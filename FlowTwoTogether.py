@@ -777,8 +777,8 @@ def anomaly_evaluate(args):
         "args": vars(args),
         "result": result,
     }
-
-    save_path = os.path.join(args.generated_path, f"evaluation_results_{args.generated_file.split(".")[-1]}.jsonl")
+    qweqwe = args.generated_file.split(".")[0]
+    save_path = os.path.join(args.generated_path, f"evaluation_results_{qweqwe}.jsonl")
     os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
