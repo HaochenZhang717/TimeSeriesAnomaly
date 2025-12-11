@@ -698,6 +698,16 @@ def anomaly_evaluate(args):
     gen_data = all_anomalies['samples']
     gen_labels = all_anomalies['anomaly_labels']
 
+    # ---- Step 1: 找出含 NaN 的样本 ----
+    nan_mask = torch.isnan(gen_data).any(dim=(1, 2))  # True 表示该样本含 NaN
+
+    print("Samples containing NaN:", nan_mask.sum().item(), "/", gen_data.size(0))
+
+    # ---- Step 2: 删除这些样本 ----
+    gen_data = gen_data[~nan_mask]
+    gen_labels = gen_labels[~nan_mask]
+
+
     anomaly_train_set = build_dataset(
         args.dataset_name,
         'iterable',
