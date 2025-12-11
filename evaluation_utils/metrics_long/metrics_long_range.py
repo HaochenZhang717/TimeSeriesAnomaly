@@ -210,6 +210,56 @@ def compute_classification_score(x_fake, x_real, get_optim_func, device):
     return dis_score
 
 
+#todo: need to finish if i want
+def compute_anomaly_detection_score(x_fake, y_fake, x_real, y_real, get_optim_func, device):
+    x_fake = x_fake.detach().cpu()
+    y_fake = y_fake.detach().cpu()
+
+    x_real = x_real.detach().cpu()
+    y_real = y_real.detach().cpu()
+
+    X_train, Y_train = x_fake, y_fake
+    X_test, Y_test = x_real, y_real
+
+
+    model = S4Model(d_input=X_train.shape[-1], d_state=16, d_output=1, d_model=16, n_layers=1,
+                    dropout=0.0, seq2seq=False).to(device)
+    trainloader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(X_train, Y_train), shuffle=True,
+                                              batch_size=128)
+    testloader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(X_test, Y_test), batch_size=128)
+    optimizer, _ = get_optim_func(model, lr=0.01, weight_decay=0.0, epochs=100)
+
+    pbar = tqdm(range(100))
+    for i in range(100):
+        for data, label in trainloader:
+            optimizer.zero_grad()
+            pred, _ = model(data.to(device))
+
+            loss = torch.nn.BCEWithLogitsLoss()(pred.squeeze(-1), label.to(device))
+            loss.backward()
+            optimizer.step()
+
+
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            test_loss = 0
+            for ind, (data, label) in enumerate(testloader):
+                pred, _ = model(data.to(device))
+                loss = torch.nn.BCEWithLogitsLoss()(pred.squeeze(-1), label.to(device)).detach().cpu()
+                test_loss += loss
+
+                pred_label = (torch.sigmoid(pred.squeeze(-1)) > 0.5).cpu().float()
+                correct += (pred_label == label).sum().item()
+                total += label.shape[0]
+
+            accuracy = correct / total
+            dis_score = abs(accuracy - 0.5)
+            pbar.set_description(f'Epoch {i} Test loss: {test_loss / (ind + 1)}, Accuracy: {accuracy}, Dis: {dis_score}')
+
+    return dis_score
+
+
 def compute_predictive_score(x_real, x_fake, pred_step, get_optim_func, device, pred_activation):
     x_fake = x_fake.detach().cpu()
     x_real = x_real.detach().cpu()
