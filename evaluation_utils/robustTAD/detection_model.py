@@ -189,8 +189,8 @@ def calculate_robustTAD(
         for Xb, yb in train_loader:
             Xb, yb = Xb.to(device), yb.to(device)
             loss = model(Xb, yb)
-            breakpoint()
-            print(loss.item())
+            # breakpoint()
+            # print(loss.item())
             train_loss += loss.item() * Xb.shape[0]
             train_seen += Xb.shape[0]
             optimizer.zero_grad()
