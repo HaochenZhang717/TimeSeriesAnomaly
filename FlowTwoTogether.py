@@ -569,7 +569,7 @@ def conditional_sample_on_real_normal(args):
 
     normal_train_set = build_dataset(
         args.dataset_name,
-        'non_iterable',
+        'iterable',
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
@@ -582,15 +582,18 @@ def conditional_sample_on_real_normal(args):
     normal_loader = torch.utils.data.DataLoader(
         normal_train_set,
         batch_size=args.batch_size,
-        shuffle=True,
     )
 
+    num_samples = args.cond_num_samples
+    num_cycle = int(num_samples // args.batch_size) + 1
+    train_iterator = iter(normal_loader)
 
     all_samples = []
     all_real = []
     all_anomaly_labels = []
     num_generated = 0
-    for batch in tqdm(normal_loader, desc="Generating samples"):
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        batch = next(train_iterator)
         anomaly_label = get_batch_fake_anomaly_labels().to(device)
         real_signal = batch['orig_signal'].to(device)
         # samples = model.impute(
