@@ -472,8 +472,8 @@ def conditional_sample_on_real_anomaly(args):
     }
     os.makedirs(args.generated_path, exist_ok=True)
     torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real_anomaly.pt")
-    scores = evaluate_model_long_sequence(to_save["real"], to_save["samples"], device)
-    print(f"Scores: {scores}")
+    # scores = evaluate_model_long_sequence(to_save["real"], to_save["samples"], device)
+    # print(f"Scores: {scores}")
     # breakpoint()
     # print(f"Scores: {scores}")
 
