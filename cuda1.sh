@@ -22,7 +22,7 @@ python CGATSPretrainPipeline.py \
   --early_stop "true" \
   \
   --wandb_project cgats_pretrain \
-  --wandb_run cgats_pretrain_mitdb1800 \
+  --wandb_run cgats_pretrain_mitdb1800_200npz \
   \
   --ckpt_dir "../TSA-ckpts/cgats/mitdb1800_200npz/pretrain_ckpt" \
   --gpu_id 1
@@ -57,9 +57,9 @@ python CGATSFinetunePipeline.py \
   --early_stop "true" \
   \
   --wandb_project cgats_finetune \
-  --wandb_run cgats_fientune_mitdblen1800 \
+  --wandb_run cgats_fientune_mitdb1800_200npz \
   \
-  --ckpt_dir "../TSA-ckpts/cgats/mitdb1800/finetune_ckpt" \
+  --ckpt_dir "../TSA-ckpts/cgats/mitdb1800_200npz/finetune_ckpt" \
   --pretrained_ckpt "../TSA-ckpts/cgats/mitdb1800_200npz/pretrain_ckpt/ckpt.pth" \
   \
   --tuned_ckpt "none" \
