@@ -36,11 +36,6 @@ class VRF(nn.Module):
         self.seq_length = seq_length
         self.feature_size = feature_size
         self.kl_beta = kl_beta
-
-        self.model = Transformer(n_feat=feature_size, n_channel=seq_length, n_layer_enc=n_layer_enc, n_layer_dec=n_layer_dec,
-                                 n_heads=n_heads, attn_pdrop=attn_pd, resid_pdrop=resid_pd, mlp_hidden_times=mlp_hidden_times,
-                                 max_len=seq_length, n_embd=d_model, conv_params=[kernel_size, padding_size])
-
         self.variational_encoder = TemporalVariationalEncoder1D(
             in_channels=feature_size,
             channels=ve_channels,
@@ -49,6 +44,16 @@ class VRF(nn.Module):
             pool_stride=ve_pool_stride,
             z_dim=ve_z_dim,
         )
+        self.model = Transformer(
+            n_feat=feature_size, n_channel=seq_length + self.variational_encoder.num_tokens,
+            n_layer_enc=n_layer_enc, n_layer_dec=n_layer_dec,
+            n_heads=n_heads, attn_pdrop=attn_pd,
+            resid_pdrop=resid_pd, mlp_hidden_times=mlp_hidden_times,
+            max_len=seq_length, n_embd=d_model,
+            conv_params=[kernel_size, padding_size]
+        )
+
+
         self.latent_projector = nn.Linear(ve_z_dim, d_model)
         self.alpha = 3  ## t shifting, change to 1 is the uniform sampling during inference
         self.time_scalar = 1000 ## scale 0-1 to 0-1000 for time embedding
