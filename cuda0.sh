@@ -440,7 +440,7 @@ python VarFlow.py \
   --ve_pool_stride 4 \
   --ve_z_dim 16 \
   \
-  --kl_beta 0.0 \
+  --kl_beta 1e-3 \
   \
   --dataset_name "ECG" \
   --max_anomaly_length 629 \
@@ -460,7 +460,7 @@ python VarFlow.py \
   --patience 50 \
   \
   --wandb_project "VRF_conditional" \
-  --wandb_run "106npz" \
+  --wandb_run "106npz-stochastic-latent" \
   \
   --ckpt_dir "../TSA-ckpts/VRF/mitdb1800_106npz/conditional_ckpt" \
   \
