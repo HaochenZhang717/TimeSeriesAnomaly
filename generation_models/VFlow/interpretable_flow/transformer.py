@@ -443,6 +443,7 @@ class DecoderBlock(nn.Module):
         # print("x1: ", x1.shape)
         # print("x2: ", x2.shape)
         trend, season = self.trend(x1), self.seasonal(x2)
+        breakpoint()
         x = x + self.mlp(self.ln2(x[:, -self.real_ts_len:]))
 
         m = torch.mean(x, dim=1, keepdim=True)
