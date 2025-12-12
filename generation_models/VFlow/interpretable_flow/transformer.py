@@ -439,11 +439,9 @@ class DecoderBlock(nn.Module):
         a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
         x = x + a
 
-        breakpoint()
         x1, x2 = self.proj(x[:, -self.real_ts_len:]).chunk(2, dim=1)
-        print("x1: ", x1.shape)
-        print("x2: ", x2.shape)
-        breakpoint()
+        # print("x1: ", x1.shape)
+        # print("x2: ", x2.shape)
         trend, season = self.trend(x1), self.seasonal(x2)
         x = x + self.mlp(self.ln2(x[:, -self.real_ts_len:]))
 
