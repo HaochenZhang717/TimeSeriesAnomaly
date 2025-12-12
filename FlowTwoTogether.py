@@ -56,6 +56,7 @@ def get_args():
     parser.add_argument("--raw_data_paths_val", type=str, required=True)
     parser.add_argument("--indices_paths_train", type=str, required=True)
     parser.add_argument("--indices_paths_val", type=str, required=True)
+    parser.add_argument("--limited_data_size", type=int, required=True)
 
     """training parameters"""
     parser.add_argument("--lr", type=float, required=True)
@@ -373,6 +374,7 @@ def conditional_train(args):
         max_anomaly_length=args.max_anomaly_length,
         min_anomaly_length=args.min_anomaly_length,
         one_channel=args.one_channel,
+        limited_data_size=args.limited_data_size
     )
 
     train_loader = torch.utils.data.DataLoader(anomaly_train_set, batch_size=args.batch_size, shuffle=True, drop_last=True)
