@@ -460,7 +460,7 @@ python VarFlow.py \
   --patience 50 \
   \
   --wandb_project "VRF_conditional" \
-  --wandb_run "mitdb1800_106_conditional_logit_norm" \
+  --wandb_run "106npz" \
   \
   --ckpt_dir "../TSA-ckpts/VRF/mitdb1800_106npz/conditional_ckpt" \
   \
