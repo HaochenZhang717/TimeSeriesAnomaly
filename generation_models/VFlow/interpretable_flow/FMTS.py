@@ -49,7 +49,9 @@ class VRF(nn.Module):
             n_layer_enc=n_layer_enc, n_layer_dec=n_layer_dec,
             n_heads=n_heads, attn_pdrop=attn_pd,
             resid_pdrop=resid_pd, mlp_hidden_times=mlp_hidden_times,
-            max_len=seq_length, n_embd=d_model,
+            max_len=seq_length + self.variational_encoder.num_tokens,
+            real_ts_len=seq_length,
+            n_embd=d_model,
             conv_params=[kernel_size, padding_size]
         )
         # self.model = Transformer(
