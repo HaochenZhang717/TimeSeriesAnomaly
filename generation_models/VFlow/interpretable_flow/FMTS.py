@@ -81,7 +81,8 @@ class VRF(nn.Module):
         # breakpoint()
         # x = torch.cat([projected_latent, x], dim=1)
         output = self.model(x, t, projected_latent, padding_masks=None)
-        return output[:, num_tokens:], mu_t, logvar_t
+        # return output[:, num_tokens:], mu_t, logvar_t
+        return output, mu_t, logvar_t
 
     # @torch.no_grad()
     # def sample(self, shape):
