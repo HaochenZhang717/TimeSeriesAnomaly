@@ -440,7 +440,7 @@ python VarFlow.py \
   --ve_pool_stride 4 \
   --ve_z_dim 16 \
   \
-  --kl_beta 1e-3 \
+  --kl_beta 0.0 \
   \
   --dataset_name "ECG" \
   --max_anomaly_length 629 \
