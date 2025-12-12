@@ -486,7 +486,6 @@ class Decoder(nn.Module):
         ) for _ in range(n_layer)])
 
     def forward(self, x, t, enc, padding_masks=None):
-        breakpoint()
         b, c, _ = x.shape
         # att_weights = []
         mean = []
@@ -553,7 +552,6 @@ class Transformer(nn.Module):
         emb = self.emb(input) # t*x_0 + (1-t) * noise
 
         # projected_latent = torch.zeros_like(projected_latent)
-        breakpoint()
         emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
