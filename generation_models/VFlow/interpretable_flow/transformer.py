@@ -418,7 +418,7 @@ class DecoderBlock(nn.Module):
         assert activate in ['GELU', 'GELU2']
         act = nn.GELU() if activate == 'GELU' else GELU2()
 
-        self.trend = TrendBlock(n_channel, n_channel, n_embd, n_feat, act=act)
+        self.trend = TrendBlock(self.real_ts_len, self.real_ts_len, n_embd, n_feat, act=act)
         self.seasonal = FourierLayer(d_model=n_embd)
 
         self.mlp = nn.Sequential(
@@ -428,7 +428,7 @@ class DecoderBlock(nn.Module):
             nn.Dropout(resid_pdrop),
         )
 
-        self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
+        self.proj = nn.Conv1d(self.real_ts_len, self.real_ts_len * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
     def forward(self, x, encoder_output, timestep, mask=None):
