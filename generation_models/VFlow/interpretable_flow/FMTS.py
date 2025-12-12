@@ -57,7 +57,10 @@ class VRF(nn.Module):
     
     def output(self, x, t, ve_input):
         if ve_input is not None:
-            _, mu_t, logvar_t, latent_t = self.variational_encoder(ve_input.permute(0,2,1)).permute(0, 2, 1) # (B, 3~4, C)
+            _, mu_t, logvar_t, latent_t = self.variational_encoder(ve_input.permute(0,2,1)) # (B, 3~4, C)
+            mu_t = mu_t.permute(0,2,1)
+            logvar_t = logvar_t.permute(0,2,1)
+            latent_t = latent_t.permute(0,2,1)
             num_tokens = latent_t.shape[1]
         else:
             latent_t = self.variational_encoder.sample_prior_latent()
