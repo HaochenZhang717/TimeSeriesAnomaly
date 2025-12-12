@@ -69,7 +69,7 @@ class TemporalVariationalEncoder1D(nn.Module):
     ):
         super().__init__()
         self.seq_len = seq_len
-
+        self.num_blocks = len(channels)
         T = seq_len
         for _ in range(self.num_blocks):
             T = math.floor((T - pool_kernel) / pool_stride + 1)
