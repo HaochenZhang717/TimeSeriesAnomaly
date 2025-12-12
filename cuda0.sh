@@ -460,7 +460,7 @@ python VarFlow.py \
   --patience 50 \
   \
   --wandb_project "VRF_conditional" \
-  --wandb_run "106npz_debug" \
+  --wandb_run "106npz_debug_no_var" \
   \
   --ckpt_dir "../TSA-ckpts/VRF/mitdb1800_106npz/conditional_ckpt" \
   \
