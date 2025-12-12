@@ -432,13 +432,14 @@ class DecoderBlock(nn.Module):
         self.linear = nn.Linear(n_embd, n_feat)
 
     def forward(self, x, encoder_output, timestep, mask=None):
+
         a, att = self.attn1(self.ln1(x, timestep), mask=mask)
         x = x + a
 
         a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
         x = x + a
 
-        breakpoint(x)
+        breakpoint()
         x1, x2 = self.proj(x[:, -self.real_ts_len:]).chunk(2, dim=1)
         print("x1: ", x1.shape)
         print("x2: ", x2.shape)
