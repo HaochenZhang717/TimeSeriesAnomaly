@@ -439,12 +439,12 @@ class DecoderBlock(nn.Module):
         a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
         x = x + a
 
-        x1, x2 = self.proj(x[:, -self.real_ts_len:]).chunk(2, dim=1)
+        x = x[:, -self.real_ts_len:]
+        x1, x2 = self.proj(x).chunk(2, dim=1)
         # print("x1: ", x1.shape)
         # print("x2: ", x2.shape)
         trend, season = self.trend(x1), self.seasonal(x2)
-        breakpoint()
-        x = x + self.mlp(self.ln2(x[:, -self.real_ts_len:]))
+        x = x + self.mlp(self.ln2(x))
 
         m = torch.mean(x, dim=1, keepdim=True)
         return x - m, self.linear(m), trend, season
