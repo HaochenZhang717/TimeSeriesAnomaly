@@ -61,14 +61,12 @@ class VRF(nn.Module):
             mu_t = mu_t.permute(0,2,1)
             logvar_t = logvar_t.permute(0,2,1)
             latent_t = latent_t.permute(0,2,1)
-            num_tokens = latent_t.shape[1]
         else:
             latent_t = self.variational_encoder.sample_prior_latent()
-
+        num_tokens = latent_t.shape[1]
         projected_latent = self.latent_projector(latent_t)
-        breakpoint()
-        x = torch.cat([projected_latent, x], dim=1)
-        output = self.model(x, t, padding_masks=None)
+        # x = torch.cat([projected_latent, x], dim=1)
+        output = self.model(x, t, projected_latent, padding_masks=None)
         return output[:, num_tokens:], mu_t, logvar_t
 
     # @torch.no_grad()

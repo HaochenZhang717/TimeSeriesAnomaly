@@ -532,11 +532,12 @@ class Transformer(nn.Module):
                                mlp_hidden_times,
                                block_activate, condition_dim=n_embd, max_len=self.max_len)
 
-    def forward(self, input, t, padding_masks=None, return_res=False):
+    def forward(self, input, t, projected_latent, padding_masks=None):
         # if not self.training:
         #     breakpoint()
         emb = self.emb(input)
-
+        emb = torch.cat([projected_latent, emb], dim=1)
+        breakpoint()
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
 
