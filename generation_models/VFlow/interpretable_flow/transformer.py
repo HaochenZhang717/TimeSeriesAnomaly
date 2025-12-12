@@ -535,10 +535,11 @@ class Transformer(nn.Module):
     def forward(self, input, t, projected_latent, padding_masks=None):
         # if not self.training:
         #     breakpoint()
-        emb = self.emb(input)
+        emb = self.emb(input) # t*x_0 + (1-t) * noise
 
         # projected_latent = torch.zeros_like(projected_latent)
-        # emb = torch.cat([projected_latent, emb], dim=1)
+        breakpoint()
+        emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
 
