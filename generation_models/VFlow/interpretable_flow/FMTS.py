@@ -66,6 +66,7 @@ class VRF(nn.Module):
             latent_t = self.variational_encoder.sample_prior_latent()
 
         projected_latent = self.latent_projector(latent_t)
+        breakpoint()
         x = torch.cat([projected_latent, x], dim=1)
         output = self.model(x, t, padding_masks=None)
         return output[:, num_tokens:], mu_t, logvar_t
