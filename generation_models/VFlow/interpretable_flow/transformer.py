@@ -496,7 +496,7 @@ class Decoder(nn.Module):
             mean.append(residual_mean)
 
         mean = torch.cat(mean, dim=1)
-        return x, mean, trend, season
+        return x[:, -self.real_ts_len:], mean, trend, season
 
 
 class Transformer(nn.Module):
