@@ -552,7 +552,7 @@ class Transformer(nn.Module):
         emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
-        print("enc_cond: ", enc_cond.shape)
+        # print("enc_cond: ", enc_cond.shape)
         inp_dec = emb
         output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, padding_masks=padding_masks)
 
