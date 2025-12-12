@@ -437,6 +437,9 @@ class DecoderBlock(nn.Module):
         a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
         x = x + a
         x1, x2 = self.proj(x).chunk(2, dim=1)
+        print("x1: ", x1.shape)
+        print("x2: ", x2.shape)
+        breakpoint()
         trend, season = self.trend(x1), self.seasonal(x2)
         x = x + self.mlp(self.ln2(x))
 
@@ -476,6 +479,7 @@ class Decoder(nn.Module):
         ) for _ in range(n_layer)])
 
     def forward(self, x, t, enc, padding_masks=None):
+        breakpoint()
         b, c, _ = x.shape
         # att_weights = []
         mean = []
@@ -542,7 +546,7 @@ class Transformer(nn.Module):
         emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
-
+        print("enc_cond: ", enc_cond.shape)
         inp_dec = emb
         output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, padding_masks=padding_masks)
 
