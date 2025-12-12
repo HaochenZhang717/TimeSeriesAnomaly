@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Normal
+import math
 
 
 class ConvMeanPool1DBlock(nn.Module):
@@ -59,6 +60,7 @@ class TemporalVariationalEncoder1D(nn.Module):
     def __init__(
         self,
         in_channels=1,
+        seq_len=1800,
         channels=[64, 128, 256],
         kernel_size=7,
         pool_kernel=2,
@@ -66,6 +68,12 @@ class TemporalVariationalEncoder1D(nn.Module):
         z_dim=16,
     ):
         super().__init__()
+        self.seq_len = seq_len
+
+        T = seq_len
+        for _ in range(self.num_blocks):
+            T = math.floor((T - pool_kernel) / pool_stride + 1)
+        self.num_tokens = T
 
         blocks = []
         ch_in = in_channels
@@ -118,6 +126,12 @@ class TemporalVariationalEncoder1D(nn.Module):
         kl_loss = kl.mean()  # mean over batch → scalar
         return kl_loss
 
+    def sample_prior_latent(self, batch_size):
+        device = next(self.parameters()).device
+        mu = torch.zeros(batch_size, self.to_mu.out_channels, self.num_tokens, device=device)
+        std = torch.ones_like(mu)
+        pz = Normal(mu, std)
+        return pz.sample()
 
 if __name__ == '__main__':
     # block = ConvMeanPool1DBlock(

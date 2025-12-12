@@ -56,8 +56,12 @@ class VRF(nn.Module):
         self.num_timesteps = int(os.environ.get('hucfg_num_steps', '100'))
     
     def output(self, x, t, ve_input):
-        _, mu_t, logvar_t, latent_t = self.variational_encoder(ve_input.permute(0,2,1)).permute(0, 2, 1) # (B, 3~4, C)
-        num_tokens = latent_t.shape[1]
+        if ve_input is not None:
+            _, mu_t, logvar_t, latent_t = self.variational_encoder(ve_input.permute(0,2,1)).permute(0, 2, 1) # (B, 3~4, C)
+            num_tokens = latent_t.shape[1]
+        else:
+            latent_t = self.variational_encoder.sample_prior_latent()
+
         projected_latent = self.latent_projector(latent_t)
         x = torch.cat([projected_latent, x], dim=1)
         output = self.model(x, t, padding_masks=None)
@@ -100,11 +104,12 @@ class VRF(nn.Module):
         t_shifted = 1 - (self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
         t_shifted = t_shifted.flip(0).to(x_start.device)
 
+        latent = self.variational_encoder.sample_prior_latent(batch_size=1)
         # 2) Integrate ODE from t=1 → t=0
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).view(-1)
-            v, _, _ = self.output(zt.clone(), t_input, padding_masks=None)
+            v, _, _ = self.output(zt.clone(), t_input, latent)
 
             #update missing region ONLY
             zt = zt + step * v * anomaly_label.unsqueeze(-1)
@@ -149,7 +154,7 @@ class VRF(nn.Module):
 
         target = (z1 - z0_impute) * anomaly_label.unsqueeze(-1) # [0,0,3-noise, 4-noise, 5-noise, 0]
 
-        model_out, mu_t, logvar_t = self.output(z_t, t.view(-1) * self.time_scalar, z1-z0_impute, None)
+        model_out, mu_t, logvar_t = self.output(z_t, t.view(-1) * self.time_scalar, z1-z0_impute)
 
         model_out = model_out * anomaly_label.unsqueeze(-1)
 
