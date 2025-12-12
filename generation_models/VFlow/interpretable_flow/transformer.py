@@ -536,7 +536,9 @@ class Transformer(nn.Module):
         # if not self.training:
         #     breakpoint()
         emb = self.emb(input)
-        # emb = torch.cat([projected_latent, emb], dim=1)
+
+        projected_latent = torch.zeros_like(projected_latent)
+        emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
 
