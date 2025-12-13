@@ -480,7 +480,7 @@
 
 
 export hucfg_t_sampling=logitnorm
-python FlowTwoTogether.py \
+python VarFlow.py \
   --what_to_do "conditional_sample_on_real_anomaly" \
   \
   --seq_len 1800 \
