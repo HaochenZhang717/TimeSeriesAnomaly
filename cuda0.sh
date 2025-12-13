@@ -557,6 +557,7 @@ python FlowTwoTogether.py \
   --raw_data_paths_val "none" \
   --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
   --indices_paths_val "none" \
+  --limited_data_size 1000000 \
   \
   --lr 5e-4 \
   --batch_size 64 \
