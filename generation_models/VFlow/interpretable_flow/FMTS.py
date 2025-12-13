@@ -121,7 +121,12 @@ class VRF(nn.Module):
         if seed is not None:
             g = torch.Generator(device=x_start.device)
             g.manual_seed(seed)
-            noise = torch.randn_like(x_start, generator=g)
+            noise = torch.randn(
+                x_start.shape,
+                device=x_start.device,
+                dtype=x_start.dtype,
+                generator=g
+            )
         else:
             noise = torch.randn_like(x_start)
 
