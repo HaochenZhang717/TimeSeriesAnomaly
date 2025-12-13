@@ -81,6 +81,7 @@ class VRF(nn.Module):
             latent_t = self.variational_encoder.sample_prior_latent(x.shape[0])
 
         num_tokens = latent_t.shape[1]
+        breakpoint()
         projected_latent = self.latent_projector(latent_t)
         # print(self.variational_encoder.num_tokens)
         # breakpoint()
