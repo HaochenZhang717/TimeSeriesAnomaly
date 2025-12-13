@@ -173,71 +173,90 @@ def conditional_train(args):
 
 
 
-# def conditional_sample_on_real_anomaly(args):
-#     # args = get_args()
-#     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
-#     model = FM_TS_Two_Together(
-#         seq_length=args.seq_len,
-#         feature_size=args.feature_size,
-#         n_layer_enc=args.n_layer_enc,
-#         n_layer_dec=args.n_layer_dec,
-#         d_model=args.d_model,
-#         n_heads=args.n_heads,
-#         mlp_hidden_times=4,
-#     )
-#     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
-#     model.to(device)
-#     model.eval()
-#     anomaly_train_set = build_dataset(
-#         args.dataset_name,
-#         'iterable',
-#         raw_data_paths=args.raw_data_paths_train,
-#         indices_paths=args.indices_paths_train,
-#         seq_len=args.seq_len,
-#         max_anomaly_length=args.max_anomaly_length,
-#         min_anomaly_length=args.min_anomaly_length,
-#         one_channel=args.one_channel,
-#     )
-#
-#     train_loader = torch.utils.data.DataLoader(
-#         anomaly_train_set,
-#         batch_size=args.batch_size,
-#     )
-#
-#     # num_samples = len(anomaly_train_set.slide_windows)
-#     num_samples = args.cond_num_samples
-#     num_cycle = int(num_samples // args.batch_size) + 1
-#     train_iterator = iter(train_loader)
-#
-#     all_samples = []
-#     all_real = []
-#     all_anomaly_labels = []
-#     for _ in tqdm(range(num_cycle), desc="Generating samples"):
-#         a_batch = next(train_iterator)
-#         anomaly_label = a_batch['anomaly_label'].to(device).squeeze(-1)#i changed this
-#         real_signal = a_batch['orig_signal'].to(device)[:, :, : args.feature_size]
-#         samples = model.impute(
-#             x_start=real_signal,
-#             anomaly_label=anomaly_label,
-#         ).cpu()
-#         all_samples.append(samples)
-#         all_real.append(real_signal)
-#         all_anomaly_labels.append(anomaly_label)
-#
-#     all_samples = torch.cat(all_samples, dim=0)
-#     all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
-#     all_real = torch.cat(all_real, dim=0)
-#     to_save = {
-#         "samples": all_samples,
-#         "real": all_real,
-#         "anomaly_labels": all_anomaly_labels,
-#     }
-#     os.makedirs(args.generated_path, exist_ok=True)
-#     torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real_anomaly.pt")
-#     # scores = evaluate_model_long_sequence(to_save["real"], to_save["samples"], device)
-#     # print(f"Scores: {scores}")
-#     # breakpoint()
-#     # print(f"Scores: {scores}")
+def conditional_sample_on_real_anomaly(args):
+    # args = get_args()
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model = VRF(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+
+        ve_channels=args.ve_channels,
+        ve_kernel_size=args.ve_kernel_size,
+        ve_pool_kernel=args.ve_pool_kernel,
+        ve_pool_stride=args.ve_pool_stride,
+        ve_z_dim=args.ve_z_dim,
+
+        kl_beta=args.kl_beta,
+    )
+    model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
+    model.to(device)
+    model.eval()
+    anomaly_train_set = build_dataset(
+        args.dataset_name,
+        'iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        anomaly_train_set,
+        batch_size=args.batch_size,
+    )
+
+    # num_samples = len(anomaly_train_set.slide_windows)
+    num_samples = args.cond_num_samples
+    num_cycle = int(num_samples // args.batch_size) + 1
+    train_iterator = iter(train_loader)
+
+    all_prior_samples = []
+    all_posterior_samples = []
+    all_real = []
+    all_anomaly_labels = []
+    for _ in tqdm(range(num_cycle), desc="Generating samples"):
+        a_batch = next(train_iterator)
+        anomaly_label = a_batch['anomaly_label'].to(device).squeeze(-1)#i changed this
+        real_signal = a_batch['orig_signal'].to(device)[:, :, : args.feature_size]
+        prior_samples = model.impute(
+            x_start=real_signal,
+            anomaly_label=anomaly_label,
+            mode="prior"
+        ).cpu()
+        posterior_samples = model.impute(
+            x_start=real_signal,
+            anomaly_label=anomaly_label,
+            mode="posterior"
+        ).cpu()
+
+        all_prior_samples.append(prior_samples)
+        all_posterior_samples.append(posterior_samples)
+        all_real.append(real_signal)
+        all_anomaly_labels.append(anomaly_label)
+
+    all_prior_samples = torch.cat(all_prior_samples, dim=0)
+    all_posterior_samples = torch.cat(all_posterior_samples, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    all_real = torch.cat(all_real, dim=0)
+    to_save = {
+        "prior_samples": all_prior_samples,
+        "posterior_samples": all_posterior_samples,
+        "real": all_real,
+        "anomaly_labels": all_anomaly_labels,
+    }
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(to_save, f"{args.generated_path}/generated_anomaly_on_real_anomaly.pt")
+    # scores = evaluate_model_long_sequence(to_save["real"], to_save["samples"], device)
+    # print(f"Scores: {scores}")
+    # breakpoint()
+    # print(f"Scores: {scores}")
 #
 #
 # def conditional_sample_on_fake(args):
@@ -559,8 +578,8 @@ def main():
     args = get_args()
     if args.what_to_do == "conditional_training":
         conditional_train(args)
-    # elif args.what_to_do == "conditional_sample_on_real_anomaly":
-    #     conditional_sample_on_real_anomaly(args)
+    elif args.what_to_do == "conditional_sample_on_real_anomaly":
+        conditional_sample_on_real_anomaly(args)
     # elif args.what_to_do == "conditional_sample_on_real_normal":
     #     conditional_sample_on_real_normal(args)
     # elif args.what_to_do == "conditional_sample_on_fake":
@@ -569,8 +588,8 @@ def main():
     #     unconditional_sample(args)
     # elif args.what_to_do == "unconditional_evaluate":
     #     unconditional_evaluate(args)
-    elif args.what_to_do == "anomaly_evaluate":
-        anomaly_evaluate(args)
+    # elif args.what_to_do == "anomaly_evaluate":
+    #     anomaly_evaluate(args)
     # elif args.what_to_do == "unconditional_training":
     #     unconditional_train(args)
     else:

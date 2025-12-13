@@ -76,7 +76,10 @@ class VRF(nn.Module):
             logvar_t = logvar_t.permute(0,2,1)
             latent_t = latent_t.permute(0,2,1)
         else:
+            mu_t = None
+            logvar_t = None
             latent_t = self.variational_encoder.sample_prior_latent(x.shape[0])
+
         num_tokens = latent_t.shape[1]
         projected_latent = self.latent_projector(latent_t)
         # print(self.variational_encoder.num_tokens)
@@ -108,7 +111,7 @@ class VRF(nn.Module):
     #     return zt
 
     @torch.no_grad()
-    def impute(self, x_start, anomaly_label):
+    def impute(self, x_start, anomaly_label, mode):
         """
         x_start: (B, T, C)
         anomaly_label: (B, T, C)   1 = missing, 0 = observed
@@ -128,7 +131,12 @@ class VRF(nn.Module):
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).view(-1)
-            v, _, _ = self.output(zt.clone(), t_input, None)
+            if mode == "prior":
+                v, _, _ = self.output(zt.clone(), t_input, None)
+            elif mode == "posterior":
+                v, _, _ = self.output(zt.clone(), t_input, x_start*anomaly_label.unsqueeze(-1))
+            else:
+                raise ValueError("Unknown Mode!!! mode must be 'prior' or 'posterior'")
 
             #update missing region ONLY
             zt = zt + step * v * anomaly_label.unsqueeze(-1)
@@ -137,6 +145,8 @@ class VRF(nn.Module):
             zt = zt * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         return zt
+
+
 
     def generate_mts(self, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
