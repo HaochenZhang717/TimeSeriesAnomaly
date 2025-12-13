@@ -220,7 +220,7 @@ def conditional_sample_on_real_anomaly(args):
     all_real = []
     all_anomaly_labels = []
 
-    K = args.num_prior_samples  # number of prior samples per real sample
+    K = 10 # number of prior samples per real sample
 
     for _ in tqdm(range(num_cycle), desc="Generating samples"):
         batch = next(train_iterator)
