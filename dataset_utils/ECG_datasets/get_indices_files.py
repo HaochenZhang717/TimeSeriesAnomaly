@@ -707,7 +707,7 @@ if __name__ == "__main__":
     anomaly_label = raw_data["anomaly_label"]
 
     # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
-    anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
+    anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
     # anomaly_type_maps = {'R': 5}
 
     for k, v in anomaly_type_maps.items():

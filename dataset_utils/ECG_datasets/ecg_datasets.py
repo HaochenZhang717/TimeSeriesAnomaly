@@ -170,17 +170,18 @@ if __name__ == "__main__":
 
     dataset = ECGDataset(
         raw_data_paths="./raw_data/213.npz",
-        indices_paths="./indices/slide_windows_213npz/train/A.jsonl",
+        indices_paths="./indices/slide_windows_213npz/train/F.jsonl",
         seq_len=1800,
         max_anomaly_length=1,
         min_anomaly_length=0,
-        one_channel=1,
+        one_channel=0,
         limited_data_size=10000000
     )
 
     dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
     for batch in dataloader:
-        plt.plot(batch['orig_signal'].flatten(), label="Original")
+        plt.plot(batch['orig_signal'][0,:,0], label="Channel 0")
+        plt.plot(batch['orig_signal'][0,:,1], label="Channel 1")
         plt.plot(batch['anomaly_label'].flatten() > 0, label="anomaly label")
         plt.show()
 
