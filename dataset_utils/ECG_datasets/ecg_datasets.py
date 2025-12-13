@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
     dataset = ECGDataset(
         raw_data_paths="./raw_data/213.npz",
-        indices_paths="./indices/slide_windows_213npz/train/F.jsonl",
+        indices_paths="./indices/slide_windows_213npz/train/A.jsonl",
         seq_len=1800,
         max_anomaly_length=1,
         min_anomaly_length=0,
