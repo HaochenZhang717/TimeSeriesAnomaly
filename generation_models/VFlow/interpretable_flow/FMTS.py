@@ -111,14 +111,20 @@ class VRF(nn.Module):
     #     return zt
 
     @torch.no_grad()
-    def impute(self, x_start, anomaly_label, mode):
+    def impute(self, x_start, anomaly_label, mode, seed):
         """
         x_start: (B, T, C)
         anomaly_label: (B, T, C)   1 = missing, 0 = observed
         """
         self.eval()
         # 1) Init z_t: missing is noise
-        noise = torch.randn_like(x_start)
+        if seed is not None:
+            g = torch.Generator(device=x_start.device)
+            g.manual_seed(seed)
+            noise = torch.randn_like(x_start, generator=g)
+        else:
+            noise = torch.randn_like(x_start)
+
         zt = noise * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         # --- identical timestep shifting as unconditional sample ---

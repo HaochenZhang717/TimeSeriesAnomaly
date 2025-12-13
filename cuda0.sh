@@ -479,66 +479,8 @@
 
 
 
-#export hucfg_t_sampling=logitnorm
-#python VarFlow.py \
-#  --what_to_do "conditional_sample_on_real_anomaly" \
-#  \
-#  --seq_len 1800 \
-#  --feature_size 1 \
-#  --one_channel 1 \
-#  \
-#  --n_layer_enc 4 \
-#  --n_layer_dec 4 \
-#  --d_model 64 \
-#  --n_heads 4 \
-#  \
-#  --ve_channels "[16,32,64]" \
-#  --ve_kernel_size 3 \
-#  --ve_pool_kernel 4 \
-#  --ve_pool_stride 4 \
-#  --ve_z_dim 16 \
-#  \
-#  --kl_beta 1e-3 \
-#  \
-#  --dataset_name "ECG" \
-#  --max_anomaly_length 629 \
-#  --min_anomaly_length 74 \
-#  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-#  --raw_data_paths_val "none" \
-#  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
-#  --indices_paths_val "none" \
-#  --limited_data_size 1000000 \
-#  \
-#  --lr 5e-4 \
-#  --batch_size 64 \
-#  --max_epochs -1 \
-#  --grad_clip_norm -1.0 \
-#  --grad_accum_steps 1 \
-#  --early_stop "none" \
-#  --patience -1 \
-#  \
-#  --wandb_project "none" \
-#  --wandb_run "none" \
-#  \
-#  --ckpt_dir "none" \
-#  \
-#  --cond_eval_model_ckpt "../TSA-ckpts/VRF/mitdb1800_106npz/conditional_ckpt/ema_ckpt.pth" \
-#  --generated_path "../samples_path/VRF/mitdb1800_106npz" \
-#  --generated_file "anomaly_cond_on_anomaly" \
-#  --normal_data_path "none" \
-#  --cond_num_samples 10 \
-#  \
-#  --uncond_eval_model_ckpt "none" \
-#  --uncond_num_samples -1 \
-#  \
-#  --eval_train_size -1 \
-#  \
-#  --gpu_id 0
-
-
-
 export hucfg_t_sampling=logitnorm
-python FlowTwoTogether.py \
+python VarFlow.py \
   --what_to_do "conditional_sample_on_real_anomaly" \
   \
   --seq_len 1800 \
@@ -549,6 +491,14 @@ python FlowTwoTogether.py \
   --n_layer_dec 4 \
   --d_model 64 \
   --n_heads 4 \
+  \
+  --ve_channels "[16,32,64]" \
+  --ve_kernel_size 3 \
+  --ve_pool_kernel 4 \
+  --ve_pool_stride 4 \
+  --ve_z_dim 16 \
+  \
+  --kl_beta 1e-3 \
   \
   --dataset_name "ECG" \
   --max_anomaly_length 629 \
@@ -572,8 +522,8 @@ python FlowTwoTogether.py \
   \
   --ckpt_dir "none" \
   \
-  --cond_eval_model_ckpt "../TSA-ckpts/flow_two_together_logit_normal/mitdb1800/conditional_ckpt/ema_ckpt.pth" \
-  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_106npz" \
+  --cond_eval_model_ckpt "../TSA-ckpts/VRF/mitdb1800_106npz/conditional_ckpt/ema_ckpt.pth" \
+  --generated_path "../samples_path/VRF/mitdb1800_106npz" \
   --generated_file "anomaly_cond_on_anomaly" \
   --normal_data_path "none" \
   --cond_num_samples 10 \
@@ -584,3 +534,53 @@ python FlowTwoTogether.py \
   --eval_train_size -1 \
   \
   --gpu_id 0
+
+
+
+#export hucfg_t_sampling=logitnorm
+#python FlowTwoTogether.py \
+#  --what_to_do "conditional_sample_on_real_anomaly" \
+#  \
+#  --seq_len 1800 \
+#  --feature_size 1 \
+#  --one_channel 1 \
+#  \
+#  --n_layer_enc 4 \
+#  --n_layer_dec 4 \
+#  --d_model 64 \
+#  --n_heads 4 \
+#  \
+#  --dataset_name "ECG" \
+#  --max_anomaly_length 629 \
+#  --min_anomaly_length 74 \
+#  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+#  --raw_data_paths_val "none" \
+#  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+#  --indices_paths_val "none" \
+#  --limited_data_size 1000000 \
+#  \
+#  --lr 5e-4 \
+#  --batch_size 64 \
+#  --max_epochs -1 \
+#  --grad_clip_norm -1.0 \
+#  --grad_accum_steps 1 \
+#  --early_stop "none" \
+#  --patience -1 \
+#  \
+#  --wandb_project "none" \
+#  --wandb_run "none" \
+#  \
+#  --ckpt_dir "none" \
+#  \
+#  --cond_eval_model_ckpt "../TSA-ckpts/flow_two_together_logit_normal/mitdb1800/conditional_ckpt/ema_ckpt.pth" \
+#  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_106npz" \
+#  --generated_file "anomaly_cond_on_anomaly" \
+#  --normal_data_path "none" \
+#  --cond_num_samples 10 \
+#  \
+#  --uncond_eval_model_ckpt "none" \
+#  --uncond_num_samples -1 \
+#  \
+#  --eval_train_size -1 \
+#  \
+#  --gpu_id 0

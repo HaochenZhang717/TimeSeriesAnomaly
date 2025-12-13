@@ -234,7 +234,8 @@ def conditional_sample_on_real_anomaly(args):
         posterior = model.impute(
             x_start=real_signal,
             anomaly_label=anomaly_label,
-            mode="posterior"
+            mode="posterior",
+            seed=0
         )  # (B, T, C)
 
         # ---------- multiple prior samples ----------
@@ -243,7 +244,8 @@ def conditional_sample_on_real_anomaly(args):
             prior = model.impute(
                 x_start=real_signal,
                 anomaly_label=anomaly_label,
-                mode="prior"
+                mode="prior",
+                seed=0
             )  # (B, T, C)
             prior_samples.append(prior.unsqueeze(1))  # (B, 1, T, C)
 
