@@ -169,18 +169,19 @@ class IterableECGDataset(IterableDataset):
 if __name__ == "__main__":
 
     dataset = ECGDataset(
-        raw_data_paths="./raw_data/200.npz",
-        indices_paths="./indices/slide_windows_200npz/train/V.jsonl",
+        raw_data_paths="./raw_data/213.npz",
+        indices_paths="./indices/slide_windows_213npz/train/A.jsonl",
         seq_len=1800,
         max_anomaly_length=1,
         min_anomaly_length=0,
-        one_channel=1
+        one_channel=1,
+        limited_data_size=10000000
     )
 
-    dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
     for batch in dataloader:
         plt.plot(batch['orig_signal'].flatten(), label="Original")
-        plt.plot(batch['anomaly_label'].flatten(), label="anomaly label")
+        plt.plot(batch['anomaly_label'].flatten() > 0, label="anomaly label")
         plt.show()
 
 

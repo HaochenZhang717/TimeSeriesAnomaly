@@ -7,6 +7,7 @@ import os
 import json
 import numpy as np
 from tqdm import tqdm
+from pathlib import Path
 
 
 
@@ -513,13 +514,13 @@ def build_single_ts_train_val(
 
 
 #----------------------utils to get anomaly segments------------------------
-def get_anomaly_segments(labels):
+def get_anomaly_segments(labels, anomaly_type):
     """
     输入: labels = 0/1 的 array
     输出: list of (start_idx, end_idx)
     """
     labels = np.array(labels)
-    idx = np.where(labels == 1)[0]  # 找出所有标为 1 的点
+    idx = np.where(labels == anomaly_type)[0]  # 找出所有标为 1 的点
     segments = []
 
     if len(idx) == 0:
@@ -580,7 +581,8 @@ def extract_windows_containing_segments(
     window_size,
     ratio_range=(0.01, 0.50),
     step=1,  # 滑窗步长，可以调大速度更快
-    jsonl_path=None
+    jsonl_path=None,
+    anomaly_type=1
 ):
     """
     从信号中截取长度为 window_size 的窗口，
@@ -623,7 +625,7 @@ def extract_windows_containing_segments(
             end = start + window_size
 
             label_win = labels[start:end]
-            if not np.array_equal(np.unique(label_win), np.array([0, 1])):
+            if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
                 continue
             anomaly_ratio = label_win.sum() / window_size
 
@@ -634,7 +636,7 @@ def extract_windows_containing_segments(
 
 
                 # ====== 在窗口内部重新统计“连续 1 段”的长度 ======
-                idx = np.where(label_win == 1)[0]
+                idx = np.where(label_win == anomaly_type)[0]
                 if len(idx) > 0:
                     # 找出所有连续段
                     seg_start_idx = idx[0]
@@ -662,7 +664,7 @@ def extract_windows_containing_segments(
                 record = {
                     "start": int(start),
                     "end": int(end),
-                    "anomaly_type": 1
+                    "anomaly_type": anomaly_type
                 }
                 jsonl_file.write(json.dumps(record) + "\n")
 
@@ -681,35 +683,44 @@ def extract_windows_containing_segments(
 # ----------------------- 使用示例 -----------------------
 if __name__ == "__main__":
 
-    for name in range(200, 201):
-        print('-'*100)
-        print(name)
-        print('-'*100)
+    # path = Path("./raw_data")
+    # files = [p.name for p in path.iterdir() if p.is_file()]
+    # files = sorted(files)
+    # for file_full in files:
+    #     name = file_full.split(".")[0]
+    #     print('-'*100)
+    #     print(name)
+    #     print('-'*100)
+    #
+    #     stats = build_single_ts_train_val(
+    #         npz_file=f"./raw_data/{name}.npz",
+    #         output_dir=f"./indices/slide_windows_{name}npz",
+    #         window_size=1800,
+    #         stride=20,
+    #         train_ratio=0.99,
+    #         max_anomaly_ratio=0.2
+    #     )
 
-        # stats = build_single_ts_train_val(
-        #     npz_file=f"./raw_data/{name}.npz",
-        #     output_dir=f"./indices/slide_windows_{name}npz",
-        #     window_size=1800,
-        #     stride=20,
-        #     train_ratio=0.99,
-        #     max_anomaly_ratio=0.2
-        # )
+    name = '213'
+    raw_data = np.load(f"./raw_data/{name}.npz")
+    raw_signal = raw_data["signal"]
+    anomaly_label = raw_data["anomaly_label"]
 
-        raw_data = np.load(f"./raw_data/{name}.npz")
-        raw_signal = raw_data["signal"]
-        anomaly_label = raw_data["anomaly_label"]
+    # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
+    anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
+    # anomaly_type_maps = {'R': 5}
 
-        segments = get_anomaly_segments(anomaly_label)
-
+    for k, v in anomaly_type_maps.items():
+        segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
         print(f"总共有 {len(segments)} 段 anomaly")
         lengths = []
         for i, (s, e) in enumerate(segments):
             print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
             lengths.append(e - s + 1)
-            # sampled_signal = raw_signal[s-600:e+600]
-            # sampled_anomaly_label = anomaly_label[s-600:e+600]
+            # sampled_signal = raw_signal[s:s+1800]
+            # sampled_anomaly_label = anomaly_label[s:s+1800]
             # plt.plot(sampled_signal[:, 0], label="signal channel 0")
-            # plt.plot(sampled_signal[:, 1], label="signal channel 1")
+            # # plt.plot(sampled_signal[:, 1], label="signal channel 1")
             # plt.plot(sampled_anomaly_label)
             # plt.legend()
             # plt.title("anomaly signal")
@@ -722,9 +733,10 @@ if __name__ == "__main__":
             labels=anomaly_label,
             segments=segments,
             window_size=1800,
-            ratio_range=(0.01, 0.50),  # 调这个
-            step=100,
-            jsonl_path=f"./indices/slide_windows_{name}npz/train/V.jsonl"
+            ratio_range=(0.01, 0.5),  # 调这个
+            step=10,
+            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
+            anomaly_type=v
         )
         print(min_anomaly_length)
         print(max_anomaly_length)
