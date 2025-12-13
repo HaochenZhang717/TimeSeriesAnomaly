@@ -526,7 +526,7 @@ python VarFlow.py \
   --generated_path "../samples_path/VRF/mitdb1800_106npz" \
   --generated_file "anomaly_cond_on_anomaly" \
   --normal_data_path "none" \
-  --cond_num_samples 100 \
+  --cond_num_samples 10 \
   \
   --uncond_eval_model_ckpt "none" \
   --uncond_num_samples -1 \
