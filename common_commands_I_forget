@@ -16,3 +16,5 @@ scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_nor
 
 
 scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_normal/mitdb1800_200npz/ ../samples_path/flow_two_together_logit_normal/mitdb1800_200npz/
+
+scp -r root@134.199.134.61:/root/tianyi/samples_path/VRF/mitdb1800_106npz/generated_anomaly_on_real_anomaly.pt ../samples_path/VRF/mitdb1800_106npz/
