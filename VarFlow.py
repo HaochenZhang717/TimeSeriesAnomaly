@@ -205,6 +205,7 @@ def conditional_sample_on_real_anomaly(args):
         max_anomaly_length=args.max_anomaly_length,
         min_anomaly_length=args.min_anomaly_length,
         one_channel=args.one_channel,
+        limited_data_size=args.limited_data_size
     )
 
     train_loader = torch.utils.data.DataLoader(
