@@ -281,7 +281,7 @@ class AutoEncoder(nn.Module):
         inverse_anomaly_label = 1 - anomaly_label
         x = x * inverse_anomaly_label.unsqueeze(-1)
 
-        h = self.encoder(x, padding_mask=(anomaly_label==0))
+        h = self.encoder(x, padding_masks=(anomaly_label==0))
         x_tilde = self.decoder(h)
 
         loss = F.mse_loss(
