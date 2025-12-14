@@ -169,6 +169,7 @@ def autoencoder_eval(args):
     all_anomaly_labels = []
 
     device = torch.device(f"cuda:{args.gpu_id}")
+    model.to(device)
     for batch in val_loader:
         real_signal = batch['orig_signal'].to(device)
         anomaly_label = batch['random_anomaly_label'].to(device)
