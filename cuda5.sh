@@ -97,7 +97,7 @@
 
 
 python rain.py \
-  --what_to_do "flow_train" \
+  --what_to_do "flow_training" \
   \
   --seq_len 1800 \
   --feature_size 1 \
