@@ -293,7 +293,7 @@ class AdaLayerNorm_No_Latent(nn.Module):
 
         self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
 
-    def forward(self, x, timestep):
+    def forward(self, x, timestep, projected_latent):
 
         t_emb = self.time_emb(timestep)
         h = t_emb
