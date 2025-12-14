@@ -203,15 +203,21 @@ class AdaLayerNorm(nn.Module):
         super().__init__()
         self.emb = SinusoidalPosEmb(n_embd)
         self.silu = nn.SiLU()
-        self.linear = nn.Linear(n_embd, n_embd*2)
-        self.layernorm = nn.LayerNorm(n_embd, elementwise_affine=False)
-        # self.layernorm = nn.LayerNorm(n_embd)
+
+        self.linear = nn.Linear(n_embd, n_embd*3)
+        nn.init.constant_(self.linear.weight, 0.0)
+        nn.init.constant_(self.linear.bias, 0.0)
+
+        self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
 
     def forward(self, x, timestep):
         emb = self.emb(timestep)
         emb = self.linear(self.silu(emb)).unsqueeze(1)
-        scale, shift = torch.chunk(emb, 2, dim=2)
-        x = self.layernorm(x) * (1 + scale) + shift
-        return x
+        scale, shift, gate = torch.chunk(emb, 3, dim=2)
+
+        scale = torch.tanh(scale)
+        shift = torch.tanh(shift)
+        gate = torch.tanh(gate)
+        return x + gate * (self.norm(x) * (1 + scale) + shift)
 
 

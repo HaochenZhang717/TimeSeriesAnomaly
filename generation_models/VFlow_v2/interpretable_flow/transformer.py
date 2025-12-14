@@ -547,7 +547,6 @@ class Transformer(nn.Module):
         emb = self.emb(input) # t*x_0 + (1-t) * noise
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, projected_latent, padding_masks=padding_masks)
-        # print("enc_cond: ", enc_cond.shape)
         inp_dec = emb
         output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, projected_latent, padding_masks=padding_masks)
 

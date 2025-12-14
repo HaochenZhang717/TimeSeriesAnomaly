@@ -220,6 +220,62 @@ class RMSNorm(torch.nn.Module):
 #         return x
 
 
+# class AdaLayerNorm(nn.Module):
+#     def __init__(self, n_embd):
+#         super().__init__()
+#         self.time_emb = SinusoidalPosEmb(n_embd)
+#
+#         self.mlp = nn.Sequential(
+#             nn.SiLU(),
+#             nn.Linear(2 * n_embd, 2 * n_embd)
+#         )
+#         nn.init.constant_(self.mlp[-1].weight, 0.0)
+#         nn.init.constant_(self.mlp.bias, 0.0)
+#
+#         self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
+#
+#     def _check(self, x, tag):
+#         if torch.isnan(x).any():
+#             raise RuntimeError(f"[NaN] {self.name}::{tag}")
+#         if torch.isinf(x).any():
+#             raise RuntimeError(f"[Inf] {self.name}::{tag}")
+#
+#     def forward(self, x, timestep, projected_latent):
+#         """
+#         x: (B, T, D)
+#         timestep: (B,)
+#         projected_latent: (B, T_latent, D) or (B, D)
+#         """
+#
+#         # ---- pool latent to global code ----
+#         if projected_latent.dim() == 3:
+#             z = projected_latent.mean(dim=1)  # (B, D)
+#         else:
+#             z = projected_latent               # (B, D)
+#
+#         # ---- time embedding ----
+#         t_emb = self.time_emb(timestep)        # (B, D)
+#
+#         # ---- joint conditioning ----
+#         h = torch.cat([t_emb, z], dim=-1)      # (B, 2D)
+#         scale_shift = self.mlp(h)               # (B, 2D)
+#         scale, shift = scale_shift.chunk(2, dim=-1)
+#
+#         # ---- apply AdaLN ----
+#         scale = scale.unsqueeze(1)              # (B, 1, D)
+#         shift = shift.unsqueeze(1)
+#
+#         x_norm = self.norm(x)
+#         scale = nn.functional.tanh(scale)
+#         shift = nn.functional.tanh(shift)
+#         # self._check(x_norm, "x_norm")
+#         # self._check(scale, "scale")
+#         # self._check(shift, "shift")
+#
+#
+#         return x_norm * (1 + scale) + shift
+#
+
 class AdaLayerNorm(nn.Module):
     def __init__(self, n_embd):
         super().__init__()
@@ -227,48 +283,28 @@ class AdaLayerNorm(nn.Module):
 
         self.mlp = nn.Sequential(
             nn.SiLU(),
-            nn.Linear(2 * n_embd, 2 * n_embd)
+            nn.Linear(2 * n_embd, 3 * n_embd)  # scale, shift, gate
         )
+
+        # DiT-style zero init
+        nn.init.constant_(self.mlp[-1].weight, 0.0)
+        nn.init.constant_(self.mlp[-1].bias, 0.0)
 
         self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
 
-    def _check(self, x, tag):
-        if torch.isnan(x).any():
-            raise RuntimeError(f"[NaN] {self.name}::{tag}")
-        if torch.isinf(x).any():
-            raise RuntimeError(f"[Inf] {self.name}::{tag}")
-
     def forward(self, x, timestep, projected_latent):
-        """
-        x: (B, T, D)
-        timestep: (B,)
-        projected_latent: (B, T_latent, D) or (B, D)
-        """
-
-        # ---- pool latent to global code ----
         if projected_latent.dim() == 3:
-            z = projected_latent.mean(dim=1)  # (B, D)
+            z = projected_latent.mean(dim=1)
         else:
-            z = projected_latent               # (B, D)
+            z = projected_latent
 
-        # ---- time embedding ----
-        t_emb = self.time_emb(timestep)        # (B, D)
+        t_emb = self.time_emb(timestep)
+        h = torch.cat([t_emb, z], dim=-1)
 
-        # ---- joint conditioning ----
-        h = torch.cat([t_emb, z], dim=-1)      # (B, 2D)
-        scale_shift = self.mlp(h)               # (B, 2D)
-        scale, shift = scale_shift.chunk(2, dim=-1)
+        scale, shift, gate = self.mlp(h).chunk(3, dim=-1)
 
-        # ---- apply AdaLN ----
-        scale = scale.unsqueeze(1)              # (B, 1, D)
-        shift = shift.unsqueeze(1)
+        scale = torch.tanh(scale).unsqueeze(1)
+        shift = torch.tanh(shift).unsqueeze(1)
+        gate  = torch.tanh(gate).unsqueeze(1)
 
-        x_norm = self.norm(x)
-        self._check(x_norm, "x_norm")
-        self._check(scale, "scale")
-        self._check(shift, "shift")
-
-
-        return x_norm * (1 + scale) + shift
-
-
+        return x + gate * (self.norm(x) * (1 + scale) + shift)
