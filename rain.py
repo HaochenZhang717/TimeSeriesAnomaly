@@ -81,8 +81,7 @@ def get_args():
     parser.add_argument("--cond_num_samples", type=int, required=True)
 
     """parameters for unconditional sample"""
-    parser.add_argument("--uncond_eval_model_ckpt", type=str, required=True)
-    parser.add_argument("--uncond_num_samples", type=int, required=True)
+    parser.add_argument("--autoencoder_ckpt", type=str, required=True)
 
     """parameters for anomaly evaluation"""
     parser.add_argument("--eval_train_size", type=int, required=True)
@@ -145,10 +144,59 @@ def autoencoder_train(args):
     trainer.normal_manifold_init_train(config=vars(args))
 
 
+def autoencoder_eval(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+    model = fast_build_autoencoder(feat_dim=args.feature_size, max_len=args.seq_len)
+    model.load_state_dict(torch.load(args.autoencoder_ckpt, map_location="cpu"))
+    model.eval()
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
+        limited_data_size=args.limited_data_size,
+    )
+
+    val_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+    all_real = []
+    all_recon = []
+    all_anomaly_labels = []
+
+    device = torch.device(f"cuda:{args.gpu_id}")
+    for batch in val_loader:
+        real_signal = batch['orig_signal'].to(device)
+        anomaly_label = batch['random_anomaly_label'].to(device)
+        x_tilde, _ = model(real_signal, anomaly_label)
+
+        all_recon.append(x_tilde)
+        all_real.append(real_signal)
+        all_anomaly_labels.append(anomaly_label)
+        if len(all_real) >= 100:
+            break
+
+    all_real = torch.cat(all_real, dim=0)
+    all_recon = torch.cat(all_recon, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    to_save = {
+        "recon": all_recon,
+        "real": all_real,
+        "anomaly_labels": all_anomaly_labels,
+    }
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(to_save, f"{args.generated_path}/autoencoder_results.pt")
+
+
 def main():
     args = get_args()
     if args.what_to_do == "autoencoder_train":
         autoencoder_train(args)
+    elif args.what_to_do == "autoencoder_eval":
+        autoencoder_eval(args)
     elif args.what_to_do == "flow_train":
         raise NotImplementedError("Flow training not implemented.")
     else:
