@@ -144,6 +144,8 @@ def conditional_train(args):
 
             kl_beta=args.kl_beta,
         )
+    if args.cond_eval_model_ckpt != "none":
+        model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
 
     anomaly_train_set = build_dataset(
         args.dataset_name,

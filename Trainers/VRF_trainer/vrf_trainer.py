@@ -56,7 +56,7 @@ class VRFTrainer(object):
                 anomaly_label = batch["anomaly_label"].to(dtype=model_dtype, device=self.device)
 
                 loss, flow_loss, kl_loss = self.model(X_signal, anomaly_label=anomaly_label)
-
+                breakpoint()
                 tr_total_loss += loss.item()
                 tr_flow_loss += flow_loss.item()
                 tr_kl_loss += kl_loss.item()
