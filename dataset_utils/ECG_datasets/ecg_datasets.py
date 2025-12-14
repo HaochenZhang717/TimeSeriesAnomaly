@@ -59,7 +59,7 @@ class ECGDataset(Dataset):
 
     def __getitem__(self, index):
         signal = self.slide_windows[index]
-        anomaly_label = self.anomaly_labels[index]
+        anomaly_label = self.anomaly_labels[index] > 0
 
         random_anomaly_length = np.random.randint(self.min_anomaly_length, self.max_anomaly_length)
         anomaly_start = np.random.randint(0, self.max_anomaly_length - random_anomaly_length)
@@ -137,7 +137,7 @@ class IterableECGDataset(IterableDataset):
         while True:
             index = np.random.randint(len(self.slide_windows))
             signal = self.slide_windows[index]
-            anomaly_label = self.anomaly_labels[index]
+            anomaly_label = self.anomaly_labels[index] > 0
 
             random_anomaly_length = np.random.randint(self.min_anomaly_length, self.max_anomaly_length)
             anomaly_start = np.random.randint(0, self.max_anomaly_length - random_anomaly_length)
