@@ -198,20 +198,63 @@ class RMSNorm(torch.nn.Module):
         return (x * rrms).to(dtype=x_dtype) * self.scale
 
 
+# class AdaLayerNorm(nn.Module):
+#     def __init__(self, n_embd):
+#         super().__init__()
+#         self.emb = SinusoidalPosEmb(n_embd)
+#         self.silu = nn.SiLU()
+#         self.linear = nn.Linear(n_embd, n_embd*2)
+#         self.layernorm = nn.LayerNorm(n_embd, elementwise_affine=False)
+#         # self.layernorm = nn.LayerNorm(n_embd)
+#
+#     def forward(self, x, timestep, projected_latent):
+#
+#         z = projected_latent.mean(dim=1)  # (B, D)
+#
+#
+#         emb = self.emb(timestep)
+#
+#         emb = self.linear(self.silu(emb)).unsqueeze(1)
+#         scale, shift = torch.chunk(emb, 2, dim=2)
+#         x = self.layernorm(x) * (1 + scale) + shift
+#         return x
+
+
 class AdaLayerNorm(nn.Module):
     def __init__(self, n_embd):
         super().__init__()
-        self.emb = SinusoidalPosEmb(n_embd)
-        self.silu = nn.SiLU()
-        self.linear = nn.Linear(n_embd, n_embd*2)
-        self.layernorm = nn.LayerNorm(n_embd, elementwise_affine=False)
-        # self.layernorm = nn.LayerNorm(n_embd)
+        self.time_emb = SinusoidalPosEmb(n_embd)
 
-    def forward(self, x, timestep):
-        emb = self.emb(timestep)
-        emb = self.linear(self.silu(emb)).unsqueeze(1)
-        scale, shift = torch.chunk(emb, 2, dim=2)
-        x = self.layernorm(x) * (1 + scale) + shift
-        return x
+        self.mlp = nn.Sequential(
+            nn.SiLU(),
+            nn.Linear(2 * n_embd, 2 * n_embd)
+        )
 
+        self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
 
+    def forward(self, x, timestep, projected_latent):
+        """
+        x: (B, T, D)
+        timestep: (B,)
+        projected_latent: (B, T_latent, D) or (B, D)
+        """
+
+        # ---- pool latent to global code ----
+        if projected_latent.dim() == 3:
+            z = projected_latent.mean(dim=1)  # (B, D)
+        else:
+            z = projected_latent               # (B, D)
+
+        # ---- time embedding ----
+        t_emb = self.time_emb(timestep)        # (B, D)
+
+        # ---- joint conditioning ----
+        h = torch.cat([t_emb, z], dim=-1)      # (B, 2D)
+        scale_shift = self.mlp(h)               # (B, 2D)
+        scale, shift = scale_shift.chunk(2, dim=-1)
+
+        # ---- apply AdaLN ----
+        scale = scale.unsqueeze(1)              # (B, 1, D)
+        shift = shift.unsqueeze(1)
+
+        return self.norm(x) * (1 + scale) + shift

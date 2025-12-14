@@ -1,5 +1,5 @@
 from Trainers import VRFTrainer
-from generation_models import VRF
+from generation_models import VRF, VRF_v2
 from dataset_utils import build_dataset, FakeDataset
 import argparse
 import torch
@@ -41,6 +41,7 @@ def get_args():
     parser.add_argument("--one_channel", type=int, required=True)
 
     """model parameters"""
+    parser.add_argument("--model_name", type=str, default="vrf",)
     parser.add_argument("--n_layer_enc", type=int, required=True)
     parser.add_argument("--n_layer_dec", type=int, required=True)
     parser.add_argument("--d_model", type=int, required=True)
@@ -107,23 +108,42 @@ def conditional_train(args):
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
-    model = VRF(
-        seq_length=args.seq_len,
-        feature_size=args.feature_size,
-        n_layer_enc=args.n_layer_enc,
-        n_layer_dec=args.n_layer_dec,
-        d_model=args.d_model,
-        n_heads=args.n_heads,
-        mlp_hidden_times=4,
+    if args.model_name == "vrf":
+        model = VRF(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
 
-        ve_channels=args.ve_channels,
-        ve_kernel_size=args.ve_kernel_size,
-        ve_pool_kernel=args.ve_pool_kernel,
-        ve_pool_stride=args.ve_pool_stride,
-        ve_z_dim=args.ve_z_dim,
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
 
-        kl_beta=args.kl_beta,
-    )
+            kl_beta=args.kl_beta,
+        )
+    elif args.model_name == "vrf_v2":
+        model = VRF_v2(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
 
     anomaly_train_set = build_dataset(
         args.dataset_name,
@@ -175,21 +195,43 @@ def conditional_train(args):
 def conditional_sample_on_real_anomaly(args):
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
 
-    model = VRF(
-        seq_length=args.seq_len,
-        feature_size=args.feature_size,
-        n_layer_enc=args.n_layer_enc,
-        n_layer_dec=args.n_layer_dec,
-        d_model=args.d_model,
-        n_heads=args.n_heads,
-        mlp_hidden_times=4,
-        ve_channels=args.ve_channels,
-        ve_kernel_size=args.ve_kernel_size,
-        ve_pool_kernel=args.ve_pool_kernel,
-        ve_pool_stride=args.ve_pool_stride,
-        ve_z_dim=args.ve_z_dim,
-        kl_beta=args.kl_beta,
-    )
+    if args.model_name == "vrf":
+        model = VRF(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+    elif args.model_name == "vrf_v2":
+        model = VRF_v2(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+
     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
     model.to(device)
     model.eval()

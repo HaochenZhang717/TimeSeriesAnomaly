@@ -334,9 +334,9 @@ class EncoderBlock(nn.Module):
             nn.Dropout(resid_pdrop),
         )
 
-    def forward(self, x, timestep, mask=None):
+    def forward(self, x, timestep, projected_latent, mask=None):
         # breakpoint()
-        a, att = self.attn(self.ln1(x, timestep), mask=mask)
+        a, att = self.attn(self.ln1(x, timestep, projected_latent), mask=mask)
         x = x + a
         x = x + self.mlp(self.ln2(x))  # only one really use encoder_output
         return x, att
@@ -366,11 +366,11 @@ class Encoder(nn.Module):
             max_len=max_len
         ) for _ in range(n_layer)])
 
-    def forward(self, input, t, padding_masks=None):
+    def forward(self, input, t, projected_latent, padding_masks=None):
         x = input
 
         for block_idx in range(len(self.blocks)):
-            x, _ = self.blocks[block_idx](x, t, mask=padding_masks)
+            x, _ = self.blocks[block_idx](x, t, projected_latent, mask=padding_masks)
         return x
 
 
@@ -431,12 +431,12 @@ class DecoderBlock(nn.Module):
         self.proj = nn.Conv1d(self.real_ts_len, self.real_ts_len * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
-    def forward(self, x, encoder_output, timestep, mask=None):
+    def forward(self, x, encoder_output, timestep, projected_latent, mask=None):
 
-        a, att = self.attn1(self.ln1(x, timestep), mask=mask)
+        a, att = self.attn1(self.ln1(x, timestep, projected_latent), mask=mask)
         x = x + a
 
-        a, att = self.attn2(self.ln1_1(x, timestep), encoder_output, mask=mask)
+        a, att = self.attn2(self.ln1_1(x, timestep, projected_latent), encoder_output, mask=mask)
         x = x + a
 
         x_trunc = x[:, -self.real_ts_len:]
@@ -544,17 +544,12 @@ class Transformer(nn.Module):
             max_len=self.max_len, real_ts_len=self.real_ts_len)
 
     def forward(self, input, t, projected_latent, padding_masks=None):
-        # if not self.training:
-        #     breakpoint()
         emb = self.emb(input) # t*x_0 + (1-t) * noise
-
-        # projected_latent = torch.zeros_like(projected_latent)
-        emb = torch.cat([projected_latent, emb], dim=1)
         inp_enc = emb
-        enc_cond = self.encoder(inp_enc, t, padding_masks=padding_masks)
+        enc_cond = self.encoder(inp_enc, t, projected_latent, padding_masks=padding_masks)
         # print("enc_cond: ", enc_cond.shape)
         inp_dec = emb
-        output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, padding_masks=padding_masks)
+        output, mean, trend, season = self.decoder(inp_dec, t, enc_cond, projected_latent, padding_masks=padding_masks)
 
         res = self.inverse(output)
         res_m = torch.mean(res, dim=1, keepdim=True)
