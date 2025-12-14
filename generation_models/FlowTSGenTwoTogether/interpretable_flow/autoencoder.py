@@ -280,11 +280,14 @@ class AutoEncoder(nn.Module):
     def forward(self, x, anomaly_label):
         inverse_anomaly_label = 1 - anomaly_label
         x = x * inverse_anomaly_label.unsqueeze(-1)
-        h = self.encoder(x)
+
+        h = self.encoder(x, padding_mask=(anomaly_label==0))
         x_tilde = self.decoder(h)
 
-        x_tilde_ = x_tilde * inverse_anomaly_label.unsqueeze(-1)
-        loss = F.mse_loss(x_tilde_, x)
+        loss = F.mse_loss(
+            x_tilde[anomaly_label == 0],
+            x[anomaly_label == 0]
+        )
         return x_tilde, loss
 
 
