@@ -66,14 +66,17 @@ class FM_TS_Two_Together(nn.Module):
         return zt
 
     @torch.no_grad()
-    def impute(self, x_start, anomaly_label):
+    def impute(self, x_start, anomaly_label, x_tilde=None):
         """
         x_start: (B, T, C)
         anomaly_label: (B, T, C)   1 = missing, 0 = observed
         """
         self.eval()
         # 1) Init z_t: missing is noise
-        noise = torch.randn_like(x_start)
+        if x_tilde is None:
+            noise = torch.randn_like(x_start)
+        else:
+            noise = x_tilde
         zt = noise * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         # --- identical timestep shifting as unconditional sample ---
@@ -98,6 +101,7 @@ class FM_TS_Two_Together(nn.Module):
     def generate_mts(self, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
         return self.sample((batch_size, seq_length, feature_size))
+
 
     def _unconditional_loss(self, x_start):
         z0 = torch.randn_like(x_start)
@@ -173,7 +177,6 @@ class FM_TS_Two_Together(nn.Module):
 
         # 最终 batch loss = mean over batch
         return loss_per_sample.mean()
-
 
 
     def forward(self, x, anomaly_label, x_tilde=None):

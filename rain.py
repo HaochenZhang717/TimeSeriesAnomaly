@@ -29,7 +29,9 @@ def get_args():
         choices=[
             "autoencoder_train",
             "autoencoder_eval",
-            "flow_training",],
+            "flow_training",
+            "flow_sample",
+        ],
         help="what to do"
     )
 
@@ -83,6 +85,7 @@ def get_args():
 
     """parameters for unconditional sample"""
     parser.add_argument("--autoencoder_ckpt", type=str, required=True)
+    parser.add_argument("--flow_ckpt", type=str, required=True)
 
     """parameters for anomaly evaluation"""
     parser.add_argument("--eval_train_size", type=int, required=True)
@@ -259,6 +262,75 @@ def flow_train(args):
     trainer.deterministic_flow_train(config=vars(args))
 
 
+def flow_sample(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    ae = fast_build_autoencoder(feat_dim=args.feature_size, max_len=args.seq_len)
+    ae.load_state_dict(torch.load(args.autoencoder_ckpt, map_location="cpu"))
+    ae.eval()
+
+    model = FM_TS_Two_Together(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+    )
+    model.load_state_dict(torch.load(args.flow_ckpt, map_location="cpu"))
+    model.eval()
+
+    normal_train_set = build_dataset(
+        args.dataset_name,
+        'non_iterable',
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
+        seq_len=args.seq_len,
+        max_anomaly_length=args.max_anomaly_length,
+        min_anomaly_length=args.min_anomaly_length,
+        one_channel=args.one_channel,
+        limited_data_size=args.limited_data_size,
+    )
+
+    val_loader = torch.utils.data.DataLoader(normal_train_set, batch_size=args.batch_size, shuffle=False, drop_last=False)
+    all_real = []
+    all_recon = []
+    all_samples = []
+    all_anomaly_labels = []
+
+    device = torch.device(f"cuda:{args.gpu_id}")
+    model.to(device)
+    ae.to(device)
+    for batch in val_loader:
+        real_signal = batch['orig_signal'].to(device)
+        anomaly_label = batch['random_anomaly_label'].to(device)
+        with torch.no_grad():
+            x_tilde, _ = ae(real_signal, anomaly_label)
+            sample = model.impute(real_signal, anomaly_label, x_tilde)
+
+        all_recon.append(x_tilde.cpu())
+        all_real.append(real_signal.cpu())
+        all_anomaly_labels.append(anomaly_label.cpu())
+        all_samples.append(sample.cpu())
+        if len(all_real) >= 100:
+            break
+
+    all_real = torch.cat(all_real, dim=0)
+    all_recon = torch.cat(all_recon, dim=0)
+    all_anomaly_labels = torch.cat(all_anomaly_labels, dim=0)
+    all_samples = torch.cat(all_samples, dim=0)
+    to_save = {
+        "recon": all_recon,
+        "real": all_real,
+        "anomaly_labels": all_anomaly_labels,
+        "all_samples": all_samples,
+    }
+    os.makedirs(args.generated_path, exist_ok=True)
+    torch.save(to_save, f"{args.generated_path}/flow_results.pt")
+
+
 def main():
     args = get_args()
     if args.what_to_do == "autoencoder_train":
@@ -267,6 +339,9 @@ def main():
         autoencoder_eval(args)
     elif args.what_to_do == "flow_training":
         flow_train(args)
+    elif args.what_to_do == "flow_sample":
+        flow_sample(args)
+
     else:
         raise NotImplementedError
 
