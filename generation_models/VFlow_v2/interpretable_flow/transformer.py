@@ -482,7 +482,7 @@ class Decoder(nn.Module):
             real_ts_len=real_ts_len
         ) for _ in range(n_layer)])
 
-    def forward(self, x, t, enc, padding_masks=None):
+    def forward(self, x, t, enc, projected_latent, padding_masks=None):
         b, c, _ = x.shape
         # att_weights = []
         mean = []
@@ -490,7 +490,7 @@ class Decoder(nn.Module):
         trend = torch.zeros((b, self.real_ts_len, self.n_feat), device=x.device)
         for block_idx in range(len(self.blocks)):
             x, residual_mean, residual_trend, residual_season = \
-                self.blocks[block_idx](x, enc, t, mask=padding_masks)
+                self.blocks[block_idx](x, enc, t, projected_latent, mask=padding_masks)
             season += residual_season
             trend += residual_trend
             mean.append(residual_mean)
