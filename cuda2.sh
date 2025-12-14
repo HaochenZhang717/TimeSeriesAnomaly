@@ -260,7 +260,7 @@ python VarFlow.py \
   --generated_path "../samples_path/vrf_v2/mitdb1800_213mixed" \
   --generated_file "anomaly_cond_on_anomaly" \
   --normal_data_path "none" \
-  --cond_num_samples 10 \
+  --cond_num_samples 256 \
   \
   --uncond_eval_model_ckpt "none" \
   --uncond_num_samples -1 \
