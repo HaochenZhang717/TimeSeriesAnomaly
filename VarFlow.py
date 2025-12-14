@@ -12,6 +12,35 @@ import numpy as np
 from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
 
 
+def nan_hook(name):
+    def hook(module, input, output):
+        def check(t, tag):
+            if isinstance(t, torch.Tensor):
+                if not torch.isfinite(t).all():
+                    print(f"\n[NaN DETECTED]")
+                    print(f"  Module : {name}")
+                    print(f"  Where  : {tag}")
+                    print(f"  Shape  : {tuple(t.shape)}")
+                    print(f"  Min/Max: {t.min().item()} / {t.max().item()}")
+                    raise RuntimeError(f"NaN detected in {name}")
+
+        # check inputs
+        if isinstance(input, (list, tuple)):
+            for i, inp in enumerate(input):
+                check(inp, f"input[{i}]")
+        else:
+            check(input, "input")
+
+        # check outputs
+        if isinstance(output, (list, tuple)):
+            for i, out in enumerate(output):
+                check(out, f"output[{i}]")
+        else:
+            check(output, "output")
+
+    return hook
+
+
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
     with open(output_path, "w") as f:
@@ -237,6 +266,10 @@ def conditional_sample_on_real_anomaly(args):
     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
     model.to(device)
     model.eval()
+
+    for name, module in model.named_modules():
+        module.register_forward_hook(nan_hook(name))
+
 
     anomaly_train_set = build_dataset(
         args.dataset_name,

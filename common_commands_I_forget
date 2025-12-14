@@ -32,3 +32,4 @@ scp -r root@134.199.134.61:/root/tianyi/samples_path/flow_two_together_logit_nor
 
 scp -r root@134.199.134.61:/root/tianyi/samples_path/vrf_v2/mitdb1800_213A/generated_anomaly_on_real_anomaly_multi_prior.pt ../samples_path/vrf_v2/mitdb1800_213mixed_test_on_A/
 scp -r root@134.199.134.61:/root/tianyi/samples_path/vrf_v2/mitdb1800_213V/generated_anomaly_on_real_anomaly_multi_prior.pt ../samples_path/vrf_v2/mitdb1800_213mixed_test_on_V/
+scp -r root@134.199.134.61:/root/tianyi/samples_path/vrf_v2/mitdb1800_213mixed/generated_anomaly_on_real_anomaly_multi_prior.pt ../samples_path/vrf_v2/mitdb1800_213mixed/
