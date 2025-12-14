@@ -264,8 +264,8 @@ def main():
         autoencoder_train(args)
     elif args.what_to_do == "autoencoder_eval":
         autoencoder_eval(args)
-    elif args.what_to_do == "flow_train":
-        raise NotImplementedError("Flow training not implemented.")
+    elif args.what_to_do == "flow_training":
+        flow_train(args)
     else:
         raise NotImplementedError
 
