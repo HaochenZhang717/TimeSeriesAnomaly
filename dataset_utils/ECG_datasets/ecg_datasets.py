@@ -170,6 +170,7 @@ class IterableECGDataset(IterableDataset):
 
             yield sample
 
+
 if __name__ == "__main__":
 
     dataset = ECGDataset(

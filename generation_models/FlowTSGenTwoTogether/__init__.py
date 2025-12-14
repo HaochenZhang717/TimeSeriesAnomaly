@@ -1,1 +1,1 @@
-from .interpretable_flow import FM_TS_Two_Together
+from .interpretable_flow import FM_TS_Two_Together, fast_build_autoencoder

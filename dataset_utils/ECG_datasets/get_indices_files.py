@@ -701,13 +701,14 @@ if __name__ == "__main__":
     #         max_anomaly_ratio=0.2
     #     )
 
-    name = '213'
+    name = '106'
     raw_data = np.load(f"./raw_data/{name}.npz")
     raw_signal = raw_data["signal"]
     anomaly_label = raw_data["anomaly_label"]
 
     # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
-    anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
+    anomaly_type_maps = {'V' :1}
+    # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
     # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
     # anomaly_type_maps = {'R': 5}
 

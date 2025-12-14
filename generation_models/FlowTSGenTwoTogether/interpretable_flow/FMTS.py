@@ -146,14 +146,49 @@ class FM_TS_Two_Together(nn.Module):
         # 最终 batch loss = mean over batch
         return loss_per_sample.mean()
 
-    def forward(self, x, anomaly_label):
+
+    def _normal_init_loss(self, x_start, anomaly_label):
+        z0_impute = torch.randn_like(x_start)
+        z1 = x_start
+        inverse_anomaly_label = 1 - anomaly_label
+
+        t = torch.rand(z0_impute.shape[0], 1, 1).to(z0_impute.device)
+        if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
+            t = torch.sigmoid(torch.randn(z0_impute.shape[0], 1, 1)).to(z0_impute.device)
+
+        z_t = t * z1 + (1. - t) * z0_impute
+        z_t = z_t * inverse_anomaly_label.unsqueeze(-1)
+
+        target = (z1 - z0_impute) * inverse_anomaly_label.unsqueeze(-1)
+
+        model_out = self.output(z_t, t.view(-1) * self.time_scalar, None)
+        model_out = model_out * inverse_anomaly_label.unsqueeze(-1)
+
+        # train_loss: (B, ..., ...)
+        train_loss = ((model_out - target) ** 2).mean(-1) #(B, T)
+        # 只对 anomaly 部分计算误差
+        masked_loss = train_loss * inverse_anomaly_label #(B, T)
+        # 每个样本 anomaly 的数量
+        num_non_anomalies = reduce(inverse_anomaly_label, 'b t -> b 1', 'sum')  # shape: (B, 1)
+
+        # 每个样本的 loss = sum(masked_loss) / num_anomalies
+        loss_per_sample = reduce(masked_loss, 'b t -> b 1', 'sum') / num_non_anomalies
+
+        # 最终 batch loss = mean over batch
+        return loss_per_sample.mean()
+
+
+    def forward(self, x, anomaly_label, mode=None):
         b, c, n, device, feature_size, = *x.shape, x.device, self.feature_size
         assert n == feature_size, f'number of variable must be {feature_size}'
-        if anomaly_label is None:
-            return self._unconditional_loss(x_start=x)
-        else:
-            return self._impute_loss(x_start=x, anomaly_label=anomaly_label)
 
+        if mode is None:
+            if anomaly_label is None:
+                return self._unconditional_loss(x_start=x)
+            else:
+                return self._impute_loss(x_start=x, anomaly_label=anomaly_label)
+        elif mode == "normal_init":
+            return self._normal_init_loss(x_start=x, anomaly_label=anomaly_label)
 
 
 
