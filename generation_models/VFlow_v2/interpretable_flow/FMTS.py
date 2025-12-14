@@ -137,7 +137,6 @@ class VRF_v2(nn.Module):
         return zt
 
 
-
     def generate_mts(self, batch_size=16):
         feature_size, seq_length = self.feature_size, self.seq_length
         return self.sample((batch_size, seq_length, feature_size))
@@ -146,6 +145,7 @@ class VRF_v2(nn.Module):
     def _impute_loss(self, x_start, anomaly_label):
         # x_start == [1,2,3,4,5,6]
         # anomaly_label = [0,0,1,1,1,0]
+
         z0_impute = torch.randn_like(x_start) * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1)) #[1,2,noise,noise,noise,6]
         z1 = x_start # [1,2,3,4,5,6]
 
