@@ -239,7 +239,7 @@ python VarFlow.py \
   --min_anomaly_length 74 \
   --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/213.npz" \
   --raw_data_paths_val "none" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_213npz/train/mixed.jsonl" \
+  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_213npz/train/A.jsonl" \
   --indices_paths_val "none" \
   --limited_data_size 1000000 \
   \

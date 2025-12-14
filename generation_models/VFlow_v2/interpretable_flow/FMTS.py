@@ -102,6 +102,7 @@ class VRF_v2(nn.Module):
         else:
             noise = torch.randn_like(x_start)
 
+        breakpoint()
         zt = noise * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
 
         # --- identical timestep shifting as unconditional sample ---
