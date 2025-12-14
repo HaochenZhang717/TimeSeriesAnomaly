@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument(
         "--what_to_do", type=str, required=True,
         choices=[
-            "autoencoder_train"
+            "autoencoder_train",
             "flow_training",],
         help="what to do"
     )
