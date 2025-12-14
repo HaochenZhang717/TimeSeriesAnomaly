@@ -83,9 +83,9 @@ python rain.py \
   --ckpt_dir "../TSA-ckpts/rain/mitdb1800_106/autoencoder" \
   \
   --cond_eval_model_ckpt "none" \
-  --generated_path "none" \
+  --generated_path "../samples_path/rain/" \
   --normal_data_path "none" \
-  --generated_file "../samples_path/rain/" \
+  --generated_file "none" \
   --cond_num_samples -1 \
   \
   --autoencoder_ckpt "../TSA-ckpts/rain/mitdb1800_106/autoencoder/ckpt.pth" \
