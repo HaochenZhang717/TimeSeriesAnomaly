@@ -580,7 +580,7 @@ python VarFlow.py \
   --ckpt_dir "none" \
   \
   --cond_eval_model_ckpt "../TSA-ckpts/VRF/mitdb1800_213mixed/conditional_ckpt/ema_ckpt.pth" \
-  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_213A" \
+  --generated_path "../samples_path/VRF/mitdb1800_213A" \
   --generated_file "anomaly_cond_on_anomaly" \
   --normal_data_path "none" \
   --cond_num_samples 10 \
@@ -637,7 +637,7 @@ python VarFlow.py \
   --ckpt_dir "none" \
   \
   --cond_eval_model_ckpt "../TSA-ckpts/VRF/mitdb1800_213mixed/conditional_ckpt/ema_ckpt.pth" \
-  --generated_path "../samples_path/flow_two_together_logit_normal/mitdb1800_213V" \
+  --generated_path "../samples_path/VRF/mitdb1800_213V" \
   --generated_file "anomaly_cond_on_anomaly" \
   --normal_data_path "none" \
   --cond_num_samples 10 \
