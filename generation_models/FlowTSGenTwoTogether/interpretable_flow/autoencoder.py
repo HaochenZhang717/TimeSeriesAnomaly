@@ -293,8 +293,8 @@ def fast_build_autoencoder(feat_dim, max_len):
     return AutoEncoder(
         feat_dim,
         max_len,
-        d_model=hidden_dim, n_heads=16,
-        num_layers=6, dim_feedforward=1024,
+        d_model=hidden_dim, n_heads=5,
+        num_layers=6, dim_feedforward=2048,
         dropout=0.1,
         pos_encoding='fixed',
         activation='gelu',
