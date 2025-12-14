@@ -736,7 +736,7 @@ if __name__ == "__main__":
             segments=segments,
             window_size=1800,
             ratio_range=(0.01, 0.5),  # 调这个
-            step=10,
+            step=100,
             jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
             anomaly_type=v
         )
