@@ -28,6 +28,7 @@ def get_args():
         "--what_to_do", type=str, required=True,
         choices=[
             "autoencoder_train",
+            "autoencoder_eval",
             "flow_training",],
         help="what to do"
     )
