@@ -232,6 +232,12 @@ class AdaLayerNorm(nn.Module):
 
         self.norm = nn.LayerNorm(n_embd, elementwise_affine=False)
 
+    def _check(self, x, tag):
+        if torch.isnan(x).any():
+            raise RuntimeError(f"[NaN] {self.name}::{tag}")
+        if torch.isinf(x).any():
+            raise RuntimeError(f"[Inf] {self.name}::{tag}")
+
     def forward(self, x, timestep, projected_latent):
         """
         x: (B, T, D)
@@ -257,4 +263,10 @@ class AdaLayerNorm(nn.Module):
         scale = scale.unsqueeze(1)              # (B, 1, D)
         shift = shift.unsqueeze(1)
 
-        return self.norm(x) * (1 + scale) + shift
+        x_norm = self.norm(x)
+        self._check(x_norm, "x_norm")
+        self._check(scale, "scale")
+        self._check(shift, "shift")
+
+
+        return x_norm * (1 + scale) + shift
