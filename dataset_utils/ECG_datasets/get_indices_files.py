@@ -664,7 +664,7 @@ def extract_windows_containing_segments(
                 record = {
                     "start": int(start),
                     "end": int(end),
-                    "anomaly_type": anomaly_type
+                    "anomaly_type": 1
                 }
                 jsonl_file.write(json.dumps(record) + "\n")
 
@@ -708,6 +708,7 @@ if __name__ == "__main__":
 
     # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
     anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
+    # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
     # anomaly_type_maps = {'R': 5}
 
     for k, v in anomaly_type_maps.items():
