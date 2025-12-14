@@ -111,6 +111,7 @@ class VRF_v2(nn.Module):
 
         # latent = self.variational_encoder.sample_prior_latent(batch_size=1)
         # 2) Integrate ODE from t=1 → t=0
+        step_idx = 0
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).view(-1)
@@ -126,7 +127,11 @@ class VRF_v2(nn.Module):
 
             #restore known region
             zt = zt * anomaly_label.unsqueeze(-1) + x_start * (1 - anomaly_label.unsqueeze(-1))
-
+            if torch.isnan(zt).any() or torch.isinf(zt).any():
+                print("NaN at step", step_idx)
+                print("zt stats:", zt.min(), zt.max())
+                break
+            step_idx += 1
         return zt
 
 
