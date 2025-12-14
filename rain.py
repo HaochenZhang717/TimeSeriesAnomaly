@@ -242,6 +242,7 @@ def flow_train(args):
         optimizer=optimizer,
         scheduler=scheduler,
         model=model,
+        ae=ae,
         train_loader=train_loader,
         val_loader=val_loader,
         max_epochs=args.max_epochs,
