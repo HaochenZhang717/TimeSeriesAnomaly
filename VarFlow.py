@@ -1,5 +1,5 @@
 from Trainers import VRFTrainer
-from generation_models import VRF, VRF_v2
+from generation_models import VRF, VRF_v2, VRF_v3, VRF_v4
 from dataset_utils import build_dataset, FakeDataset
 import argparse
 import torch
@@ -173,6 +173,44 @@ def conditional_train(args):
 
             kl_beta=args.kl_beta,
         )
+    elif args.model_name == "vrf_v3":
+        model = VRF_v3(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+    elif args.model_name == "vrf_v4":
+        model = VRF_v4(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+    else:
+        raise Exception(f"unknown model {args.model_name}")
     # if args.cond_eval_model_ckpt != "none":
     #     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
 
@@ -262,6 +300,44 @@ def conditional_sample_on_real_anomaly(args):
 
             kl_beta=args.kl_beta,
         )
+    elif args.model_name == "vrf_v3":
+        model = VRF_v3(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+    elif args.model_name == "vrf_v4":
+        model = VRF_v4(
+            seq_length=args.seq_len,
+            feature_size=args.feature_size,
+            n_layer_enc=args.n_layer_enc,
+            n_layer_dec=args.n_layer_dec,
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            mlp_hidden_times=4,
+
+            ve_channels=args.ve_channels,
+            ve_kernel_size=args.ve_kernel_size,
+            ve_pool_kernel=args.ve_pool_kernel,
+            ve_pool_stride=args.ve_pool_stride,
+            ve_z_dim=args.ve_z_dim,
+
+            kl_beta=args.kl_beta,
+        )
+    else:
+        raise Exception(f"unknown model {args.model_name}")
 
     model.load_state_dict(torch.load(args.cond_eval_model_ckpt))
     model.to(device)

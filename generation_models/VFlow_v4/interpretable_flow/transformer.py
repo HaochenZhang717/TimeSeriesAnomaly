@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch import nn
 from einops import rearrange, reduce, repeat
 from .model_utils import LearnablePositionalEncoding, Conv_MLP, \
-    AdaLayerNorm, AdaLayerNorm_No_Latent, Transpose, RMSNorm, GELU2, series_decomp
+    AdaLayerNorm_No_Latent, Transpose, RMSNorm, GELU2, series_decomp
 import os
 
 
@@ -392,7 +392,7 @@ class DecoderBlock(nn.Module):
                  ):
         super().__init__()
         self.real_ts_len = real_ts_len
-        self.ln1 = AdaLayerNorm(n_embd)
+        self.ln1 = AdaLayerNorm_No_Latent(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         # self.ln2 = AdaLayerNorm(n_embd)
 
@@ -412,7 +412,7 @@ class DecoderBlock(nn.Module):
             max_len=max_len
         )
 
-        self.ln1_1 = AdaLayerNorm(n_embd)
+        self.ln1_1 = AdaLayerNorm_No_Latent(n_embd)
         # self.ln1_1 = nn.LayerNorm(n_embd)
 
         assert activate in ['GELU', 'GELU2']

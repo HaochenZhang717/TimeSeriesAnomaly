@@ -392,7 +392,7 @@ class DecoderBlock(nn.Module):
                  ):
         super().__init__()
         self.real_ts_len = real_ts_len
-        self.ln1 = AdaLayerNorm(n_embd)
+        self.ln1 = AdaLayerNorm_No_Latent(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
         # self.ln2 = AdaLayerNorm(n_embd)
 
