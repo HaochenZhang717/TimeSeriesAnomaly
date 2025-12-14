@@ -113,6 +113,7 @@ class VRF_v2(nn.Module):
         # 2) Integrate ODE from t=1 → t=0
         step_idx = 0
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
+            print(f"step: {step_idx}")
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(x_start.device).view(-1)
             if mode == "prior":
