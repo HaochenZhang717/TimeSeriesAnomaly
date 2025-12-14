@@ -39,7 +39,7 @@ python VarFlow.py \
   --patience 50 \
   \
   --wandb_project "VRF_conditional" \
-  --wandb_run "v2-decoder-rand-213npz-stochastic-latent" \
+  --wandb_run "v4-213npz-stochastic-latent" \
   \
   --ckpt_dir "../TSA-ckpts/VRF_v4/mitdb1800_213mixed/conditional_ckpt" \
   \
@@ -68,7 +68,7 @@ python VarFlow.py \
   --feature_size 1 \
   --one_channel 1 \
   \
-  --model_name "vrf_v2" \
+  --model_name "vrf_v4" \
   --n_layer_enc 4 \
   --n_layer_dec 4 \
   --d_model 64 \
