@@ -336,7 +336,7 @@ class EncoderBlock(nn.Module):
 
     def forward(self, x, timestep, projected_latent, mask=None):
         # breakpoint()
-        a, att = self.attn(self.ln1(x, timestep), mask=mask)
+        a, att = self.attn(self.ln1(x, timestep, projected_latent), mask=mask)
         x = x + a
         x = x + self.mlp(self.ln2(x))  # only one really use encoder_output
         return x, att
