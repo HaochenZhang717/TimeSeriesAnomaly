@@ -173,11 +173,12 @@ def autoencoder_eval(args):
     for batch in val_loader:
         real_signal = batch['orig_signal'].to(device)
         anomaly_label = batch['random_anomaly_label'].to(device)
-        x_tilde, _ = model(real_signal, anomaly_label)
+        with torch.no_grad():
+            x_tilde, _ = model(real_signal, anomaly_label)
 
-        all_recon.append(x_tilde)
-        all_real.append(real_signal)
-        all_anomaly_labels.append(anomaly_label)
+        all_recon.append(x_tilde.cpu())
+        all_real.append(real_signal.cpu())
+        all_anomaly_labels.append(anomaly_label.cpu())
         if len(all_real) >= 100:
             break
 
