@@ -415,7 +415,10 @@ class FlowTSTrainerTwoTogether(object):
         self.early_stop = early_stop
         self.patience = patience
 
+
         self.ae=ae
+        if self.ae is not None:
+            self.ae.to(device)
 
     def unconditional_train(self, config):
         ema_decay = 0.999
