@@ -534,7 +534,6 @@ class Transformer(nn.Module):
     def forward(self, input, t, prototype_embeds, padding_masks):
         emb = self.emb(input)
 
-        breakpoint()
         inp_enc = emb
         enc_cond = self.encoder(inp_enc, t, prototype_embeds, padding_masks=padding_masks)
 
