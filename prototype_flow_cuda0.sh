@@ -22,7 +22,7 @@ python PrototypeFlow.py \
   --grad_clip_norm 1.0 \
   --grad_accum_steps 1 \
   --early_stop "true" \
-  --patience 50 \
+  --patience 48 \
   \
   --wandb_project "Prototype Flow" \
   --wandb_run "106npz-no-context" \
