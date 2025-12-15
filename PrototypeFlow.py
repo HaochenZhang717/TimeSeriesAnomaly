@@ -83,6 +83,9 @@ def get_args():
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
 
+    """save path """
+    parser.add_argument("--generated_dir", type=str, required=True)
+
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
 
@@ -157,6 +160,34 @@ def no_context_train(args):
 
 
 
+def no_context_sample(args):
+    model = NoContextPrototypeFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        num_prototypes=args.num_prototypes,
+    )
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model.to(device=device)
+    model.eval()
+
+    result_dict = dict()
+    for prototype_id in range(8):
+        with torch.no_grad():
+            samples = model.generate_mts(
+                batch_size=args.batch_size,
+                prototype_id=prototype_id
+            ).detach().cpu()
+        result_dict.update({prototype_id: samples})
+
+    torch.save(result_dict, f"{args.ckpt_dir}/samples.pth")
+
+
 
 
 
@@ -164,6 +195,8 @@ def main():
     args = get_args()
     if args.what_to_do == "no_context_train":
         no_context_train(args)
+    elif args.what_to_do == "no_context_sample":
+        no_context_sample(args)
     # elif args.what_to_do == "conditional_sample_on_real_anomaly":
     #     conditional_sample_on_real_anomaly(args)
     # elif args.what_to_do == "conditional_sample_on_real_normal":
