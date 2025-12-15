@@ -7,9 +7,13 @@ import matplotlib.pyplot as plt
 
 import torch.nn as nn
 import torch.nn.functional as F
+import json
 
 import torch
 import random
+
+from sklearn.cluster import KMeans
+
 
 
 
@@ -301,13 +305,96 @@ def train_contrastive_encoder(
 
     return encoder
 
+
+def extract_embeddings(
+    encoder,
+    raw_data_path,
+    indices_path,
+    one_channel,
+    batch_size=64,
+    device=None,
+):
+    """
+    Returns:
+        Z: np.ndarray [N, D]   embeddings
+    """
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    dataset = AnomalyDataset(
+        raw_data_path=raw_data_path,
+        indices_path=indices_path,
+        one_channel=one_channel,
+    )
+
+    loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=pad_collate_fn,
+    )
+
+    encoder.eval()
+    encoder.to(device)
+
+    all_embeddings = []
+
+    with torch.no_grad():
+        for x, lengths in loader:
+            x = x.to(device)
+            lengths = lengths.to(device)
+
+            z = encoder(x, lengths)     # [B, D]
+            all_embeddings.append(z.cpu().numpy())
+
+    Z = np.concatenate(all_embeddings, axis=0)
+    return Z
+
+
+def run_kmeans(Z, K=8, seed=0):
+    kmeans = KMeans(
+        n_clusters=K,
+        n_init=20,
+        max_iter=300,
+        random_state=seed,
+    )
+    cluster_ids = kmeans.fit_predict(Z)
+    centers = kmeans.cluster_centers_
+
+    return cluster_ids, centers
+
+
+
+def save_prototype_jsonl(
+    indices_path,
+    cluster_ids,
+    out_path,
+):
+    """
+    indices_path: 原始 anomaly segment jsonl
+    cluster_ids: np.ndarray [N]
+    """
+    indices = load_jsonl(indices_path)
+    assert len(indices) == len(cluster_ids)
+
+    with open(out_path, "w") as f:
+        for (start, end), cid in zip(indices, cluster_ids):
+            item = {
+                "start": int(start),
+                "end": int(end),
+                "prototype_id": int(cid),
+            }
+            f.write(json.dumps(item) + "\n")
+
+
+
 if __name__ == "__main__":
     encoder = train_contrastive_encoder(
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl",
         one_channel=True,
         batch_size=64,
-        num_epochs=50,
+        num_epochs=100,
         lr=1e-3,
         z_dim=32,
         device=torch.device("cuda:0"),
@@ -315,6 +402,26 @@ if __name__ == "__main__":
 
     # encoder 现在可以直接拿去做 embedding / clustering
     print("Encoder training finished.")
+
+    Z = extract_embeddings(
+        encoder=encoder,
+        raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl",
+        one_channel=True,
+        batch_size=128,
+        device=torch.device("cuda:0"),
+    )
+
+
+    print("Embedding shape:", Z.shape)  # [N, z_dim]
+    cluster_ids, centers = run_kmeans(Z, K=8)
+
+    save_prototype_jsonl(
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl",
+        cluster_ids=cluster_ids,
+        out_path="anomaly_segments_with_prototype.jsonl",
+    )
+
 
     # data = AnomalyDataset(
     #     raw_data_path='../dataset_utils/ECG_datasets/raw_data/106.npz',
