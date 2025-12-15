@@ -11,31 +11,40 @@ from tqdm import tqdm
 import numpy as np
 from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
 
+
 def pad_collate_fn(batch, max_len):
     """
-    batch: list of Tensor [L_i, C]
+    batch: list of dicts
+        {
+            'signal': Tensor [L_i, C],
+            'prototype_id': int
+        }
     """
-    # lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
-    prototypes = torch.tensor([sample['prototype_id'] for sample in batch], dtype=torch.long)
-    # max_len = lengths.max().item()
-    # max_len =
+
+    B = len(batch)
     C = batch[0]['signal'].shape[-1]
 
-    padded = torch.zeros(len(batch), max_len, C)
+    padded = torch.zeros(B, max_len, C, dtype=batch[0]['signal'].dtype)
+    attention_mask = torch.zeros(B, max_len, dtype=torch.bool)
+    lengths = torch.zeros(B, dtype=torch.long)
+    prototypes = torch.zeros(B, dtype=torch.long)
 
     for i, sample in enumerate(batch):
-        padded[i, :min(sample['signal'].shape[0], max_len)] = sample['signal'][ :min(sample['signal'].shape[0], max_len)]
+        signal = sample['signal']
+        L = min(signal.shape[0], max_len)
 
-    lengths = []
-    for sample in batch:
-        lengths.append(min(sample['signal'].shape[0], max_len))
-    lengths = torch.tensor(lengths, dtype=torch.long)
-    # return padded, lengths
+        padded[i, :L] = signal[:L]
+        attention_mask[i, :L] = True
+        lengths[i] = L
+        prototypes[i] = sample['prototype_id']
+
     return {
-        'padded_signal': padded,
-        'lengths': lengths,
-        'prototypes': prototypes
+        'padded_signal': padded,        # (B, T, C)
+        'attention_mask': attention_mask,  # (B, T)  True = valid
+        'lengths': lengths,             # (B,)
+        'prototypes': prototypes        # (B,)
     }
+
 
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
@@ -94,8 +103,6 @@ def get_args():
     parser.add_argument("--gpu_id", type=int, required=True)
 
     return parser.parse_args()
-
-
 
 
 def no_context_train(args):

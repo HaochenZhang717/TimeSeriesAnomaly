@@ -56,8 +56,9 @@ class PrototypeFlowTSTrainer(object):
                 X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
                 lengths = batch["lengths"].to(dtype=torch.long, device=self.device)
                 prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
+                attn_mask = batch["attn_mask"].to(dtype=torch.long, device=self.device)
 
-                loss = self.model(X_signal, lengths, prototypes)
+                loss = self.model(X_signal, lengths, prototypes, attn_mask)
 
                 total_loss += loss.item()
                 tr_seen += 1
@@ -88,8 +89,9 @@ class PrototypeFlowTSTrainer(object):
                     X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
                     lengths = batch["lengths"].to(dtype=torch.long, device=self.device)
                     prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
+                    attn_mask = batch["attn_mask"].to(dtype=torch.long, device=self.device)
 
-                    loss = self.model(X_signal, lengths, prototypes)
+                    loss = self.model(X_signal, lengths, prototypes, attn_mask)
                     val_total += loss.item() * X_signal.shape[0]
                     val_seen += X_signal.shape[0]
 

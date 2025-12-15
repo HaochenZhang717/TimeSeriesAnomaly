@@ -477,6 +477,12 @@ def visualize_clusters_from_jsonl(
 
     cluster_ids = dataset.cluster_ids
 
+    results = torch.load(
+        "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/samples_path/PrototypeFlow/samples.pth",
+        map_location='cpu'
+    )
+
+
     for k in range(K):
         idxs = np.where(cluster_ids == k)[0]
         if len(idxs) == 0:
@@ -488,10 +494,18 @@ def visualize_clusters_from_jsonl(
         plt.figure(figsize=(8, 2))
         for i in chosen:
             seg, _ = dataset[i]
-            plt.plot(seg.numpy().flatten(), alpha=0.7)
+            plt.plot(seg.numpy().flatten()[:100], alpha=0.7)
 
-        plt.title(f"Prototype {k}")
+        plt.title(f"real prototype {k}")
         plt.show()
+
+        samples = results[k]
+        plt.figure(figsize=(8, 2))
+        for j in range(samples.shape[0]):
+            plt.plot(samples[j, :])
+        plt.title(f"samples prototype {k}")
+        plt.show()
+        print(K)
 
 if __name__ == "__main__":
     visualize_clusters_from_jsonl(

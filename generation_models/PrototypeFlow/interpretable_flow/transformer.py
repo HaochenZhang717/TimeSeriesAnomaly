@@ -189,7 +189,7 @@ class FullAttention(nn.Module):
         self.regi_num = 128
         self.register = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
 
-    def forward(self, x, mask=None):
+    def forward(self, x, mask):
         # x = torch.cat([self.register.repeat(x.shape[0],1,1), x], 1)
 
         B, T, C = x.size()
@@ -210,9 +210,11 @@ class FullAttention(nn.Module):
             q, k = q.permute(0, 2, 1, 3), k.permute(0, 2, 1, 3)
 
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))  # (B, nh, T, T)
-
+        if mask is not None:
+            att_mask = mask[:, None, None, :]  # broadcast over heads & query positions
+            att = att.masked_fill(~att_mask, float('-inf'))
         att = F.softmax(att, dim=-1)  # (B, nh, T, T)
-        # att = torch.sigmoid(att)
+
         att = self.attn_drop(att)
         y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
         y = y.transpose(1, 2).contiguous().view(B, T, C)  # re-assemble all head outputs side by side, (B, T, C)
@@ -220,7 +222,6 @@ class FullAttention(nn.Module):
 
         # output projection
         y = self.resid_drop(self.proj(y))
-        # y = y[:,self.regi_num:,:]
 
         return y, att
 
@@ -261,11 +262,7 @@ class CrossAttention(nn.Module):
         # self.register = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
         # self.register_2 = nn.Parameter(torch.randn([1, self.regi_num, n_embd]))
 
-    def forward(self, x, encoder_output, mask=None):
-        # x = torch.cat([self.register.repeat(x.shape[0],1,1), x], 1)
-
-        # encoder_output = torch.cat([self.register_2.repeat(x.shape[0],1,1), encoder_output], 1)
-
+    def forward(self, x, encoder_output, mask):
         B, T, C = x.size()
         B, T_E, _ = encoder_output.size()
         # calculate query, key, values for all heads in batch and move head forward to be the batch dim
@@ -284,9 +281,13 @@ class CrossAttention(nn.Module):
 
         v = self.value(encoder_output).view(B, T_E, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))  # (B, nh, T, T)
+        # ====== 🔥 encoder (key/value) padding mask ======
+        if mask is not None:
+            # encoder_mask: (B, T_E) -> (B, 1, 1, T_E)
+            enc_mask = mask[:, None, None, :]
+            att = att.masked_fill(~enc_mask, float('-inf'))
 
         att = F.softmax(att, dim=-1)  # (B, nh, T, T)
-        # att = torch.sigmoid(att)  ## sigmoid attention infact
 
         att = self.attn_drop(att)
         y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
@@ -294,7 +295,6 @@ class CrossAttention(nn.Module):
         att = att.mean(dim=1, keepdim=False)  # (B, T, T)
 
         y = self.resid_drop(self.proj(y))
-        # y = y[:,self.regi_num:,:]
 
         return y, att
 
@@ -333,7 +333,7 @@ class EncoderBlock(nn.Module):
             nn.Dropout(resid_pdrop),
         )
 
-    def forward(self, x, timestep, prototype_embeds, mask=None):
+    def forward(self, x, timestep, prototype_embeds, mask):
         # breakpoint()
         a, att = self.attn(self.ln1(x, timestep, prototype_embeds), mask=mask)
         x = x + a
@@ -365,7 +365,7 @@ class Encoder(nn.Module):
             max_len=max_len
         ) for _ in range(n_layer)])
 
-    def forward(self, input, t, prototype_embeds, padding_masks=None):
+    def forward(self, input, t, prototype_embeds, padding_masks):
         x = input
 
         for block_idx in range(len(self.blocks)):
@@ -429,7 +429,7 @@ class DecoderBlock(nn.Module):
         self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
-    def forward(self, x, encoder_output, timestep, prototype_embeds, mask=None):
+    def forward(self, x, encoder_output, timestep, prototype_embeds, mask):
         a, att = self.attn1(self.ln1(x, timestep, prototype_embeds), mask=mask)
         x = x + a
 
@@ -474,7 +474,7 @@ class Decoder(nn.Module):
             max_len=max_len
         ) for _ in range(n_layer)])
 
-    def forward(self, x, t, prototype_embeds, enc, padding_masks=None):
+    def forward(self, x, t, prototype_embeds, enc, padding_masks):
         b, c, _ = x.shape
         # att_weights = []
         mean = []
@@ -531,7 +531,7 @@ class Transformer(nn.Module):
                                mlp_hidden_times,
                                block_activate, condition_dim=n_embd, max_len=self.max_len)
 
-    def forward(self, input, t, prototype_embeds, padding_masks=None, return_res=False):
+    def forward(self, input, t, prototype_embeds, padding_masks):
         emb = self.emb(input)
 
         inp_enc = emb

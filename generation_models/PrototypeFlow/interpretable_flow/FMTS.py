@@ -147,11 +147,11 @@ class NoContextPrototypeFlow(nn.Module):
     #     return loss_per_sample.mean()
 
 
-    def forward(self, signals, lengths, prototypes):
-        return self._no_context_loss(signals, lengths, prototypes)
+    def forward(self, signals, lengths, prototypes, attn_mask):
+        return self._no_context_loss(signals, lengths, prototypes, attn_mask)
 
 
-    def _no_context_loss(self, signals, lengths, prototypes):
+    def _no_context_loss(self, signals, lengths, prototypes, attn_mask):
         prototype_embeds = self.prototype_embedding(prototypes)
 
         z0 = torch.randn_like(signals)
@@ -167,7 +167,7 @@ class NoContextPrototypeFlow(nn.Module):
             z_t,
             t.view(-1) * self.time_scalar,
             prototype_embeds,
-            None)
+            padding_masks=attn_mask)
 
         # -------- length-aware mask --------
         # mask: [B, T, 1]
@@ -185,14 +185,6 @@ class NoContextPrototypeFlow(nn.Module):
         loss = loss.mean()
 
         return loss
-
-
-        train_loss = F.mse_loss(model_out, target, reduction='none')
-        # todo: need to mask some loss using lengths
-        train_loss = reduce(train_loss, 'b ... -> b (...)', 'mean')
-        train_loss = train_loss.mean()
-        return train_loss
-
 
 
 
