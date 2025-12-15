@@ -95,8 +95,8 @@ class NoContextPrototypeFlow(nn.Module):
     #
     #     return zt
 
-    def generate_mts(self, batch_size, prototype_id):
-        feature_size, seq_length = self.feature_size, self.seq_length
+    def generate_mts(self, seq_length, batch_size, prototype_id):
+        feature_size = self.feature_size
         return self.sample((batch_size, seq_length, feature_size), prototype_id)
 
     # def _unconditional_loss(self, x_start):
