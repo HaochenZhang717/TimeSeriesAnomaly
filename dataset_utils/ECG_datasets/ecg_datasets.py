@@ -206,8 +206,7 @@ class NoContextECGDataset(Dataset):
         else:
             signal = torch.from_numpy(self.normed_signal[start:end])
         anomaly_label = self.anomaly_label[start:end]
-        assert min(anomaly_label) == 1
-        assert max(anomaly_label) == 1
+        assert min(anomaly_label) == max(anomaly_label)
 
         return {'signal': signal, 'prototype_id': prototype_id}
 
