@@ -15,7 +15,6 @@ class TrendBlock(nn.Module):
     """
     Model trend of time series using the polynomial regressor.
     """
-
     def __init__(self, in_dim, out_dim, in_feat, out_feat, act):
         super(TrendBlock, self).__init__()
         trend_poly = 3
@@ -31,13 +30,6 @@ class TrendBlock(nn.Module):
 
     def forward(self, input):
         b, c, h = input.shape
-        # input = input.permute(0, 2, 1)
-        breakpoint()
-
-        x = input.mean(dim=-1)
-
-
-
         x = self.trend(input).transpose(1, 2)
         trend_vals = torch.matmul(x.transpose(1, 2), self.poly_space.to(x.device))
         trend_vals = trend_vals.transpose(1, 2)
@@ -434,7 +426,7 @@ class DecoderBlock(nn.Module):
             nn.Dropout(resid_pdrop),
         )
 
-        self.proj = nn.Conv1d(n_embd, n_embd * 2, 1)
+        self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
     def forward(self, x, encoder_output, timestep, prototype_embeds, mask=None):
@@ -443,7 +435,7 @@ class DecoderBlock(nn.Module):
 
         a, att = self.attn2(self.ln1_1(x, timestep, prototype_embeds), encoder_output, mask=mask)
         x = x + a
-        x1, x2 = self.proj(x.permute(0, 2, 1)).permute(0, 2, 1).chunk(2, dim=2)
+        x1, x2 = self.proj(x).chunk(2, dim=1)
         trend, season = self.trend(x1), self.seasonal(x2)
         x = x + self.mlp(self.ln2(x))
 

@@ -11,13 +11,14 @@ from tqdm import tqdm
 import numpy as np
 from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
 
-def pad_collate_fn(batch):
+def pad_collate_fn(batch, max_len):
     """
     batch: list of Tensor [L_i, C]
     """
     lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
     prototypes = torch.tensor([sample['prototype_id'] for sample in batch], dtype=torch.long)
-    max_len = lengths.max().item()
+    # max_len = lengths.max().item()
+    # max_len =
     C = batch[0]['signal'].shape[-1]
 
     padded = torch.zeros(len(batch), max_len, C)
@@ -115,12 +116,12 @@ def no_context_train(args):
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
         shuffle=True, drop_last=True,
-        collate_fn = pad_collate_fn,
+        collate_fn = lambda batch: pad_collate_fn(batch, args.seq_len),
     )
     val_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
         shuffle=False, drop_last=False,
-        collate_fn=pad_collate_fn,
+        collate_fn=lambda batch: pad_collate_fn(batch, args.seq_len),
     )
 
     optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
