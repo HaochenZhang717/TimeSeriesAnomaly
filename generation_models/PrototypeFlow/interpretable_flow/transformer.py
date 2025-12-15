@@ -428,7 +428,7 @@ class DecoderBlock(nn.Module):
             nn.Dropout(resid_pdrop),
         )
 
-        self.proj = nn.Conv1d(n_channel, n_channel * 2, 1)
+        self.proj = nn.Conv1d(n_embd, n_embd * 2, 1)
         self.linear = nn.Linear(n_embd, n_feat)
 
     def forward(self, x, encoder_output, timestep, prototype_embeds, mask=None):
@@ -438,7 +438,7 @@ class DecoderBlock(nn.Module):
         a, att = self.attn2(self.ln1_1(x, timestep, prototype_embeds), encoder_output, mask=mask)
         x = x + a
         breakpoint()
-        x1, x2 = self.proj(x).chunk(2, dim=1)
+        x1, x2 = self.proj(x.transpose(0, 2, 1)).transpose(0, 2, 1).chunk(2, dim=1)
         trend, season = self.trend(x1), self.seasonal(x2)
         x = x + self.mlp(self.ln2(x))
 
