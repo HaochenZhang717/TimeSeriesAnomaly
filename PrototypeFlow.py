@@ -59,7 +59,11 @@ def get_args():
     """what to do"""
     parser.add_argument(
         "--what_to_do", type=str, required=True,
-        choices=["no_context_train", "no_context_sample"],
+        choices=[
+            "no_context_train",
+            "no_context_sample",
+            "normal_sample"
+        ],
         help="what to do"
     )
 
@@ -200,6 +204,31 @@ def no_context_sample(args):
     torch.save(result_dict, f"{args.generated_dir}/samples.pth")
 
 
+def normal_sample(args):
+    model = NoContextPrototypeFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        num_prototypes=args.num_prototypes,
+    )
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model.to(device=device)
+    model.eval()
+
+    samples = model.generate_mts(
+        seq_length=args.seq_len,
+        batch_size=args.batch_size,
+        prototype_id=-100 # pass -100 when run unconditional normal sample
+    ).detach().cpu()
+
+    os.makedirs(args.generated_dir, exist_ok=True)
+    torch.save(samples, f"{args.generated_dir}/samples.pth")
+
 
 
 
@@ -209,6 +238,8 @@ def main():
         no_context_train(args)
     elif args.what_to_do == "no_context_sample":
         no_context_sample(args)
+    elif args.what_to_do == "normal_sample":
+        normal_sample(args)
     # elif args.what_to_do == "conditional_sample_on_real_anomaly":
     #     conditional_sample_on_real_anomaly(args)
     # elif args.what_to_do == "conditional_sample_on_real_normal":

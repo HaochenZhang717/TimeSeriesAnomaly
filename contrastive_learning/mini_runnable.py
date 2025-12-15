@@ -478,10 +478,10 @@ def visualize_clusters_from_jsonl(
     cluster_ids = dataset.cluster_ids
 
     results = torch.load(
-        "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/samples_path/PrototypeFlow/no_context_len200/samples.pth",
+        "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/samples_path/PrototypeFlow/samples.pth",
         map_location='cpu'
     )
-    MAX_LEN = 200
+    MAX_LEN = 100
 
 
     for k in range(K):

@@ -30,6 +30,7 @@ class PrototypeFlowTSTrainer(object):
         self.early_stop = early_stop
         self.patience = patience
 
+
     def no_context_train(self, config):
         ema_decay = 0.999
         ema_state_dict = {k: v.clone().detach() for k, v in self.model.state_dict().items()}

@@ -1,5 +1,9 @@
-{"source_file": "./raw_data/106.npz", "start": 629240, "end": 631040, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 629260, "end": 631060, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 629280, "end": 631080, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 629300, "end": 631100, "anomaly_type": 1}
-{"source_file": "./raw_data/106.npz", "start": 629320, "end": 631120, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 644520, "end": 644620, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 645180, "end": 645280, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 645300, "end": 645400, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 645800, "end": 645900, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 645900, "end": 646000, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 647680, "end": 647780, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 648260, "end": 648360, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 649080, "end": 649180, "anomaly_type": 1}
+{"source_file": "./raw_data/106.npz", "start": 649780, "end": 649880, "anomaly_type": 1}

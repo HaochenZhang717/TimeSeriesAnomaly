@@ -250,17 +250,17 @@ class AdaLayerNorm(nn.Module):
         timestep: [B]
         prototype_embeds: [B, D]
         """
+        # ---- apply AdaLN ----
+        h = self.layernorm(x)
 
         # ---- time conditioning ----
         t_emb = self.time_emb(timestep)           # [B, H]
         t_scale, t_shift = self.time_mlp(t_emb).chunk(2, dim=-1)
+        h = h * (1 + t_scale.unsqueeze(1)) + t_shift.unsqueeze(1)
 
         # ---- prototype conditioning ----
-        p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
-
-        # ---- apply AdaLN ----
-        h = self.layernorm(x)
-        h = h * (1 + t_scale.unsqueeze(1)) + t_shift.unsqueeze(1)
-        h = h * (1 + p_scale.unsqueeze(1)) + p_shift.unsqueeze(1)
+        if prototype_embeds is not None:
+            p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
+            h = h * (1 + p_scale.unsqueeze(1)) + p_shift.unsqueeze(1)
 
         return h

@@ -743,6 +743,7 @@ if __name__ == "__main__":
     # files = sorted(files)
     # for file_full in files:
     #     name = file_full.split(".")[0]
+    #
     #     print('-'*100)
     #     print(name)
     #     print('-'*100)
@@ -757,6 +758,19 @@ if __name__ == "__main__":
     #     )
 
     name = '106'
+
+    stats = build_single_ts_train_val(
+        npz_file=f"./raw_data/{name}.npz",
+        output_dir=f"./indices/slide_windows_{name}npz",
+        window_size=100,
+        stride=20,
+        train_ratio=0.99,
+        max_anomaly_ratio=0.2
+    )
+
+
+
+
     raw_data = np.load(f"./raw_data/{name}.npz")
     raw_signal = raw_data["signal"]
     anomaly_label = raw_data["anomaly_label"]
@@ -769,7 +783,7 @@ if __name__ == "__main__":
 
     for k, v in anomaly_type_maps.items():
         # segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
-        segments, cluster_ids = load_prototype_jsonl(f"./indices/slide_windows_{name}npz/anomaly_segments_with_prototype.jsonl")
+        segments, cluster_ids = load_prototype_jsonl(f"./indices/slide_windows_{name}npz/train/anomaly_segments_with_prototype.jsonl")
 
         print(f"总共有 {len(segments)} 段 anomaly")
         lengths = []

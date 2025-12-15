@@ -195,7 +195,11 @@ class NoContextECGDataset(Dataset):
 
         start = self.index_lines[index]['start']
         end = self.index_lines[index]['end']
-        prototype_id = self.index_lines[index]['prototype_id']
+
+        if 'prototype_id' in self.index_lines[index].keys():
+            prototype_id = self.index_lines[index]['prototype_id']
+        else:
+            prototype_id = None
 
         if self.one_channel:
             signal = torch.from_numpy(self.normed_signal[start:end, :1])
