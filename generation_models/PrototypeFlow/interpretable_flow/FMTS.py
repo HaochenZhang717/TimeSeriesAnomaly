@@ -48,7 +48,7 @@ class NoContextPrototypeFlow(nn.Module):
     def sample(self, shape, prototype_id):
         model_device = next(self.parameters()).device
         prototypes = prototype_id * torch.ones(shape).mean((1, 2)).to(dtype=torch.long, device=model_device)
-        self.prototype_embedding(prototypes)
+        prototype_embed = self.prototype_embedding(prototypes)
         self.eval()
         zt = torch.randn(shape).to(model_device)  ## init the noise
         ## t shifting from stable diffusion 3
@@ -58,7 +58,7 @@ class NoContextPrototypeFlow(nn.Module):
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(model_device).view(-1)
-            v = self.output(zt.clone(), t_input, prototypes, padding_masks=None)
+            v = self.output(zt.clone(), t_input, prototype_embed, padding_masks=None)
             zt = zt.clone() + step * v
         return zt
 
