@@ -303,7 +303,7 @@ def flow_sample(args):
     device = torch.device(f"cuda:{args.gpu_id}")
     model.to(device)
     ae.to(device)
-    for batch in val_loader:
+    for batch in tqdm(val_loader):
         real_signal = batch['orig_signal'].to(device)
         anomaly_label = batch['random_anomaly_label'].to(device)
         with torch.no_grad():

@@ -183,6 +183,7 @@ python rain.py \
   --generated_path "none" \
   --normal_data_path "none" \
   --generated_file "none" \
+  --generated_path "../samples_path/rain/" \
   --cond_num_samples -1 \
   \
   --autoencoder_ckpt "../TSA-ckpts/rain/mitdb1800_106/autoencoder/ckpt.pth" \
