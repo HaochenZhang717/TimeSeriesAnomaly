@@ -29,6 +29,8 @@ python PrototypeFlow.py \
   \
   --ckpt_dir "../TSA-ckpts/PrototypeFlow/mitdb1800_106/no_context_ckpt" \
   \
+  --generated_dir "none" \
+  \
   --gpu_id 0
 
 
