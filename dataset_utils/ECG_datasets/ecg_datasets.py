@@ -195,7 +195,9 @@ class NoContextECGDataset(Dataset):
 
     def __getitem__(self, index):
         breakpoint()
-        start, end = self.index_lines[index]
+        start = self.index_lines[index]['start']
+        end = self.index_lines[index]['end']
+        prototype_id = self.index_lines[index]['prototype_id']
 
         if self.one_channel:
             signal = torch.from_numpy(self.normed_signal[start:end, :1])
@@ -206,7 +208,7 @@ class NoContextECGDataset(Dataset):
         assert anomaly_label.min() == 1
         assert anomaly_label.max() == 1
 
-        return signal
+        return {'signal': signal, 'prototype_id': prototype_id}
 
     def __len__(self):
         return len(self.index_lines)
