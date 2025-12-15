@@ -58,8 +58,8 @@ def get_args():
 
     """data parameters"""
     # parser.add_argument("--dataset_name", type=str, required=True)
-    parser.add_argument("--raw_data_paths_train", type=str, required=True)
-    parser.add_argument("--indices_paths_train", type=str, required=True)
+    parser.add_argument("--raw_data_path_train", type=str, required=True)
+    parser.add_argument("--indices_path_train", type=str, required=True)
 
     """training parameters"""
     parser.add_argument("--lr", type=float, required=True)
