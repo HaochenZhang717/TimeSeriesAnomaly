@@ -15,7 +15,7 @@ def pad_collate_fn(batch, max_len):
     """
     batch: list of Tensor [L_i, C]
     """
-    lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
+    # lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
     prototypes = torch.tensor([sample['prototype_id'] for sample in batch], dtype=torch.long)
     # max_len = lengths.max().item()
     # max_len =
@@ -26,6 +26,10 @@ def pad_collate_fn(batch, max_len):
     for i, sample in enumerate(batch):
         padded[i, :sample['signal'].shape[0]] = sample['signal']
 
+    lengths = []
+    for sample in batch:
+        lengths.append(min(sample['signal'].shape[0], max_len))
+    lengths = torch.tensor(lengths, dtype=torch.long)
     # return padded, lengths
     return {
         'padded_signal': padded,
