@@ -61,7 +61,7 @@ python PrototypeFlow.py \
   --wandb_project "Prototype Flow" \
   --wandb_run "106npz-no-context" \
   \
-  --ckpt_dir "../TSA-ckpts/PrototypeFlow/mitdb1800_106/no_context_ckpt/ckpt.pth" \
+  --ckpt_dir "../TSA-ckpts/PrototypeFlow/mitdb1800_106/no_context_ckpt" \
   \
   --generated_dir "../samples_path/PrototypeFlow/mitdb1800_106/no_context" \
   \
