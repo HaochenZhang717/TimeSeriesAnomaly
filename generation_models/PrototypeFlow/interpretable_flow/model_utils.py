@@ -256,7 +256,6 @@ class AdaLayerNorm(nn.Module):
         t_scale, t_shift = self.time_mlp(t_emb).chunk(2, dim=-1)
 
         # ---- prototype conditioning ----
-        breakpoint()
         p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
 
         # ---- apply AdaLN ----

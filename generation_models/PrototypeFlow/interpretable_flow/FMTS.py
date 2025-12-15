@@ -47,7 +47,7 @@ class NoContextPrototypeFlow(nn.Module):
     @torch.no_grad()
     def sample(self, shape, prototype_id):
         model_device = next(self.parameters()).device
-        prototypes = prototype_id * torch.ones(shape).mean(-1).to(model_device)
+        prototypes = prototype_id * torch.ones(shape).mean((1, 2)).to(model_device)
         self.eval()
         zt = torch.randn(shape).to(model_device)  ## init the noise
         ## t shifting from stable diffusion 3
