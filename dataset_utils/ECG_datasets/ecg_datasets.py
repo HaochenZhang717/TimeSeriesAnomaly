@@ -194,7 +194,7 @@ class NoContextECGDataset(Dataset):
 
 
     def __getitem__(self, index):
-        breakpoint()
+
         start = self.index_lines[index]['start']
         end = self.index_lines[index]['end']
         prototype_id = self.index_lines[index]['prototype_id']
