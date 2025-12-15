@@ -184,7 +184,7 @@ def no_context_sample(args):
                 prototype_id=prototype_id
             ).detach().cpu()
         result_dict.update({prototype_id: samples})
-
+    os.makedirs(args.generated_dir, exist_ok=True)
     torch.save(result_dict, f"{args.generated_dir}/samples.pth")
 
 
