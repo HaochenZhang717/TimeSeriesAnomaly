@@ -16,17 +16,22 @@ def pad_collate_fn(batch):
     batch: list of Tensor [L_i, C]
     """
     breakpoint()
-    lengths = torch.tensor([x.shape[0] for x in batch], dtype=torch.long)
+    lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
+    prototypes = torch.tensor([sample['prototype_id'] for sample in batch], dtype=torch.long)
     max_len = lengths.max().item()
-    C = batch[0].shape[-1]
+    C = batch[0]['signal'].shape[-1]
 
     padded = torch.zeros(len(batch), max_len, C)
 
-    for i, x in enumerate(batch):
-        padded[i, :x.shape[0]] = x
+    for i, sample in enumerate(batch):
+        padded[i, :sample['signal'].shape[0]] = sample['signal']
 
-    return padded, lengths
-
+    # return padded, lengths
+    return {
+        'padded_signal': padded,
+        'lengths': lengths,
+        'prototypes': prototypes
+    }
 
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)

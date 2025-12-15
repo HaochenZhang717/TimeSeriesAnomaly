@@ -29,7 +29,7 @@ class PrototypeFlowTSTrainer(object):
         self.grad_accum_steps = grad_accum_steps
         self.early_stop = early_stop
         self.patience = patience
-    
+
     def no_context_train(self, config):
         ema_decay = 0.999
         ema_state_dict = {k: v.clone().detach() for k, v in self.model.state_dict().items()}
@@ -53,7 +53,7 @@ class PrototypeFlowTSTrainer(object):
             self.optimizer.zero_grad()
             for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
 
-                X_signal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
+                X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
                 lengths = batch["lengths"].to(dtype=model_dtype, device=self.device)
                 prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
 
@@ -85,7 +85,7 @@ class PrototypeFlowTSTrainer(object):
                 val_total, val_seen = 0, 0
                 # for batch in self.val_loader:
                 for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
-                    X_signal = batch["orig_signal"].to(dtype=model_dtype, device=self.device)
+                    X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
                     lengths = batch["lengths"].to(dtype=model_dtype, device=self.device)
                     prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
 
