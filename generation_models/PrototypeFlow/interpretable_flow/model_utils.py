@@ -257,7 +257,7 @@ class AdaLayerNorm(nn.Module):
 
         # ---- prototype conditioning ----
         p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
-        breakpoint()
+
         # ---- apply AdaLN ----
         h = self.layernorm(x)
         h = h * (1 + t_scale.unsqueeze(1)) + t_shift.unsqueeze(1)
