@@ -171,6 +171,63 @@ class IterableECGDataset(IterableDataset):
             yield sample
 
 
+class NoContextECGDataset(Dataset):
+    def __init__(
+            self,
+            raw_data_path,
+            indices_path,
+            seq_len,
+            one_channel,
+    ):
+        super(NoContextECGDataset, self).__init__()
+        self.seq_len = seq_len
+        self.one_channel = one_channel
+        self.slide_windows = []
+        self.anomaly_labels = []
+
+        raw_data = np.load(raw_data_path)
+        raw_signal = raw_data["signal"]
+        self.anomaly_label = raw_data["anomaly_label"]
+        scaler = MinMaxScaler()
+        self.normed_signal = scaler.fit_transform(raw_signal)
+        self.index_lines= load_jsonl(indices_path)
+
+
+    def __getitem__(self, index):
+
+        start, end = self.index_lines[index]
+
+        if self.one_channel:
+            signal = torch.from_numpy(self.normed_signal[start:end, :1])
+        else:
+            signal = torch.from_numpy(self.normed_signal[start:end])
+        anomaly_label = torch.from_numpy(self.anomaly_labels[start:end])
+
+        assert anomaly_label.min() == 1
+        assert anomaly_label.max() == 1
+
+        return signal
+
+    def __len__(self):
+        return len(self.index_lines)
+
+
+def pad_collate_fn(batch):
+    """
+    batch: list of Tensor [L_i, C]
+    """
+    lengths = torch.tensor([x.shape[0] for x in batch], dtype=torch.long)
+    max_len = lengths.max().item()
+    C = batch[0].shape[-1]
+
+    padded = torch.zeros(len(batch), max_len, C)
+
+    for i, x in enumerate(batch):
+        padded[i, :x.shape[0]] = x
+
+    return padded, lengths
+
+
 if __name__ == "__main__":
 
     dataset = ECGDataset(

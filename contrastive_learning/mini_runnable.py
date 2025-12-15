@@ -387,8 +387,7 @@ def save_prototype_jsonl(
             f.write(json.dumps(item) + "\n")
 
 
-
-if __name__ == "__main__":
+def train_and_cluster():
     encoder = train_contrastive_encoder(
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl",
@@ -412,7 +411,6 @@ if __name__ == "__main__":
         device=torch.device("cuda:0"),
     )
 
-
     print("Embedding shape:", Z.shape)  # [N, z_dim]
     cluster_ids, centers = run_kmeans(Z, K=8)
 
@@ -423,24 +421,89 @@ if __name__ == "__main__":
     )
 
 
-    # data = AnomalyDataset(
-    #     raw_data_path='../dataset_utils/ECG_datasets/raw_data/106.npz',
-    #     indices_path='../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl',
-    #     one_channel=True
-    # )
-    #
-    # loader = DataLoader(
-    #     data,
-    #     batch_size=4,
-    #     shuffle=True,
-    #     collate_fn=pad_collate_fn,
-    #     drop_last=True,
-    # )
-    #
-    # for squences, lengths  in loader:
-    #     print(squences)
-    #     for sample in squences:
-    #         plt.plot(sample.flatten())
-    #     plt.show()
+
+def load_prototype_jsonl(path):
+    """
+    Returns:
+        segments: list of (start, end)
+        cluster_ids: np.ndarray [N]
+    """
+    data = load_jsonl(path)
+
+    segments = []
+    cluster_ids = []
+
+    for item in data:
+        segments.append((item["start"], item["end"]))
+        cluster_ids.append(item["prototype_id"])
+
+    return segments, np.array(cluster_ids)
+
+
+class AnomalyDatasetWithPrototype(Dataset):
+    def __init__(self, raw_data_path, prototype_jsonl_path, one_channel):
+        self.segments, self.cluster_ids = load_prototype_jsonl(prototype_jsonl_path)
+        self.one_channel = one_channel
+
+        raw_data = np.load(raw_data_path)
+        raw_signal = raw_data["signal"]
+        scaler = MinMaxScaler()
+        self.data = scaler.fit_transform(raw_signal)
+
+    def __len__(self):
+        return len(self.segments)
+
+    def __getitem__(self, idx):
+        start, end = self.segments[idx]
+        seg = self.data[start:end]
+        if self.one_channel:
+            seg = seg[:, :1]
+        return torch.from_numpy(seg), self.cluster_ids[idx]
+
+
+
+def visualize_clusters_from_jsonl(
+    raw_data_path,
+    prototype_jsonl_path,
+    one_channel=True,
+    K=8,
+    num_samples=10,
+):
+    dataset = AnomalyDatasetWithPrototype(
+        raw_data_path=raw_data_path,
+        prototype_jsonl_path=prototype_jsonl_path,
+        one_channel=one_channel,
+    )
+
+    cluster_ids = dataset.cluster_ids
+
+    for k in range(K):
+        idxs = np.where(cluster_ids == k)[0]
+        if len(idxs) == 0:
+            continue
+
+        print(f"\nPrototype {k}, #samples = {len(idxs)}")
+        chosen = np.random.choice(idxs, min(num_samples, len(idxs)), replace=False)
+
+        plt.figure(figsize=(8, 2))
+        for i in chosen:
+            seg, _ = dataset[i]
+            plt.plot(seg.numpy().flatten(), alpha=0.7)
+
+        plt.title(f"Prototype {k}")
+        plt.show()
+
+if __name__ == "__main__":
+    visualize_clusters_from_jsonl(
+        raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
+        prototype_jsonl_path="anomaly_segments_with_prototype.jsonl",
+        one_channel=True,
+        K=8,
+        num_samples=100
+    )
+
+
+
+
 
 

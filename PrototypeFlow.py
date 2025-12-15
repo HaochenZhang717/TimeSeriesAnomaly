@@ -1,0 +1,180 @@
+from Trainers import PrototypeFlowTSTrainer
+from generation_models import NoContextPrototypeFlow
+from dataset_utils import NoContextECGDataset
+import argparse
+import torch
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import json
+import os
+from tqdm import tqdm
+import numpy as np
+from evaluation_utils import calculate_robustTAD, evaluate_model_long_sequence
+
+def pad_collate_fn(batch):
+    """
+    batch: list of Tensor [L_i, C]
+    """
+    lengths = torch.tensor([x.shape[0] for x in batch], dtype=torch.long)
+    max_len = lengths.max().item()
+    C = batch[0].shape[-1]
+
+    padded = torch.zeros(len(batch), max_len, C)
+
+    for i, x in enumerate(batch):
+        padded[i, :x.shape[0]] = x
+
+    return padded, lengths
+
+
+def save_args_to_jsonl(args, output_path):
+    args_dict = vars(args)
+    with open(output_path, "w") as f:
+        json.dump(args_dict, f)
+        f.write("\n")  # JSONL 一行一个 JSON
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description="parameters for flow-ts pretraining")
+
+    """what to do"""
+    parser.add_argument(
+        "--what_to_do", type=str, required=True,
+        choices=["no_context_train"],
+        help="what to do"
+    )
+
+    """time series general parameters"""
+    # parser.add_argument("--seq_len", type=int, required=True)
+    parser.add_argument("--feature_size", type=int, required=True)
+    parser.add_argument("--one_channel", type=int, required=True)
+
+    """model parameters"""
+    parser.add_argument("--n_layer_enc", type=int, required=True)
+    parser.add_argument("--n_layer_dec", type=int, required=True)
+    parser.add_argument("--d_model", type=int, required=True)
+    parser.add_argument("--n_heads", type=int, required=True)
+    parser.add_argument("--num_prototypes", type=int, required=True)
+
+    """data parameters"""
+    # parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--raw_data_paths_train", type=str, required=True)
+    parser.add_argument("--indices_paths_train", type=str, required=True)
+
+    """training parameters"""
+    parser.add_argument("--lr", type=float, required=True)
+    parser.add_argument("--batch_size", type=int, required=True)
+    parser.add_argument("--max_epochs", type=int, required=True)
+    parser.add_argument("--grad_clip_norm", type=float, required=True)
+    parser.add_argument("--grad_accum_steps", type=int, required=True)
+    parser.add_argument("--early_stop", type=str, required=True)
+    parser.add_argument("--patience", type=int, required=True)
+
+    """wandb parameters"""
+    parser.add_argument("--wandb_project", type=str,required=True)
+    parser.add_argument("--wandb_run", type=str, required=True)
+
+    """save and load parameters"""
+    parser.add_argument("--ckpt_dir", type=str, required=True)
+
+    """gpu parameters"""
+    parser.add_argument("--gpu_id", type=int, required=True)
+
+    return parser.parse_args()
+
+
+
+
+def no_context_train(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = NoContextPrototypeFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        num_prototypes=args.num_prototypes,
+    )
+
+    train_set = NoContextECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn = pad_collate_fn,
+    )
+    val_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=False, drop_last=False,
+        collate_fn=pad_collate_fn,
+    )
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=5,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-5,  # min LR clamp
+    )
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    trainer = PrototypeFlowTSTrainer(
+        optimizer=optimizer,
+        scheduler=scheduler,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
+        device=device,
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
+        early_stop=args.early_stop,
+        patience=args.patience,
+    )
+
+    trainer.no_context_train(config=vars(args))
+
+
+
+
+
+
+def main():
+    args = get_args()
+    if args.what_to_do == "no_context_train":
+        no_context_train(args)
+    # elif args.what_to_do == "conditional_sample_on_real_anomaly":
+    #     conditional_sample_on_real_anomaly(args)
+    # elif args.what_to_do == "conditional_sample_on_real_normal":
+    #     conditional_sample_on_real_normal(args)
+    # elif args.what_to_do == "conditional_sample_on_fake":
+    #     conditional_sample_on_fake(args)
+    # elif args.what_to_do == "unconditional_sample":
+    #     unconditional_sample(args)
+    # elif args.what_to_do == "unconditional_evaluate":
+    #     unconditional_evaluate(args)
+    # elif args.what_to_do == "anomaly_evaluate":
+    #     anomaly_evaluate(args)
+    # elif args.what_to_do == "unconditional_training":
+    #     unconditional_train(args)
+    else:
+        raise NotImplementedError
+
+
+if __name__ == "__main__":
+    main()

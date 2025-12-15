@@ -6,3 +6,9 @@ evaluate imputation and see it the result is good
 12/09/2025
 use discriminator score to see which model is better.
 Now I highly suspect that the AD algorithm is not very reliable.
+
+
+
+12/14/2025
+first train prototype-conditional generation with no context
+then train context-conditional generation.

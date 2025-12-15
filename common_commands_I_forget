@@ -39,3 +39,5 @@ scp -r root@134.199.134.61:/root/tianyi/samples_path/vrf_v2/mitdb1800_213V/gener
 scp -r root@134.199.134.61:/root/tianyi/samples_path/vrf_v2/mitdb1800_213mixed/generated_anomaly_on_real_anomaly_multi_prior.pt ../samples_path/vrf_v2/mitdb1800_213mixed/
 
 scp -r root@134.199.134.61:/root/tianyi/samples_path/rain/ ../samples_path/
+
+scp -r root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/contrastive_learning/anomaly_segments_with_prototype.jsonl ./

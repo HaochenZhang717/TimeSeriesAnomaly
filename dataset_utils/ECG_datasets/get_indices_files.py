@@ -11,6 +11,24 @@ from pathlib import Path
 
 
 
+def has_exactly_one_anomaly_segment(label):
+    """
+    label: 1D array-like of 0/1
+    """
+    label = np.asarray(label).astype(int)
+
+    # 找到从 0 -> 1 的位置
+    starts = np.where((label[:-1] == 0) & (label[1:] == 1))[0]
+
+    # 如果第一个点就是 1，也算一个 segment
+    if label[0] == 1:
+        num_segments = len(starts) + 1
+    else:
+        num_segments = len(starts)
+
+    return num_segments == 1
+
+
 def convert_to_npy(base_path, save_path):
     # base_path = "/Users/zhc/Downloads/MIT-BIH_Atrial_Fibrillation_Database/"
     # save_path = "/Users/zhc/Downloads/AFDB_npy/"
@@ -578,8 +596,9 @@ def extract_windows_containing_segments(
     signal,
     labels,
     segments,
+    cluster_ids,
     window_size,
-    ratio_range=(0.01, 0.50),
+    length_range=(0.01, 0.50),
     step=1,  # 滑窗步长，可以调大速度更快
     jsonl_path=None,
     anomaly_type=1
@@ -596,14 +615,17 @@ def extract_windows_containing_segments(
     """
     jsonl_file = open(jsonl_path, "w") if jsonl_path is not None else None
 
-    min_ratio, max_ratio = ratio_range
+    min_length, max_length = length_range
+    min_ratio = min_length / window_size
+    max_ratio = max_length / window_size
+
     T = len(signal)
 
     windows = []
     windows_label = []
     window_starts = []
 
-    for (seg_start, seg_end) in segments:
+    for (seg_start, seg_end), cluster_id in zip(segments, cluster_ids):
 
         # 为完全包含异常段，需要窗口满足：
         # start <= seg_start AND start+window_size-1 >= seg_end
@@ -625,8 +647,13 @@ def extract_windows_containing_segments(
             end = start + window_size
 
             label_win = labels[start:end]
+
             if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
                 continue
+
+            if not has_exactly_one_anomaly_segment(label_win):
+                continue
+
             anomaly_ratio = label_win.sum() / window_size
 
             if min_ratio <= anomaly_ratio <= max_ratio:
@@ -664,7 +691,8 @@ def extract_windows_containing_segments(
                 record = {
                     "start": int(start),
                     "end": int(end),
-                    "anomaly_type": 1
+                    "anomaly_type": 1,
+                    "cluster_id": int(cluster_id),
                 }
                 jsonl_file.write(json.dumps(record) + "\n")
 
@@ -679,6 +707,33 @@ def extract_windows_containing_segments(
         min_seg_len,
         max_seg_len
     )
+
+
+
+def load_jsonl(path):
+    data = []
+    with open(path, "r") as f:
+        for line in f:
+            data.append(json.loads(line))
+    return data
+
+
+def load_prototype_jsonl(path):
+    """
+    Returns:
+        segments: list of (start, end)
+        cluster_ids: np.ndarray [N]
+    """
+    data = load_jsonl(path)
+
+    segments = []
+    cluster_ids = []
+
+    for item in data:
+        segments.append((item["start"], item["end"]))
+        cluster_ids.append(item["prototype_id"])
+
+    return segments, np.array(cluster_ids)
 
 # ----------------------- 使用示例 -----------------------
 if __name__ == "__main__":
@@ -713,7 +768,9 @@ if __name__ == "__main__":
     # anomaly_type_maps = {'R': 5}
 
     for k, v in anomaly_type_maps.items():
-        segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+        # segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+        segments, cluster_ids = load_prototype_jsonl(f"./indices/slide_windows_{name}npz/anomaly_segments_with_prototype.jsonl")
+
         print(f"总共有 {len(segments)} 段 anomaly")
         lengths = []
         for i, (s, e) in enumerate(segments):
@@ -739,8 +796,9 @@ if __name__ == "__main__":
             signal=raw_signal,
             labels=anomaly_label,
             segments=segments,
-            window_size=1800,
-            ratio_range=(0.01, 0.5),  # 调这个
+            cluster_ids=cluster_ids,
+            window_size=1000,
+            length_range=(150, 900),  # 调这个
             step=100,
             jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
             anomaly_type=v
