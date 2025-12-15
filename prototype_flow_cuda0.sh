@@ -14,8 +14,8 @@ python PrototypeFlow.py \
   --n_heads 4 \
   --num_prototypes 8 \
   \
-  --raw_data_paths_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --indices_paths_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype.jsonl" \
+  --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+  --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype.jsonl" \
   \
   --lr 1e-4 \
   --batch_size 64 \
