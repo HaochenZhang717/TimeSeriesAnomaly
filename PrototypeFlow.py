@@ -24,7 +24,7 @@ def pad_collate_fn(batch, max_len):
     padded = torch.zeros(len(batch), max_len, C)
 
     for i, sample in enumerate(batch):
-        padded[i, :sample['signal'].shape[0]] = sample['signal']
+        padded[i, :min(sample['signal'].shape[0], max_len)] = sample['signal'][ :min(sample['signal'].shape[0], max_len)]
 
     lengths = []
     for sample in batch:
