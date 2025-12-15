@@ -15,7 +15,6 @@ def pad_collate_fn(batch):
     """
     batch: list of Tensor [L_i, C]
     """
-    breakpoint()
     lengths = torch.tensor([sample['signal'].shape[0] for sample in batch], dtype=torch.long)
     prototypes = torch.tensor([sample['prototype_id'] for sample in batch], dtype=torch.long)
     max_len = lengths.max().item()
