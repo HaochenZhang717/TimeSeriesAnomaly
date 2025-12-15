@@ -194,7 +194,7 @@ class NoContextECGDataset(Dataset):
 
 
     def __getitem__(self, index):
-
+        breakpoint()
         start, end = self.index_lines[index]
 
         if self.one_channel:
