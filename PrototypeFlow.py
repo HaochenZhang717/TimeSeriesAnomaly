@@ -40,7 +40,7 @@ def pad_collate_fn(batch, max_len):
 
     return {
         'padded_signal': padded,        # (B, T, C)
-        'attention_mask': attention_mask,  # (B, T)  True = valid
+        'attn_mask': attention_mask,  # (B, T)  True = valid
         'lengths': lengths,             # (B,)
         'prototypes': prototypes        # (B,)
     }
