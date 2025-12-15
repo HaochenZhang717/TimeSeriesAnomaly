@@ -46,7 +46,7 @@ def get_args():
     """what to do"""
     parser.add_argument(
         "--what_to_do", type=str, required=True,
-        choices=["no_context_train"],
+        choices=["no_context_train", "no_context_sample"],
         help="what to do"
     )
 
