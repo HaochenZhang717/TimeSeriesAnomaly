@@ -1,7 +1,7 @@
 
 
 
-SEQLEN=200
+SEQLEN=400
 export hucfg_t_sampling=logitnorm
 python PrototypeFlow.py \
   --what_to_do "no_context_train" \
