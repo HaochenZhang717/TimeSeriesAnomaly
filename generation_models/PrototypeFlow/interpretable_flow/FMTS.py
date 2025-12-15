@@ -155,6 +155,7 @@ class NoContextPrototypeFlow(nn.Module):
 
 
     def _no_context_loss(self, signals, lengths, prototypes, attn_mask):
+        breakpoint()
         prototype_embeds = self.prototype_embedding(prototypes)
 
         z0 = torch.randn_like(signals)

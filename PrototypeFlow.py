@@ -36,7 +36,7 @@ def pad_collate_fn(batch, max_len):
         padded[i, :L] = signal[:L]
         attention_mask[i, :L] = True
         lengths[i] = L
-        prototypes[i] = sample['prototype_id']
+        prototypes[i] = sample.get('prototype_id', None)
 
     return {
         'padded_signal': padded,        # (B, T, C)
