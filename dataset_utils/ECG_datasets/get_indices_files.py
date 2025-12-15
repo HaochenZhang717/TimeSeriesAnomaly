@@ -730,6 +730,11 @@ if __name__ == "__main__":
         # print(max(lengths))
         # print(min(lengths))
 
+        with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
+            for start, end in segments:
+                f.write(json.dumps([int(start), int(end)]) + "\n")
+
+
         windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
             signal=raw_signal,
             labels=anomaly_label,
