@@ -177,7 +177,7 @@ def no_context_sample(args):
     model.eval()
 
     result_dict = dict()
-    for prototype_id in range(8):
+    for prototype_id in tqdm(range(8)):
         with torch.no_grad():
             samples = model.generate_mts(
                 batch_size=args.batch_size,
@@ -185,7 +185,7 @@ def no_context_sample(args):
             ).detach().cpu()
         result_dict.update({prototype_id: samples})
 
-    torch.save(result_dict, f"{args.ckpt_dir}/samples.pth")
+    torch.save(result_dict, f"{args.generated_dir}/samples.pth")
 
 
 
