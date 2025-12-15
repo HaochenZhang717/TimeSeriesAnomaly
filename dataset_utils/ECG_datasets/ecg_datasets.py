@@ -182,8 +182,6 @@ class NoContextECGDataset(Dataset):
         super(NoContextECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
-        self.slide_windows = []
-        self.anomaly_labels = []
 
         raw_data = np.load(raw_data_path)
         raw_signal = raw_data["signal"]
@@ -203,7 +201,7 @@ class NoContextECGDataset(Dataset):
             signal = torch.from_numpy(self.normed_signal[start:end, :1])
         else:
             signal = torch.from_numpy(self.normed_signal[start:end])
-        anomaly_label = self.anomaly_labels[start:end]
+        anomaly_label = self.anomaly_label[start:end]
         breakpoint()
         assert min(anomaly_label) == 1
         assert max(anomaly_label) == 1
