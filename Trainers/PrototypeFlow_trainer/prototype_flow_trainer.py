@@ -54,7 +54,7 @@ class PrototypeFlowTSTrainer(object):
             for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
 
                 X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
-                lengths = batch["lengths"].to(dtype=model_dtype, device=self.device)
+                lengths = batch["lengths"].to(dtype=torch.long, device=self.device)
                 prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
 
                 loss = self.model(X_signal, lengths, prototypes)
@@ -72,9 +72,9 @@ class PrototypeFlowTSTrainer(object):
 
                     # 🔥 Update EMA after optimizer.step()
                     with torch.no_grad():
-                        model_state = self.model.state_dict()
-                        for key in model_state.keys():
-                            ema_state_dict[key].mul_(ema_decay).add_(model_state[key], alpha=1 - ema_decay)
+                        for name, param in self.model.named_parameters():
+                            if param.requires_grad:
+                                ema_state_dict[name].mul_(ema_decay).add_(param, alpha=1 - ema_decay)
                     # -------------------------------
 
             train_total_avg = total_loss / tr_seen
@@ -86,10 +86,10 @@ class PrototypeFlowTSTrainer(object):
                 # for batch in self.val_loader:
                 for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
                     X_signal = batch["padded_signal"].to(dtype=model_dtype, device=self.device)
-                    lengths = batch["lengths"].to(dtype=model_dtype, device=self.device)
+                    lengths = batch["lengths"].to(dtype=torch.long, device=self.device)
                     prototypes = batch["prototypes"].to(dtype=torch.long, device=self.device)
 
-                    loss = self.model(X_signal, prototypes, lengths)
+                    loss = self.model(X_signal, lengths, prototypes)
                     val_total += loss.item() * X_signal.shape[0]
                     val_seen += X_signal.shape[0]
 
