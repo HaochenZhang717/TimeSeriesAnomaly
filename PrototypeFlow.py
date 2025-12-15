@@ -45,7 +45,7 @@ def get_args():
     )
 
     """time series general parameters"""
-    # parser.add_argument("--seq_len", type=int, required=True)
+    parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
     parser.add_argument("--one_channel", type=int, required=True)
 

@@ -4,6 +4,7 @@ export hucfg_t_sampling=logitnorm
 python PrototypeFlow.py \
   --what_to_do "no_context_train" \
   \
+  --seq_len 1800 \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -22,7 +23,7 @@ python PrototypeFlow.py \
   --grad_clip_norm 1.0 \
   --grad_accum_steps 1 \
   --early_stop "true" \
-  --patience 48 \
+  --patience 50 \
   \
   --wandb_project "Prototype Flow" \
   --wandb_run "106npz-no-context" \
