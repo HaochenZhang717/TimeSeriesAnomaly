@@ -31,7 +31,13 @@ class TrendBlock(nn.Module):
 
     def forward(self, input):
         b, c, h = input.shape
+        # input = input.permute(0, 2, 1)
         breakpoint()
+
+        x = input.mean(dim=-1)
+
+
+
         x = self.trend(input).transpose(1, 2)
         trend_vals = torch.matmul(x.transpose(1, 2), self.poly_space.to(x.device))
         trend_vals = trend_vals.transpose(1, 2)
