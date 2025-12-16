@@ -47,14 +47,12 @@ def pad_collate_fn(batch, max_len):
 
 
 def dict_collate_fn(batch):
-    """
-    batch: List[Dict]
-    return: Dict[str, List]
-    """
     out = {}
     for key in batch[0].keys():
-        out[key] = torch.cat([sample[key] for sample in batch], dim=0)
+        out[key] = torch.stack([sample[key] for sample in batch], dim=0)
     return out
+
+
 
 
 def save_args_to_jsonl(args, output_path):
