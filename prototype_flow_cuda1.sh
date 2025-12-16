@@ -1,4 +1,4 @@
-SEQLEN=1800
+SEQLEN=1200
 export hucfg_t_sampling=logitnorm
 python PrototypeFlow.py \
   --what_to_do "imputation_train" \
