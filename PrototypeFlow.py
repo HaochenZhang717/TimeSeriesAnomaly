@@ -283,10 +283,69 @@ def imputation_train(args):
 
 
 
+# def imputation_sample(args):
+#     os.makedirs(args.ckpt_dir, exist_ok=True)
+#     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+#
+#     model = NoContextPrototypeFlow(
+#         seq_length=args.seq_len,
+#         feature_size=args.feature_size,
+#         n_layer_enc=args.n_layer_enc,
+#         n_layer_dec=args.n_layer_dec,
+#         d_model=args.d_model,
+#         n_heads=args.n_heads,
+#         mlp_hidden_times=4,
+#         num_prototypes=args.num_prototypes,
+#     )
+#     model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+#     model.eval()
+#     train_set = ImputationECGDataset(
+#         raw_data_path=args.raw_data_path_train,
+#         indices_path=args.indices_path_train,
+#         seq_len=args.seq_len,
+#         one_channel=args.one_channel,
+#     )
+#
+#     train_loader = torch.utils.data.DataLoader(
+#         train_set, batch_size=args.batch_size,
+#         shuffle=True, drop_last=True,
+#         collate_fn = dict_collate_fn,
+#     )
+#     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+#     model_dtype = next(model.parameters()).dtype
+#     model.to(device=device)
+#     for batch in tqdm(train_loader):
+#         batch["signals"] = batch["signals"].to(dtype=model_dtype, device=device)
+#         batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=device)
+#         batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=device)
+#         batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=device)
+#         to_save = {
+#             'signals': batch['signals'].detach().cpu(),
+#             'prototypes': batch['prototypes'].detach().cpu(),
+#             'attn_mask': batch['attn_mask'].detach().cpu(),
+#             'noise_mask': batch['noise_mask'].detach().cpu(),
+#         }
+#         for i in range(8): # generate samples from different prototypes
+#             print(f"{i} / 8")
+#             prototypes = torch.ones_like(batch["prototypes"]) * i
+#             samples = model.impute(batch['signals'], prototypes, batch["attn_mask"], batch["noise_mask"])
+#             to_save.update({str(i): samples.detach().cpu()})
+#         break
+#
+#     os.makedirs(args.generated_dir, exist_ok=True)
+#     torch.save(to_save, f"{args.generated_dir}/samples.pth")
+
+
+
+
+@torch.no_grad()
 def imputation_sample(args):
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
+    # -----------------------
+    # build & load model
+    # -----------------------
     model = NoContextPrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
@@ -297,8 +356,17 @@ def imputation_sample(args):
         mlp_hidden_times=4,
         num_prototypes=args.num_prototypes,
     )
-    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth", map_location="cpu"))
     model.eval()
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
+    model_dtype = next(model.parameters()).dtype
+
+    # -----------------------
+    # dataset / loader
+    # -----------------------
     train_set = ImputationECGDataset(
         raw_data_path=args.raw_data_path_train,
         indices_path=args.indices_path_train,
@@ -307,33 +375,78 @@ def imputation_sample(args):
     )
 
     train_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
-        shuffle=True, drop_last=True,
-        collate_fn = dict_collate_fn,
+        train_set,
+        batch_size=8,
+        shuffle=True,
+        drop_last=True,
+        collate_fn=dict_collate_fn,
     )
-    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
-    model_dtype = next(model.parameters()).dtype
-    model.to(device=device)
-    for batch in tqdm(train_loader):
-        batch["signals"] = batch["signals"].to(dtype=model_dtype, device=device)
-        batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=device)
-        batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=device)
-        batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=device)
-        to_save = {
-            'signals': batch['signals'].detach().cpu(),
-            'prototypes': batch['prototypes'].detach().cpu(),
-            'attn_mask': batch['attn_mask'].detach().cpu(),
-            'noise_mask': batch['noise_mask'].detach().cpu(),
-        }
-        for i in range(8): # generate samples from different prototypes
-            print(f"{i} / 8")
-            prototypes = torch.ones_like(batch["prototypes"]) * i
-            samples = model.impute(batch['signals'], prototypes, batch["attn_mask"], batch["noise_mask"])
-            to_save.update({str(i): samples.detach().cpu()})
-        break
 
+    # -----------------------
+    # sampling
+    # -----------------------
+    for batch in tqdm(train_loader):
+        signals = batch["signals"].to(device=device, dtype=model_dtype)      # (B, T, C)
+        attn_mask = batch["attn_mask"].to(device=device)                     # (B, T)
+        noise_mask = batch["noise_mask"].to(device=device)                   # (B, T)
+
+        B, T, C = signals.shape
+        n = 20  # 每个 prototype 采样 n 个
+
+        to_save = {
+            "signals": signals.detach().cpu(),
+            "attn_mask": attn_mask.detach().cpu(),
+            "noise_mask": noise_mask.detach().cpu(),
+        }
+
+        # -------------------------------------------------
+        # loop over prototype types（这个 loop 是必要的）
+        # -------------------------------------------------
+        for proto_id in range(args.num_prototypes):
+            print(f"Sampling prototype {proto_id}")
+
+            # (B,) -> 当前 prototype id
+            proto = torch.full(
+                (B,),
+                proto_id,
+                device=device,
+                dtype=torch.long,
+            )
+
+            # -------------------------------
+            # 并行：repeat batch n 次
+            # -------------------------------
+            signals_rep = signals.repeat_interleave(n, dim=0)        # (B*n, T, C)
+            attn_mask_rep = attn_mask.repeat_interleave(n, dim=0)    # (B*n, T)
+            noise_mask_rep = noise_mask.repeat_interleave(n, dim=0)  # (B*n, T)
+            proto_rep = proto.repeat_interleave(n, dim=0)            # (B*n,)
+
+            # -------------------------------
+            # single forward → B*n samples
+            # -------------------------------
+            samples_rep = model.impute(
+                signals_rep,
+                proto_rep,
+                attn_mask_rep,
+                noise_mask_rep,
+            )  # (B*n, T, C)
+
+            # reshape -> (B, n, T, C)
+            samples = samples_rep.view(B, n, T, C)
+
+            to_save[f"samples_type_{proto_id}"] = samples.detach().cpu()
+
+        break  # 只跑一个 batch（和你原来逻辑一致）
+
+    # -----------------------
+    # save
+    # -----------------------
     os.makedirs(args.generated_dir, exist_ok=True)
-    torch.save(to_save, f"{args.generated_dir}/samples.pth")
+    save_path = os.path.join(args.generated_dir, "samples.pth")
+    torch.save(to_save, save_path)
+
+    print(f"[✓] Saved samples to {save_path}")
+
 
 
 def normal_sample(args):
