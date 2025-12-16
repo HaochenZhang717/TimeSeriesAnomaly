@@ -207,7 +207,8 @@ def no_context_sample(args):
             samples = model.generate_mts(
                 seq_length=args.seq_len,
                 batch_size=args.batch_size,
-                prototype_id=prototype_id
+                prototype_id=prototype_id,
+                padding_masks=None,
             ).detach().cpu()
         result_dict.update({prototype_id: samples})
     os.makedirs(args.generated_dir, exist_ok=True)

@@ -100,9 +100,9 @@ class NoContextPrototypeFlow(nn.Module):
     #
     #     return zt
 
-    def generate_mts(self, seq_length, batch_size, prototype_id):
+    def generate_mts(self, seq_length, batch_size, prototype_id, padding_masks):
         feature_size = self.feature_size
-        return self.sample((batch_size, seq_length, feature_size), prototype_id)
+        return self.sample((batch_size, seq_length, feature_size), prototype_id, padding_masks)
 
     # def _unconditional_loss(self, x_start):
     #     z0 = torch.randn_like(x_start)
