@@ -263,7 +263,10 @@ class ImputationECGDataset(Dataset):
         noise_mask[relative_anomaly_start:relative_anomaly_end] = 1
 
         prototype_id = self.index_lines[index].get('prototype_id', -100)
-
+        prototype_id = torch.tensor(
+            prototype_id,
+            dtype=torch.long
+        )
         return {
             'signals': signal,
             'prototypes': prototype_id,
