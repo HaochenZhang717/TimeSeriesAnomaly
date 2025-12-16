@@ -297,7 +297,8 @@ def imputation_sample(args):
         mlp_hidden_times=4,
         num_prototypes=args.num_prototypes,
     )
-
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+    model.eval()
     train_set = ImputationECGDataset(
         raw_data_path=args.raw_data_path_train,
         indices_path=args.indices_path_train,
@@ -312,6 +313,7 @@ def imputation_sample(args):
     )
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     model_dtype = next(model.parameters()).dtype
+    model.to(device=device)
     for batch in tqdm(train_loader):
         batch["signals"] = batch["signals"].to(dtype=model_dtype, device=device)
         batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=device)
