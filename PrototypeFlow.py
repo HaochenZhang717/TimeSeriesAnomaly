@@ -328,6 +328,7 @@ def imputation_sample(args):
         'noise_mask': batch['noise_mask'].detach().cpu(),
         'samples': samples.detach().cpu(),
     }
+    os.makedirs(args.generated_dir, exist_ok=True)
     torch.save(to_save, f"{args.generated_dir}/samples.pth")
 
 
