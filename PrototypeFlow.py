@@ -205,7 +205,7 @@ def no_context_sample(args):
     for prototype_id in tqdm(range(8)):
         with torch.no_grad():
             samples = model.generate_mts(
-                seq_length=args.seq_len,
+                seq_length=100,
                 batch_size=args.batch_size,
                 prototype_id=prototype_id,
                 padding_masks=None,
