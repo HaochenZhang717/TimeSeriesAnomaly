@@ -326,9 +326,10 @@ def imputation_sample(args):
             'noise_mask': batch['noise_mask'].detach().cpu(),
         }
         for i in range(8): # generate samples from different prototypes
+            print(f"{i} / 8")
             prototypes = torch.ones_like(batch["prototypes"]) * i
             samples = model.impute(batch['signals'], prototypes, batch["attn_mask"], batch["noise_mask"])
-            to_save.update({"i": samples.detach().cpu()})
+            to_save.update({str(i): samples.detach().cpu()})
         break
 
     os.makedirs(args.generated_dir, exist_ok=True)
