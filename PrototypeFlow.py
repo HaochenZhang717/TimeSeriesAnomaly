@@ -72,7 +72,8 @@ def get_args():
             "no_context_train",
             "no_context_sample",
             "normal_sample",
-            "imputation_train"
+            "imputation_train",
+            "imputation_sample"
         ],
         help="what to do"
     )
@@ -282,6 +283,51 @@ def imputation_train(args):
 
 
 
+def imputation_sample(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = NoContextPrototypeFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        num_prototypes=args.num_prototypes,
+    )
+
+    train_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn = dict_collate_fn,
+    )
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model_dtype = next(model.parameters()).dtype
+    for batch in tqdm(train_loader):
+        batch["signals"] = batch["signals"].to(dtype=model_dtype, device=device)
+        batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=device)
+        batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=device)
+        batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=device)
+        samples = model.impute(batch['signals'], batch["prototypes"], batch["attn_mask"], batch["noise_mask"])
+        break
+    to_save = {
+        'signals': batch['signals'].detach().cpu(),
+        'prototypes': batch['prototypes'].detach().cpu(),
+        'attn_mask': batch['attn_mask'].detach().cpu(),
+        'noise_mask': batch['noise_mask'].detach().cpu(),
+        'samples': samples.detach().cpu(),
+    }
+
+
 def normal_sample(args):
     model = NoContextPrototypeFlow(
         seq_length=args.seq_len,
@@ -321,6 +367,8 @@ def main():
         normal_sample(args)
     elif args.what_to_do == "imputation_train":
         imputation_train(args)
+    elif args.what_to_do == "imputation_sample":
+        imputation_sample(args)
     # elif args.what_to_do == "conditional_sample_on_real_anomaly":
     #     conditional_sample_on_real_anomaly(args)
     # elif args.what_to_do == "conditional_sample_on_real_normal":

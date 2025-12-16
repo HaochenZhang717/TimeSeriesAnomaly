@@ -298,22 +298,31 @@ def pad_collate_fn(batch):
 
 if __name__ == "__main__":
 
-    dataset = ECGDataset(
-        raw_data_paths="./raw_data/213.npz",
-        indices_paths="./indices/slide_windows_213npz/train/A.jsonl",
-        seq_len=1800,
-        max_anomaly_length=1,
-        min_anomaly_length=0,
-        one_channel=0,
-        limited_data_size=10000000
+    dataset = ImputationECGDataset(
+        raw_data_path="./raw_data/106.npz",
+        indices_path="./indices/slide_windows_106npz/train/V_more.jsonl",
+        seq_len="1200",
+        one_channel=True,
     )
+
+    # dataset = ECGDataset(
+    #     raw_data_paths="./raw_data/213.npz",
+    #     indices_paths="./indices/slide_windows_213npz/train/A.jsonl",
+    #     seq_len=1800,
+    #     max_anomaly_length=1,
+    #     min_anomaly_length=0,
+    #     one_channel=0,
+    #     limited_data_size=10000000
+    # )
 
     dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
     for batch in dataloader:
-        plt.plot(batch['orig_signal'][0,:,0], label="Channel 0")
-        plt.plot(batch['orig_signal'][0,:,1], label="Channel 1")
-        plt.plot(batch['anomaly_label'].flatten() > 0, label="anomaly label")
+        plt.plot(batch['signals'][0,:,0], label="Channel 0")
+        plt.plot(batch['attn_mask'][0], label="attn mask")
+        plt.plot(batch['noise_mask'][0], label="noise mask")
+        plt.legend()
         plt.show()
+        print("123")
 
 
 
