@@ -16,6 +16,7 @@ def load_jsonl(path):
     return data
 
 
+
 class ECGDataset(Dataset):
     def __init__(
             self,
@@ -171,6 +172,7 @@ class IterableECGDataset(IterableDataset):
             yield sample
 
 
+
 class NoContextECGDataset(Dataset):
     def __init__(
             self,
@@ -212,6 +214,67 @@ class NoContextECGDataset(Dataset):
 
     def __len__(self):
         return len(self.index_lines)
+
+
+
+class ImputationECGDataset(Dataset):
+    def __init__(
+            self,
+            raw_data_path,
+            indices_path,
+            seq_len,
+            one_channel,
+    ):
+        super(ImputationECGDataset, self).__init__()
+        self.seq_len = seq_len
+        self.one_channel = one_channel
+
+        raw_data = np.load(raw_data_path)
+        raw_signal = raw_data["signal"]
+        self.anomaly_label = raw_data["anomaly_label"]
+        scaler = MinMaxScaler()
+        self.normed_signal = scaler.fit_transform(raw_signal)
+        self.index_lines= load_jsonl(indices_path)
+
+
+    def __getitem__(self, index):
+
+        ts_start = self.index_lines[index]['ts_start']
+        ts_end = self.index_lines[index]['ts_end']
+        anomaly_start = self.index_lines[index]['anomaly_start']
+        anomaly_end = self.index_lines[index]['anomaly_end']
+        relative_anomaly_start = anomaly_start - ts_start
+        relative_anomaly_end = anomaly_end - ts_start
+
+        if self.one_channel:
+            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end, :1])
+        else:
+            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end])
+        anomaly_label = torch.from_numpy(self.anomaly_label[ts_start:ts_end])
+        T = anomaly_label.shape[0]
+        # ===== attention mask =====
+        # normal + target anomaly are visible
+        context_mask = torch.zeros(T, dtype=torch.long)
+        context_mask[anomaly_label == 0] = 1
+        context_mask[relative_anomaly_start:relative_anomaly_end] = 1
+
+        # ===== noise mask =====
+        noise_mask = torch.zeros(T, dtype=torch.long)
+        noise_mask[relative_anomaly_start:relative_anomaly_end] = 1
+
+        prototype_id = self.index_lines[index].get('prototype_id', -100)
+
+        return {
+            'signals': signal,
+            'prototypes': prototype_id,
+            'attn_mask': context_mask,
+            'noise_mask': noise_mask,
+        }
+
+
+    def __len__(self):
+        return len(self.index_lines)
+
 
 
 def pad_collate_fn(batch):

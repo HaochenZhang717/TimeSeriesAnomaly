@@ -592,6 +592,59 @@ def get_normal_segments(labels):
     return segments
 
 
+def extract_more_windows_containing_segments(
+    signal,
+    segments,
+    cluster_ids,
+    window_size,
+    step=1,  # 滑窗步长，可以调大速度更快
+    jsonl_path=None,
+):
+    """
+    从信号中截取长度为 window_size 的窗口，
+    条件：
+        1) 窗口要完全包含某一个 anomaly segment (start,end)
+        2) 窗口内 anomaly ratio 在 ratio_range 内
+    返回：
+        windows: [num_windows, window_size]
+        windows_label: [num_windows, window_size]
+        window_starts: 每个窗口的起点 index
+    """
+    jsonl_file = open(jsonl_path, "w") if jsonl_path is not None else None
+
+    T = len(signal)
+
+
+    for (seg_start, seg_end), cluster_id in zip(segments, cluster_ids):
+
+        # 为完全包含异常段，需要窗口满足：
+        # start <= seg_start AND start+window_size-1 >= seg_end
+        earliest = seg_end - window_size + 1
+        latest = seg_start
+
+        # 合法窗口起点范围
+        valid_range_start = max(0, earliest)
+        valid_range_end   = min(latest, T - window_size)
+
+        if valid_range_start > valid_range_end:
+            # 异常段比窗口还长，无解
+            continue
+
+        # 遍历所有可能起点
+        for start in range(valid_range_start, valid_range_end + 1, step):
+            end = start + window_size
+            record = {
+                "ts_start": int(start),
+                "ts_end": int(end),
+                "anomaly_start": int(seg_start),
+                "anomaly_end": int(seg_end),
+                "anomaly_type": 1,
+                "prototype_id": int(cluster_id),
+            }
+            jsonl_file.write(json.dumps(record) + "\n")
+
+
+
 def extract_windows_containing_segments(
     signal,
     labels,
@@ -758,15 +811,15 @@ if __name__ == "__main__":
     #     )
 
     name = '106'
-
-    stats = build_single_ts_train_val(
-        npz_file=f"./raw_data/{name}.npz",
-        output_dir=f"./indices/slide_windows_{name}npz",
-        window_size=100,
-        stride=20,
-        train_ratio=0.99,
-        max_anomaly_ratio=0.2
-    )
+    #
+    # stats = build_single_ts_train_val(
+    #     npz_file=f"./raw_data/{name}.npz",
+    #     output_dir=f"./indices/slide_windows_{name}npz",
+    #     window_size=100,
+    #     stride=20,
+    #     train_ratio=0.99,
+    #     max_anomaly_ratio=0.2
+    # )
 
 
 
@@ -806,16 +859,32 @@ if __name__ == "__main__":
                 f.write(json.dumps([int(start), int(end)]) + "\n")
 
 
-        windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+        # windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+        #     signal=raw_signal,
+        #     labels=anomaly_label,
+        #     segments=segments,
+        #     cluster_ids=cluster_ids,
+        #     window_size=1000,
+        #     length_range=(150, 900),  # 调这个
+        #     step=100,
+        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
+        #     anomaly_type=v
+        # )
+
+
+        extract_more_windows_containing_segments(
             signal=raw_signal,
-            labels=anomaly_label,
             segments=segments,
             cluster_ids=cluster_ids,
-            window_size=1000,
-            length_range=(150, 900),  # 调这个
-            step=100,
-            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
-            anomaly_type=v
+            window_size=1200,
+            step=1,
+            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
         )
-        print(min_anomaly_length)
-        print(max_anomaly_length)
+        # signal,
+        # segments,
+        # cluster_ids,
+        # window_size,
+        # step = 1,  # 滑窗步长，可以调大速度更快
+        # jsonl_path = None,
+        # print(min_anomaly_length)
+        # print(max_anomaly_length)

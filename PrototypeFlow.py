@@ -1,6 +1,6 @@
 from Trainers import PrototypeFlowTSTrainer
 from generation_models import NoContextPrototypeFlow
-from dataset_utils import NoContextECGDataset
+from dataset_utils import NoContextECGDataset, ImputationECGDataset
 import argparse
 import torch
 from datetime import datetime
@@ -39,11 +39,22 @@ def pad_collate_fn(batch, max_len):
         prototypes[i] = sample.get('prototype_id', -100)
 
     return {
-        'padded_signal': padded,        # (B, T, C)
+        'signals': padded,        # (B, T, C)
         'attn_mask': attention_mask,  # (B, T)  True = valid
         'lengths': lengths,             # (B,)
         'prototypes': prototypes        # (B,)
     }
+
+
+def dict_collate_fn(batch):
+    """
+    batch: List[Dict]
+    return: Dict[str, List]
+    """
+    out = {}
+    for key in batch[0].keys():
+        out[key] = torch.cat([sample[key] for sample in batch], dim=0)
+    return out
 
 
 def save_args_to_jsonl(args, output_path):
@@ -204,6 +215,72 @@ def no_context_sample(args):
     torch.save(result_dict, f"{args.generated_dir}/samples.pth")
 
 
+
+def imputation_train(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = NoContextPrototypeFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        num_prototypes=args.num_prototypes,
+    )
+
+    train_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn = dict_collate_fn,
+    )
+    val_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=False, drop_last=False,
+        collate_fn=dict_collate_fn,
+    )
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=5,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-5,  # min LR clamp
+    )
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    trainer = PrototypeFlowTSTrainer(
+        optimizer=optimizer,
+        scheduler=scheduler,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
+        device=device,
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
+        early_stop=args.early_stop,
+        patience=args.patience,
+    )
+
+    trainer.imputation_train(config=vars(args))
+
+
 def normal_sample(args):
     model = NoContextPrototypeFlow(
         seq_length=args.seq_len,
@@ -240,6 +317,8 @@ def main():
         no_context_sample(args)
     elif args.what_to_do == "normal_sample":
         normal_sample(args)
+    elif args.what_to_do == "imputation_train":
+        imputation_train(args)
     # elif args.what_to_do == "conditional_sample_on_real_anomaly":
     #     conditional_sample_on_real_anomaly(args)
     # elif args.what_to_do == "conditional_sample_on_real_normal":

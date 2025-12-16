@@ -39,13 +39,15 @@ class NoContextPrototypeFlow(nn.Module):
 
         self.num_timesteps = int(os.environ.get('hucfg_num_steps', '100'))
     
-    def output(self, x, t, prototypes, padding_masks=None):
-        output = self.model(x, t, prototypes, padding_masks=None)
+    def output(self, x, t, prototypes, padding_masks):
+        if padding_masks is not None:
+            x = x * padding_masks.unsqueeze(-1)
+        output = self.model(x, t, prototypes, padding_masks)
 
         return output
 
     @torch.no_grad()
-    def sample(self, shape, prototype_id):
+    def sample(self, shape, prototype_id, padding_masks):
         model_device = next(self.parameters()).device
         if prototype_id != -100:
             prototypes = prototype_id * torch.ones(shape).mean((1, 2)).to(dtype=torch.long, device=model_device)
@@ -61,7 +63,7 @@ class NoContextPrototypeFlow(nn.Module):
         for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(model_device).view(-1)
-            v = self.output(zt.clone(), t_input, prototype_embed, padding_masks=None)
+            v = self.output(zt.clone(), t_input, prototype_embed, padding_masks)
             zt = zt.clone() + step * v
         return zt
 
@@ -150,8 +152,21 @@ class NoContextPrototypeFlow(nn.Module):
     #     return loss_per_sample.mean()
 
 
-    def forward(self, signals, lengths, prototypes, attn_mask):
-        return self._no_context_loss(signals, lengths, prototypes, attn_mask)
+    def forward(self, batch, mode):
+        if mode=="no_context":
+            signals = batch["signals"]
+            lengths=batch["lengths"]
+            prototypes=batch["prototypes"]
+            attn_mask=batch["attn_mask"]
+            return self._no_context_loss(signals, lengths, prototypes, attn_mask)
+        elif mode=="imputation":
+            signals = batch["signals"]
+            prototypes = batch["prototypes"]
+            attn_mask=batch["attn_mask"]
+            noise_mask=batch["noise_mask"]
+            return self._imputation_loss(signals, prototypes, attn_mask, noise_mask)
+        else:
+            raise NotImplementedError("No such mode")
 
 
     def _no_context_loss(self, signals, lengths, prototypes, attn_mask):
@@ -193,4 +208,43 @@ class NoContextPrototypeFlow(nn.Module):
         return loss
 
 
+    def _imputation_loss(self, signals, prototypes, attn_mask, noise_mask):
+
+        assert (prototypes >= 0).all()
+        # if prototypes[0] != -100:
+        #     prototype_embeds = self.prototype_embedding(prototypes)
+        # else:
+        #     prototype_embeds = None
+
+        prototype_embeds = self.prototype_embedding(prototypes)
+        z0 = torch.randn_like(signals) * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
+        z1 = signals
+
+        t = torch.rand(z0.shape[0], 1, 1).to(z0.device)
+        if str(os.environ.get('hucfg_t_sampling', 'uniform')) == 'logitnorm':
+            t = torch.sigmoid(torch.randn(z0.shape[0], 1, 1)).to(z0.device)
+
+        z_t = t * z1 + (1. - t) * z0
+        target = (z1 - z0) * noise_mask.unsqueeze(-1)
+        model_out = self.output(
+            z_t,
+            t.view(-1) * self.time_scalar,
+            prototype_embeds,
+            padding_masks=attn_mask)
+        model_out = model_out * noise_mask.unsqueeze(-1)
+
+        # -------- masked MSE --------
+        loss = (model_out - target) ** 2
+        loss = loss.mean(-1)
+
+        # 只对 anomaly 部分计算误差
+        masked_loss = loss * noise_mask  # (B, T)
+        # 每个样本 anomaly 的数量
+        num_anomalies = reduce(noise_mask, 'b t -> b 1', 'sum')  # shape: (B, 1)
+
+        # 每个样本的 loss = sum(masked_loss) / num_anomalies
+        loss_per_sample = reduce(masked_loss, 'b t -> b 1', 'sum') / num_anomalies
+
+        # 最终 batch loss = mean over batch
+        return loss_per_sample.mean()
 
