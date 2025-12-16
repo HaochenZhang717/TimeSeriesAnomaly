@@ -319,15 +319,18 @@ def imputation_sample(args):
         batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=device)
         batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=device)
         batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=device)
-        samples = model.impute(batch['signals'], batch["prototypes"], batch["attn_mask"], batch["noise_mask"])
+        to_save = {
+            'signals': batch['signals'].detach().cpu(),
+            'prototypes': batch['prototypes'].detach().cpu(),
+            'attn_mask': batch['attn_mask'].detach().cpu(),
+            'noise_mask': batch['noise_mask'].detach().cpu(),
+        }
+        for i in range(8): # generate samples from different prototypes
+            prototypes = torch.ones_like(batch["prototypes"]) * i
+            samples = model.impute(batch['signals'], prototypes, batch["attn_mask"], batch["noise_mask"])
+            to_save.update({"i": samples.detach().cpu()})
         break
-    to_save = {
-        'signals': batch['signals'].detach().cpu(),
-        'prototypes': batch['prototypes'].detach().cpu(),
-        'attn_mask': batch['attn_mask'].detach().cpu(),
-        'noise_mask': batch['noise_mask'].detach().cpu(),
-        'samples': samples.detach().cpu(),
-    }
+
     os.makedirs(args.generated_dir, exist_ok=True)
     torch.save(to_save, f"{args.generated_dir}/samples.pth")
 
