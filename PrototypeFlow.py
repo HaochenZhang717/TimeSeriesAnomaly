@@ -387,8 +387,8 @@ def imputation_sample(args):
     # -----------------------
     for batch in tqdm(train_loader):
         signals = batch["signals"].to(device=device, dtype=model_dtype)      # (B, T, C)
-        attn_mask = batch["attn_mask"].to(device=device)                     # (B, T)
-        noise_mask = batch["noise_mask"].to(device=device)                   # (B, T)
+        attn_mask = batch["attn_mask"].to(device=device, dtype=torch.bool)   # (B, T)
+        noise_mask = batch["noise_mask"].to(device=device, dtype=torch.long) # (B, T)
 
         B, T, C = signals.shape
         n = 20  # 每个 prototype 采样 n 个
