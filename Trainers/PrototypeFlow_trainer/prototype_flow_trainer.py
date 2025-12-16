@@ -55,7 +55,7 @@ class PrototypeFlowTSTrainer(object):
             for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
 
                 batch["signals"] = batch["signals"].to(dtype=model_dtype, device=self.device)
-                batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.long, device=self.device)
+                batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=self.device)
                 batch["lengths"] = batch["lengths"].to(dtype=torch.long, device=self.device)
                 batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=self.device)
                 loss = self.model(batch, mode="no_context")
@@ -87,7 +87,7 @@ class PrototypeFlowTSTrainer(object):
                 # for batch in self.val_loader:
                 for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
                     batch["signals"] = batch["signals"].to(dtype=model_dtype, device=self.device)
-                    batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.long, device=self.device)
+                    batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=self.device)
                     batch["lengths"] = batch["lengths"].to(dtype=torch.long, device=self.device)
                     batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=self.device)
                     loss = self.model(batch, mode="no_context")

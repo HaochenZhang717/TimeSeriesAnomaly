@@ -73,7 +73,8 @@ def get_args():
         choices=[
             "no_context_train",
             "no_context_sample",
-            "normal_sample"
+            "normal_sample",
+            "imputation_train"
         ],
         help="what to do"
     )
