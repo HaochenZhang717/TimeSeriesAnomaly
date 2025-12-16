@@ -42,3 +42,12 @@ scp -r root@134.199.134.61:/root/tianyi/samples_path/rain/ ../samples_path/
 
 scp -r root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/contrastive_learning/anomaly_segments_with_prototype.jsonl ./
 scp -r root@134.199.134.61:/root/tianyi/samples_path/PrototypeFlow/mitdb1800_106/normal_len100/samples.pth ./
+scp -r root@134.199.134.61:/root/tianyi/samples_path/PrototypeFlow/mitdb1800_106/mask_no_context_len800/samples.pth ./
+
+
+
+
+
+
+
+
