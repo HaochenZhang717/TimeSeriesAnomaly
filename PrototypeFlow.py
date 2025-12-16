@@ -205,7 +205,7 @@ def no_context_sample(args):
     for prototype_id in tqdm(range(8)):
         with torch.no_grad():
             samples = model.generate_mts(
-                seq_length=100,
+                seq_length=args.seq_len,
                 batch_size=args.batch_size,
                 prototype_id=prototype_id,
                 padding_masks=None,
@@ -281,6 +281,7 @@ def imputation_train(args):
     trainer.imputation_train(config=vars(args))
 
 
+
 def normal_sample(args):
     model = NoContextPrototypeFlow(
         seq_length=args.seq_len,
@@ -300,7 +301,8 @@ def normal_sample(args):
     samples = model.generate_mts(
         seq_length=args.seq_len,
         batch_size=args.batch_size,
-        prototype_id=-100 # pass -100 when run unconditional normal sample
+        prototype_id=-100, # pass -100 when run unconditional normal sample
+        padding_masks=None,
     ).detach().cpu()
 
     os.makedirs(args.generated_dir, exist_ok=True)
