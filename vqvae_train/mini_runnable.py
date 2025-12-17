@@ -424,8 +424,8 @@ def extract_token_ids(model: VQVAE1D, loader: DataLoader, device: torch.device):
         # Simple heuristic:
         tprime_lens = torch.clamp((lengths.float() / 8.0).floor().long(), min=1, max=tprime)
 
-        all_ids.append(ids.cpu())
-        all_tprime_lens.append(tprime_lens.cpu())
+        all_ids.append(ids)
+        all_tprime_lens.append(tprime_lens)
 
     return all_ids, all_tprime_lens
 
@@ -531,7 +531,7 @@ def train_vqvae(cfg: TrainConfig):
             total_rec += rec_loss.item()
             total_vq += vq_loss.item()
 
-            epoch_ids.append(ids.detach().cpu())
+            epoch_ids.append(ids.detach())
 
         # -------- codebook stats --------
         stats = _compute_codebook_stats(epoch_ids, cfg.num_codes)
