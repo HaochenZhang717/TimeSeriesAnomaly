@@ -1,0 +1,17 @@
+{
+  "os": "macOS-14.3-arm64-arm-64bit",
+  "python": "CPython 3.12.0",
+  "startedAt": "2025-12-17T09:41:25.216300Z",
+  "program": "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train/mini_runnable.py",
+  "codePath": "vqvae_train/mini_runnable.py",
+  "codePathLocal": "mini_runnable.py",
+  "git": {
+    "remote": "git@github.com:HaochenZhang717/TimeSeriesAnomaly.git",
+    "commit": "6de1da54ec322038dbcf4ccd0a5fc1602a2b0d1d"
+  },
+  "email": "haochen235@g.ucla.edu",
+  "root": "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train",
+  "host": "Haochens-MacBook-Pro.local",
+  "executable": "/opt/anaconda3/envs/ColOCR_env/bin/python",
+  "writerId": "s2uk55j9hzjo1putt1q1far6o2grqb7k"
+}

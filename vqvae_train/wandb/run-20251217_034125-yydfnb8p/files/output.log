@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train/mini_runnable.py", line 605, in <module>
+    model = train_vqvae(cfg)
+            ^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train/mini_runnable.py", line 511, in train_vqvae
+    for x, lengths in loader:
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 788, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train/mini_runnable.py", line 51, in __getitem__
+    start, end = self.index_lines[index]
+    ^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)

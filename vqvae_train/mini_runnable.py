@@ -48,7 +48,10 @@ class AnomalyDataset(Dataset):
         return len(self.index_lines)
 
     def __getitem__(self, index):
-        start, end = self.index_lines[index]
+        # start, end = self.index_lines[index]
+        start = self.index_lines[index]["start"]
+        end = self.index_lines[index]["end"]
+
         if self.one_channel:
             return torch.from_numpy(self.data[start:end, :1]).float()
         else:
@@ -352,14 +355,14 @@ class VQVAE1D(nn.Module):
         super().__init__()
         self.encoder = ResNetEncoder1D(
             in_channels=in_channels,
-            channels=(64, 128, 256),
+            channels=(16, 32, 64, 64),
             blocks_per_stage=2,
             code_dim=code_dim,
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
         self.decoder = ResNetDecoder1D(
             out_channels=in_channels,
-            channels=(256, 128, 64),
+            channels=(64, 64, 32, 16),
             blocks_per_stage=1,
             code_dim=code_dim,
         )
@@ -583,7 +586,7 @@ def train_vqvae(cfg: TrainConfig):
 if __name__ == "__main__":
     cfg = TrainConfig(
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/raw_anomaly_segments.jsonl",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
         one_channel=True,
 
         batch_size=64,
@@ -592,13 +595,13 @@ if __name__ == "__main__":
 
         hidden=64,
         code_dim=8,
-        num_codes=20,
+        num_codes=500,
         beta=0.25,
 
         recon_loss="mse",
         vq_loss_weight=1.0,
 
-        device="cpu",
+        device="cuda:7",
         save_path="vqvae_1d.pt",
     )
 
