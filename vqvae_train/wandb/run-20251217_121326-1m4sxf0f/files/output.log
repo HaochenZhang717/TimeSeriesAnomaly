@@ -1,3 +1,0 @@
-[Epoch 001/50] loss=0.557914  rec=0.012776  vq=0.545138  active=0.122  ppl=12.6  dead=439
-[Epoch 002/50] loss=0.069425  rec=0.001768  vq=0.067656  active=0.092  ppl=17.2  dead=454
-[Epoch 003/50] loss=0.027850  rec=0.001204  vq=0.026646  active=0.112  ppl=27.1  dead=444
