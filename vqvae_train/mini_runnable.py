@@ -629,42 +629,27 @@ def extract_code_segments(
         collate_fn=pad_collate_fn,
     )
 
-    for x, lengths in tqdm(loader, desc="Extracting code segments"):
-        x = x.to(device)          # [B, T, C]
+    all_codes = []
+    for x, lengths in tqdm(loader, desc="Extracting code ids"):
+        x = x.to(device)  # [B, T, C]
         lengths = lengths.to(device)
 
         z_e = model.encoder(x)
-        _, ids, _ = model.quantizer(z_e)   # ids: [B, T']
+        _, ids, _ = model.quantizer(z_e)  # ids: [B, T']
 
         B, Tprime = ids.shape
 
         for b in range(B):
-            T_valid = lengths[b].item()
-            for t in range(Tprime):
-                start = t * downsample
-                end = min((t + 1) * downsample, T_valid)
-                if end <= start:
-                    continue
+            entry = {
+                "ids": ids[b].detach().cpu(),  # [T']
+                "orig_len": int(lengths[b].item()),
+                "tprime_len": int(Tprime),
+            }
+            all_codes.append(entry)
 
-                seg = x[b, start:end, 0].detach().cpu().numpy()
+    torch.save(all_codes, save_path)
+    print(f"[Saved] time-series codes -> {save_path}")
 
-                # 对齐长度
-                if len(seg) >= max_seg_len:
-                    seg = seg[:max_seg_len]
-                else:
-                    seg = np.pad(seg, (0, max_seg_len - len(seg)))
-
-                code = int(ids[b, t].item())
-                code_segments[code].append(seg)
-
-    # stack 成 ndarray
-    code_segments = {
-        k: np.stack(v, axis=0)
-        for k, v in code_segments.items()
-    }
-
-    torch.save(code_segments, save_path)
-    print(f"[Saved] code segments -> {save_path}")
 
 
 def plot_code_waveforms(
