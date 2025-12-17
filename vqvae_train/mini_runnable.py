@@ -534,6 +534,7 @@ def train_vqvae(cfg: TrainConfig):
             epoch_ids.append(ids.detach())
 
         # -------- codebook stats --------
+        breakpoint()
         stats = _compute_codebook_stats(epoch_ids, cfg.num_codes)
 
         # -------- logging --------
