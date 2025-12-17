@@ -699,29 +699,29 @@ def plot_code_waveforms(
 # --------------------------
 
 if __name__ == "__main__":
-    # cfg = TrainConfig(
-    #     raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-    #     indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
-    #     one_channel=True,
-    #
-    #     batch_size=64,
-    #     epochs=50,
-    #     lr=1e-3,
-    #
-    #     hidden=64,
-    #     code_dim=8,
-    #     num_codes=500,
-    #     beta=0.25,
-    #
-    #     recon_loss="mse",
-    #     vq_loss_weight=1.0,
-    #
-    #     # device="cuda:0",
-    #     device="cpu",
-    #     save_path="vqvae_1d.pt",
-    # )
-    #
-    # model = train_vqvae(cfg)
+    cfg = TrainConfig(
+        raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
+        one_channel=True,
+
+        batch_size=64,
+        epochs=50,
+        lr=1e-3,
+
+        hidden=64,
+        code_dim=8,
+        num_codes=500,
+        beta=0.25,
+
+        recon_loss="mse",
+        vq_loss_weight=1.0,
+
+        # device="cuda:0",
+        device="cpu",
+        save_path="vqvae_1d.pt",
+    )
+
+    model = train_vqvae(cfg)
 
     extract_code_segments(
         in_channels=1,
