@@ -390,9 +390,12 @@ class MultiPhi(nn.Module):
         t = t.unsqueeze(-1) #(B, T, 1)
         out = self.phis(t) #(B, T, H * d_h)
         out = out.view(B, T, self.H, self.d_h) # (B, T, H, d_h)
-        out[..., 1:] = torch.sin(out[..., 1:])
 
-        return out
+        first = out[..., :1]  # (B, T, H, 1)
+        rest = torch.sin(out[..., 1:])  # (B, T, H, d_h-1)
+        out_f = torch.cat([first, rest], dim=-1)
+
+        return out_f
 
 
 class TimeEncoder(nn.Module):
