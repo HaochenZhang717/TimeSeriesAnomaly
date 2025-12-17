@@ -685,7 +685,7 @@ class MTANDEncoderDecoder(nn.Module):
 
     def forward(self, input, t, prototype_embeds, padding_masks):
 
-        enc_cond = self.encoder(input, padding_masks=padding_masks)
+        enc_cond = self.encoder(input, padding_masks)
 
         inp_dec = self.emb(input)
         output, mean, trend, season = self.decoder(
