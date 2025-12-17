@@ -214,4 +214,11 @@ class PrototypeFlowTSTrainer(object):
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
                 self.scheduler.step(val_total)
+            else:
+                wandb.log({
+                    "train/total_loss": train_total_avg,
+                    "epoch": epoch,
+                    "step": global_steps,
+                    "lr": self.optimizer.param_groups[0]["lr"],
+                })
         wandb.finish()
