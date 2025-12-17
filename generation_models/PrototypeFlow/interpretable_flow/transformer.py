@@ -5,7 +5,6 @@ import torch.nn.functional as F
 
 from torch import nn
 from einops import rearrange, reduce, repeat
-from transformers.models.pop2piano.convert_pop2piano_weights_to_hf import encoder
 
 from .model_utils import LearnablePositionalEncoding, Conv_MLP, \
     AdaLayerNorm, Transpose, RMSNorm, GELU2, series_decomp
