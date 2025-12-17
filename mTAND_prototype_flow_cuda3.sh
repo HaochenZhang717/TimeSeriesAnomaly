@@ -14,8 +14,8 @@ python mTANDPrototypeFlow.py \
   --d_model 64 \
   --n_heads 4 \
   --num_prototypes 8 \
-  --encoder_H 64 \
-  --encoder_d_h 64 \
+  --encoder_H 16 \
+  --encoder_d_h 32 \
   \
   --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_more.jsonl" \
