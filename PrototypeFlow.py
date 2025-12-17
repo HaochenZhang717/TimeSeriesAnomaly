@@ -1,5 +1,5 @@
 from Trainers import PrototypeFlowTSTrainer
-from generation_models import NoContextPrototypeFlow
+from generation_models import PrototypeFlow
 from dataset_utils import NoContextECGDataset, ImputationECGDataset
 import argparse
 import torch
