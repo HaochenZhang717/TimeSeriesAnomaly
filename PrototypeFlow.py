@@ -124,7 +124,7 @@ def no_context_train(args):
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
-    model = NoContextPrototypeFlow(
+    model = PrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
@@ -187,7 +187,7 @@ def no_context_train(args):
 
 
 def no_context_sample(args):
-    model = NoContextPrototypeFlow(
+    model = PrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
@@ -221,7 +221,7 @@ def imputation_train(args):
     os.makedirs(args.ckpt_dir, exist_ok=True)
     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
 
-    model = NoContextPrototypeFlow(
+    model = PrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
@@ -347,7 +347,7 @@ def imputation_sample(args):
     # -----------------------
     # build & load model
     # -----------------------
-    model = NoContextPrototypeFlow(
+    model = PrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
@@ -452,7 +452,7 @@ def imputation_sample(args):
 
 
 def normal_sample(args):
-    model = NoContextPrototypeFlow(
+    model = PrototypeFlow(
         seq_length=args.seq_len,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
