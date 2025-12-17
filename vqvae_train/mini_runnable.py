@@ -13,7 +13,14 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import MinMaxScaler
 import wandb
 
+import torch
+import numpy as np
+from collections import defaultdict
+from tqdm import tqdm
 
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
 # --------------------------
 # Dataset (copied from you)
 # --------------------------
@@ -579,30 +586,175 @@ def train_vqvae(cfg: TrainConfig):
 
     wandb.finish()
     return model
+
+
+
+
+
+@torch.no_grad()
+def extract_code_segments(
+    in_channels,
+    code_dim,
+    num_codes,
+    model_path,
+    raw_data_path,
+    indices_path,
+    one_channel,
+    device,
+    save_path,
+    downsample=8,
+    max_seg_len=16,
+):
+    model = VQVAE1D(
+        in_channels=in_channels,
+        code_dim=code_dim,
+        num_codes=num_codes,
+    ).to(device)
+    model.eval()
+    model.load_state_dict(torch.load(model_path, map_location=device))
+
+    code_segments = defaultdict(list)
+
+    dataset = AnomalyDataset(
+        raw_data_path=raw_data_path,
+        indices_path=indices_path,
+        one_channel=one_channel,
+    )
+
+    loader = DataLoader(
+        dataset,
+        batch_size=64,
+        shuffle=False,
+        drop_last=False,
+        collate_fn=pad_collate_fn,
+    )
+
+    for x, lengths in tqdm(loader, desc="Extracting code segments"):
+        x = x.to(device)          # [B, T, C]
+        lengths = lengths.to(device)
+
+        z_e = model.encoder(x)
+        _, ids, _ = model.quantizer(z_e)   # ids: [B, T']
+
+        B, Tprime = ids.shape
+
+        for b in range(B):
+            T_valid = lengths[b].item()
+            for t in range(Tprime):
+                start = t * downsample
+                end = min((t + 1) * downsample, T_valid)
+                if end <= start:
+                    continue
+
+                seg = x[b, start:end, 0].detach().cpu().numpy()
+
+                # 对齐长度
+                if len(seg) >= max_seg_len:
+                    seg = seg[:max_seg_len]
+                else:
+                    seg = np.pad(seg, (0, max_seg_len - len(seg)))
+
+                code = int(ids[b, t].item())
+                code_segments[code].append(seg)
+
+    # stack 成 ndarray
+    code_segments = {
+        k: np.stack(v, axis=0)
+        for k, v in code_segments.items()
+    }
+
+    torch.save(code_segments, save_path)
+    print(f"[Saved] code segments -> {save_path}")
+
+
+def plot_code_waveforms(
+    code_segments_path,
+    code_ids=None,
+    num_samples=5,
+    show_mean=True,
+    figsize=(12, 4),
+):
+    """
+    从保存的 code_segments.pt 中加载并画图
+
+    Args:
+        code_segments_path: extract_code_segments 保存的路径
+        code_ids: 要画的 code 列表（None = 随机选几个）
+        num_samples: 每个 code 画多少条 sample
+        show_mean: 是否画 mean waveform
+    """
+    code_segments = torch.load(code_segments_path)
+
+    all_codes = sorted(code_segments.keys())
+    if code_ids is None:
+        code_ids = all_codes[:8]   # 默认画前 8 个
+
+    for k in code_ids:
+        segs = code_segments[k]    # [N, L]
+
+        plt.figure(figsize=figsize)
+
+        # sample
+        for i in range(min(num_samples, len(segs))):
+            plt.plot(segs[i], color="gray", alpha=0.3)
+
+        # mean
+        if show_mean:
+            mean_wave = segs.mean(axis=0)
+            plt.plot(mean_wave, color="red", linewidth=2, label="mean")
+
+        plt.title(f"Code {k}  |  N={len(segs)}")
+        plt.xlabel("Time")
+        plt.ylabel("Amplitude")
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
 # --------------------------
 # Example usage
 # --------------------------
 
 if __name__ == "__main__":
-    cfg = TrainConfig(
+    # cfg = TrainConfig(
+    #     raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
+    #     indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
+    #     one_channel=True,
+    #
+    #     batch_size=64,
+    #     epochs=50,
+    #     lr=1e-3,
+    #
+    #     hidden=64,
+    #     code_dim=8,
+    #     num_codes=500,
+    #     beta=0.25,
+    #
+    #     recon_loss="mse",
+    #     vq_loss_weight=1.0,
+    #
+    #     # device="cuda:0",
+    #     device="cpu",
+    #     save_path="vqvae_1d.pt",
+    # )
+    #
+    # model = train_vqvae(cfg)
+
+    extract_code_segments(
+        in_channels=1,
+        code_dim=8,
+        num_codes=500,
+        model_path="vqvae_1d.pt",
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
         one_channel=True,
-
-        batch_size=64,
-        epochs=50,
-        lr=1e-3,
-
-        hidden=64,
-        code_dim=8,
-        num_codes=500,
-        beta=0.25,
-
-        recon_loss="mse",
-        vq_loss_weight=1.0,
-
         device="cuda:0",
-        save_path="vqvae_1d.pt",
+        save_path="code_segments.pt",
+        downsample=8,
+        max_seg_len=100,
     )
-
-    model = train_vqvae(cfg)
+    #
+    # # 2️⃣ 离线画图
+    # plot_code_waveforms(
+    #     "code_segments.pt",
+    #     code_ids=[0, 5, 12, 42],
+    #     num_samples=10,
+    # )
