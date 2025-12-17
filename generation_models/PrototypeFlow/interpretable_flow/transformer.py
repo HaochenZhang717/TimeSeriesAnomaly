@@ -5,6 +5,8 @@ import torch.nn.functional as F
 
 from torch import nn
 from einops import rearrange, reduce, repeat
+from transformers.models.pop2piano.convert_pop2piano_weights_to_hf import encoder
+
 from .model_utils import LearnablePositionalEncoding, Conv_MLP, \
     AdaLayerNorm, Transpose, RMSNorm, GELU2, series_decomp
 import os
@@ -373,6 +375,91 @@ class Encoder(nn.Module):
         return x
 
 
+class MultiPhi(nn.Module):
+    def __init__(self, ts_dim, H, d_h):
+        super().__init__()
+        self.phis = nn.Linear(ts_dim, H * d_h)
+        self.H = H
+        self.d_h = d_h
+
+    def forward(self, t):
+        """
+        t: (B, T)
+        return: (B, T, H, d_h)
+        """
+        B, T = t.shape[:2]
+        t = t.unsqueeze(-1) #(B, T, 1)
+        out = self.phis(t) #(B, T, H * d_h)
+        out = out.view(B, T, self.H, self.d_h) # (B, T, H, d_h)
+        out[..., 1:] = torch.sin(out[..., 1:])
+
+        return out
+
+
+class TimeEncoder(nn.Module):
+    def __init__(self, ts_dim, H, d_h, hidden_dim, out_dim):
+        super().__init__()
+        self.phis_query = MultiPhi(ts_dim, H, d_h)
+        self.phis_key = MultiPhi(ts_dim, H, d_h)
+        self.q_projs = nn.ModuleList(
+            nn.Linear(d_h, hidden_dim) for _ in range(H)
+        )
+        self.k_projs = nn.ModuleList(
+            nn.Linear(d_h, hidden_dim) for _ in range(H)
+        )
+
+        self.output_proj = nn.Sequential(
+            nn.Linear(H, out_dim),
+            nn.LayerNorm(out_dim)
+        )
+
+    def forward(self, signal, attn_mask):
+
+        B, T, _ = signal.shape
+        device = signal.device
+
+        # normalized time index is更稳健
+        time_index = torch.arange(T, device=device).float()
+        time_index = time_index / T
+        time_index = time_index.unsqueeze(0).repeat(B, 1)  # (B, T)
+
+
+        phi_query = self.phis_query(time_index) # (B, T, H, d_h)
+        phi_key = self.phis_key(time_index) # (B, T, H, d_h)
+
+        query = []
+        for i, q_proj in enumerate(self.q_projs):
+            query.append(q_proj(phi_query[:,:,i]))
+        query = torch.stack(query, dim=2) # (B, T, H, hidden_dim)
+
+
+        key = []
+        for i, k_proj in enumerate(self.k_projs):
+            key.append(k_proj(phi_key[:,:,i]))
+        key = torch.stack(key, dim=2) # (B, T, H, hidden_dim)
+
+        query = query.permute(0, 2, 1, 3) # (B, H, T, hidden_dim)
+        key = key.permute(0, 2, 1, 3) # (B, H, T, hidden_dim)
+
+        attn = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(T) # (B, H, query_len, key_len)
+        # attn_mask # (B, key_len)
+        if attn_mask is not None:
+            # attn_mask: (B, key_len)
+            # -> (B, 1, 1, key_len)  broadcast 到 (B, H, query_len, key_len)
+            mask = attn_mask[:, None, None, :]
+            attn = attn.masked_fill(mask == 0, float('-inf'))
+
+        attn = attn.softmax(dim=-1) # (B, H, query_len, key_len)
+        # key_signal (B, key_len, 1)
+        key_signal = signal.unsqueeze(1) #(B, 1, key_len, 1)
+        output = attn @ key_signal #(B, H, query_len, 1)
+        output = output.squeeze(-1) #(B, H, query_len)
+        output = output.permute(0, 2, 1)
+        output = self.output_proj(output)
+        return output
+
+
+
 class DecoderBlock(nn.Module):
     """ an unassuming Transformer block """
 
@@ -550,6 +637,69 @@ class Transformer(nn.Module):
 
         return out
 
+
+
+class MTANDEncoderDecoder(nn.Module):
+    def __init__(
+            self,
+            encoder_H,
+            encoder_d_h,
+            n_feat,
+            n_channel,
+            n_layer_dec=14,
+            n_embd=1024,
+            n_heads=16,
+            attn_pdrop=0.1,
+            resid_pdrop=0.1,
+            mlp_hidden_times=4,
+            block_activate='GELU',
+            max_len=2048,
+            conv_params=None,
+    ):
+        super().__init__()
+        self.emb = Conv_MLP(n_feat, n_embd, resid_pdrop=resid_pdrop)
+        self.inverse = Conv_MLP(n_embd, n_feat, resid_pdrop=resid_pdrop)
+
+        if conv_params is None or conv_params[0] is None:
+            if n_feat < 32 and n_channel < 64:
+                kernel_size, padding = 1, 0
+            else:
+                kernel_size, padding = 5, 2
+        else:
+            kernel_size, padding = conv_params
+
+        self.combine_s = nn.Conv1d(n_embd, n_feat, kernel_size=kernel_size, stride=1, padding=padding,
+                                   padding_mode='circular', bias=False)
+        self.combine_m = nn.Conv1d(n_layer_dec, 1, kernel_size=1, stride=1, padding=0,
+                                   padding_mode='circular', bias=False)
+        self.max_len = max_len
+
+        self.encoder = TimeEncoder(
+           n_feat, encoder_H, encoder_d_h, encoder_d_h, n_embd
+        )
+
+
+
+        self.decoder = Decoder(n_channel, n_feat, n_embd, n_heads, n_layer_dec, attn_pdrop, resid_pdrop,
+                               mlp_hidden_times,
+                               block_activate, condition_dim=n_embd, max_len=self.max_len)
+
+    def forward(self, input, t, prototype_embeds, padding_masks):
+
+        enc_cond = self.encoder(input, padding_masks=padding_masks)
+
+        inp_dec = self.emb(input)
+        output, mean, trend, season = self.decoder(
+            inp_dec, t, prototype_embeds, enc_cond, padding_masks=padding_masks
+        )
+
+        res = self.inverse(output)
+        res_m = torch.mean(res, dim=1, keepdim=True)
+        season_error = self.combine_s(season.transpose(1, 2)).transpose(1, 2) + res - res_m
+        trend = self.combine_m(mean) + res_m + trend
+        out = trend + season_error
+
+        return out
 
 if __name__ == '__main__':
     pass

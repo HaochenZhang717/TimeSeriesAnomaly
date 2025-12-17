@@ -1,1 +1,1 @@
-from .interpretable_flow import NoContextPrototypeFlow
+from .interpretable_flow import PrototypeFlow, MTANDPrototypeFlow

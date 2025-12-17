@@ -224,10 +224,12 @@ class ImputationECGDataset(Dataset):
             indices_path,
             seq_len,
             one_channel,
+            use_prototype
     ):
         super(ImputationECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
+        self.use_prototype = use_prototype
 
         raw_data = np.load(raw_data_path)
         raw_signal = raw_data["signal"]
@@ -262,7 +264,13 @@ class ImputationECGDataset(Dataset):
         noise_mask = torch.zeros(T, dtype=torch.long)
         noise_mask[relative_anomaly_start:relative_anomaly_end] = 1
 
-        prototype_id = self.index_lines[index].get('prototype_id', -100)
+        if self.use_prototype == "true":
+            prototype_id = self.index_lines[index].get('prototype_id', -100)
+        elif self.use_prototype == "false":
+            prototype_id = -100
+        else:
+            raise NotImplementedError
+
         prototype_id = torch.tensor(
             prototype_id,
             dtype=torch.long
@@ -301,7 +309,7 @@ if __name__ == "__main__":
     dataset = ImputationECGDataset(
         raw_data_path="./raw_data/106.npz",
         indices_path="./indices/slide_windows_106npz/train/V_more.jsonl",
-        seq_len="1200",
+        seq_len=1800,
         one_channel=True,
     )
 

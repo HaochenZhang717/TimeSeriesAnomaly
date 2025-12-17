@@ -54,7 +54,6 @@ def dict_collate_fn(batch):
 
 
 
-
 def save_args_to_jsonl(args, output_path):
     args_dict = vars(args)
     with open(output_path, "w") as f:
@@ -82,6 +81,7 @@ def get_args():
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
     parser.add_argument("--one_channel", type=int, required=True)
+    parser.add_argument("--use_prototype", type=str, required=True)
 
     """model parameters"""
     parser.add_argument("--n_layer_enc", type=int, required=True)
@@ -237,6 +237,7 @@ def imputation_train(args):
         indices_path=args.indices_path_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
+        use_prototype=args.use_prototype,
     )
 
     train_loader = torch.utils.data.DataLoader(
@@ -355,6 +356,7 @@ def imputation_sample(args):
         n_heads=args.n_heads,
         mlp_hidden_times=4,
         num_prototypes=args.num_prototypes,
+        use_prototype=args.use_prototype,
     )
 
     model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth", map_location="cpu"))

@@ -876,7 +876,7 @@ if __name__ == "__main__":
             signal=raw_signal,
             segments=segments,
             cluster_ids=cluster_ids,
-            window_size=1200,
+            window_size=1800,
             step=1,
             jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
         )
