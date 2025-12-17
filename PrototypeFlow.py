@@ -257,7 +257,7 @@ def imputation_train(args):
         optimizer,
         mode='min',
         factor=0.8,  # multiply LR by 0.5
-        patience=5,  # wait 3 epochs with no improvement
+        patience=1,  # wait 3 epochs with no improvement
         threshold=1e-4,  # improvement threshold
         min_lr=1e-5,  # min LR clamp
     )

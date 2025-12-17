@@ -172,20 +172,21 @@ class PrototypeFlowTSTrainer(object):
 
             train_total_avg = total_loss / tr_seen
 
-            """evaluation"""
-            self.model.eval()
-            with torch.no_grad():
-                val_total, val_seen = 0, 0
-                # for batch in self.val_loader:
-                for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
-                    batch["signals"] = batch["signals"].to(dtype=model_dtype, device=self.device)
-                    batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=self.device)
-                    batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=self.device)
-                    batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=self.device)
-                    loss = self.model(batch, mode="imputation")
+            if epoch % 5 == 0:
+                """evaluation"""
+                self.model.eval()
+                with torch.no_grad():
+                    val_total, val_seen = 0, 0
+                    # for batch in self.val_loader:
+                    for batch in tqdm(self.val_loader, desc=f"Eval Epoch {epoch}"):
+                        batch["signals"] = batch["signals"].to(dtype=model_dtype, device=self.device)
+                        batch["prototypes"] = batch["prototypes"].to(dtype=torch.long, device=self.device)
+                        batch["attn_mask"] = batch["attn_mask"].to(dtype=torch.bool, device=self.device)
+                        batch["noise_mask"] = batch["noise_mask"].to(dtype=torch.long, device=self.device)
+                        loss = self.model(batch, mode="imputation")
 
-                    val_total += loss.item() * batch["signals"].shape[0]
-                    val_seen += batch["signals"].shape[0]
+                        val_total += loss.item() * batch["signals"].shape[0]
+                        val_seen += batch["signals"].shape[0]
 
                 val_total /= val_seen
 
@@ -212,5 +213,5 @@ class PrototypeFlowTSTrainer(object):
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
-            self.scheduler.step(val_total)
+                self.scheduler.step(val_total)
         wandb.finish()
