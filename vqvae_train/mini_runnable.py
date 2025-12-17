@@ -602,7 +602,7 @@ if __name__ == "__main__":
         recon_loss="mse",
         vq_loss_weight=1.0,
 
-        device="cuda:7",
+        device="cuda:0",
         save_path="vqvae_1d.pt",
     )
 
