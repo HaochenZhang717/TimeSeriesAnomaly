@@ -601,9 +601,7 @@ def extract_code_segments(
     indices_path,
     one_channel,
     device,
-    save_path,
-    downsample=8,
-    max_seg_len=16,
+    save_path
 ):
     model = VQVAE1D(
         in_channels=in_channels,
@@ -611,7 +609,10 @@ def extract_code_segments(
         num_codes=num_codes,
     ).to(device)
     model.eval()
-    model.load_state_dict(torch.load(model_path, map_location=device))
+    ckpt = torch.load(model_path, map_location=device)
+    model.load_state_dict(ckpt["model_state"])
+
+    # model.load_state_dict(torch.load(model_path, map_location=device))
 
     code_segments = defaultdict(list)
 
@@ -710,7 +711,7 @@ if __name__ == "__main__":
 
         hidden=64,
         code_dim=8,
-        num_codes=500,
+        num_codes=200,
         beta=0.25,
 
         recon_loss="mse",
@@ -726,15 +727,13 @@ if __name__ == "__main__":
     extract_code_segments(
         in_channels=1,
         code_dim=8,
-        num_codes=500,
+        num_codes=200,
         model_path="vqvae_1d.pt",
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
         one_channel=True,
         device="cuda:0",
-        save_path="code_segments.pt",
-        downsample=8,
-        max_seg_len=100,
+        save_path="code_segments.pt"
     )
     #
     # # 2️⃣ 离线画图
