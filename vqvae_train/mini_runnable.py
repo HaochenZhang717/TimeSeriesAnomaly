@@ -362,14 +362,14 @@ class VQVAE1D(nn.Module):
         super().__init__()
         self.encoder = ResNetEncoder1D(
             in_channels=in_channels,
-            channels=(16, 32, 64, 64),
+            channels=(16, 16, 32, 32, 64),
             blocks_per_stage=2,
             code_dim=code_dim,
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
         self.decoder = ResNetDecoder1D(
             out_channels=in_channels,
-            channels=(64, 64, 32, 16),
+            channels=(64, 32, 32, 32, 16),
             blocks_per_stage=1,
             code_dim=code_dim,
         )
@@ -653,6 +653,51 @@ def extract_code_segments(
 
 
 
+# def plot_code_waveforms(
+#     code_segments_path,
+#     code_ids=None,
+#     num_samples=5,
+#     show_mean=True,
+#     figsize=(12, 4),
+# ):
+#     """
+#     从保存的 code_segments.pt 中加载并画图
+#
+#     Args:
+#         code_segments_path: extract_code_segments 保存的路径
+#         code_ids: 要画的 code 列表（None = 随机选几个）
+#         num_samples: 每个 code 画多少条 sample
+#         show_mean: 是否画 mean waveform
+#     """
+#     code_segments = torch.load(code_segments_path)
+#
+#     all_codes = sorted(code_segments.keys())
+#     if code_ids is None:
+#         code_ids = all_codes[:8]   # 默认画前 8 个
+#
+#     for k in code_ids:
+#         segs = code_segments[k]    # [N, L]
+#
+#         plt.figure(figsize=figsize)
+#
+#         # sample
+#         for i in range(min(num_samples, len(segs))):
+#             plt.plot(segs[i], color="gray", alpha=0.3)
+#
+#         # mean
+#         if show_mean:
+#             mean_wave = segs.mean(axis=0)
+#             plt.plot(mean_wave, color="red", linewidth=2, label="mean")
+#
+#         plt.title(f"Code {k}  |  N={len(segs)}")
+#         plt.xlabel("Time")
+#         plt.ylabel("Amplitude")
+#         plt.legend()
+#         plt.tight_layout()
+#         plt.show()
+
+
+
 def plot_code_waveforms(
     code_segments_path,
     code_ids=None,
@@ -661,40 +706,32 @@ def plot_code_waveforms(
     figsize=(12, 4),
 ):
     """
-    从保存的 code_segments.pt 中加载并画图
-
     Args:
         code_segments_path: extract_code_segments 保存的路径
-        code_ids: 要画的 code 列表（None = 随机选几个）
-        num_samples: 每个 code 画多少条 sample
-        show_mean: 是否画 mean waveform
+        code_ids: 要画的 sample 的索引列表，例如 [0, 5, 10]
     """
     code_segments = torch.load(code_segments_path)
 
-    all_codes = sorted(code_segments.keys())
+    # code_segments 是 list，不是 dict
+    total = len(code_segments)
     if code_ids is None:
-        code_ids = all_codes[:8]   # 默认画前 8 个
+        code_ids = list(range(min(8, total)))  # 默认画前 8 个
 
-    for k in code_ids:
-        segs = code_segments[k]    # [N, L]
+    for idx in code_ids:
+        entry = code_segments[idx]
+        ids = entry["ids"].numpy()  # [T']
+        orig_len = entry["orig_len"]
+        tprime_len = entry["tprime_len"]
 
         plt.figure(figsize=figsize)
+        plt.plot(ids, color="gray", alpha=0.7)
 
-        # sample
-        for i in range(min(num_samples, len(segs))):
-            plt.plot(segs[i], color="gray", alpha=0.3)
-
-        # mean
-        if show_mean:
-            mean_wave = segs.mean(axis=0)
-            plt.plot(mean_wave, color="red", linewidth=2, label="mean")
-
-        plt.title(f"Code {k}  |  N={len(segs)}")
-        plt.xlabel("Time")
-        plt.ylabel("Amplitude")
-        plt.legend()
+        plt.title(f"Sample {idx}  |  orig_len={orig_len}, tprime_len={tprime_len}")
+        plt.xlabel("Timestep")
+        plt.ylabel("Code ID")
         plt.tight_layout()
         plt.show()
+
 # --------------------------
 # Example usage
 # --------------------------
@@ -711,7 +748,7 @@ if __name__ == "__main__":
 
         hidden=64,
         code_dim=8,
-        num_codes=200,
+        num_codes=300,
         beta=0.25,
 
         recon_loss="mse",
@@ -735,8 +772,8 @@ if __name__ == "__main__":
         device="cuda:0",
         save_path="code_segments.pt"
     )
-    #
-    # # 2️⃣ 离线画图
+
+    # 2️⃣ 离线画图
     # plot_code_waveforms(
     #     "code_segments.pt",
     #     code_ids=[0, 5, 12, 42],
