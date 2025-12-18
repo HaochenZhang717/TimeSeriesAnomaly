@@ -817,7 +817,7 @@ if __name__ == "__main__":
         in_channels=1,
         code_dim=8,
         num_codes=300,
-        model_path="../../vqvae_save_path/vqvae_1d.pt",
+        model_path="/root/tianyi/vqvae_save_path/vqvae_1d.pt",
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
         one_channel=True,
