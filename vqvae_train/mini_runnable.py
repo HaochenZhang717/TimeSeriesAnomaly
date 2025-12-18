@@ -805,9 +805,9 @@ if __name__ == "__main__":
 
         recon_loss="mse",
         vq_loss_weight=1.0,
-        device="cuda:0",
+        device="cuda:7",
         # device="cpu",
-        save_path="vqvae_1d.pt",
+        save_path="../../vqvae_save_path/vqvae_1d.pt",
     )
 
     model = train_vqvae(cfg)
@@ -818,10 +818,10 @@ if __name__ == "__main__":
         num_codes=300,
         model_path="vqvae_1d.pt",
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
         one_channel=True,
-        device="cuda:0",
-        save_path="code_segments.pt",
+        device="cuda:7",
+        save_path="../../vqvae_save_path/code_segments.pt",
         down_ratio=2,
         up_ratio=2,
         max_length=100,
