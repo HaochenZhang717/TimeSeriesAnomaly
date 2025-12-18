@@ -611,7 +611,7 @@ def train_vqvae(cfg: TrainConfig):
         )
 
     # -------- save --------
-    os.makedirs(cfg.save_path, exist_ok=True)
+    # os.makedirs(cfg.save_path, exist_ok=True)
     torch.save(
         {
             "model_state": model.state_dict(),
@@ -784,34 +784,34 @@ def plot_code_waveforms(
 # --------------------------
 
 if __name__ == "__main__":
-    # cfg = TrainConfig(
-    #     encoder_channels=(16,16,32,32,64,64),
-    #     decoder_channels=(64,64,32,32,16,16),
-    #     down_ratio=2,
-    #     up_ratio=2,
-    #     max_length=100,
-    #
-    #     raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-    #     indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
-    #     one_channel=True,
-    #
-    #     batch_size=64,
-    #     epochs=50,
-    #     lr=1e-3,
-    #
-    #     hidden=64,
-    #     code_dim=8,
-    #     num_codes=300,
-    #     beta=0.25,
-    #
-    #     recon_loss="mse",
-    #     vq_loss_weight=1.0,
-    #     device="cuda:7",
-    #     # device="cpu",
-    #     save_path="../../vqvae_save_path/vqvae_1d.pt",
-    # )
-    #
-    # model = train_vqvae(cfg)
+    cfg = TrainConfig(
+        encoder_channels=(16,16,32,32,64,64),
+        decoder_channels=(64,64,32,32,16,16),
+        down_ratio=2,
+        up_ratio=2,
+        max_length=100,
+
+        raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
+        one_channel=True,
+
+        batch_size=64,
+        epochs=50,
+        lr=1e-3,
+
+        hidden=64,
+        code_dim=8,
+        num_codes=300,
+        beta=0.25,
+
+        recon_loss="mse",
+        vq_loss_weight=1.0,
+        device="cuda:7",
+        # device="cpu",
+        save_path="/root/tianyi/vqvae_save_path/vqvae_1d.pt",
+    )
+
+    model = train_vqvae(cfg)
 
     extract_code_segments(
         in_channels=1,
