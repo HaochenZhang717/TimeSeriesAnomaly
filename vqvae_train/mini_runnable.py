@@ -611,6 +611,7 @@ def train_vqvae(cfg: TrainConfig):
         )
 
     # -------- save --------
+    os.makedirs(cfg.save_path, exist_ok=True)
     torch.save(
         {
             "model_state": model.state_dict(),
