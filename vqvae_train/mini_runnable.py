@@ -822,7 +822,7 @@ if __name__ == "__main__":
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
         one_channel=True,
         device="cuda:7",
-        save_path="../../vqvae_save_path/code_segments.pt",
+        save_path="/root/tianyi/vqvae_save_path/code_segments.pt",
         down_ratio=2,
         up_ratio=2,
         max_length=100,
