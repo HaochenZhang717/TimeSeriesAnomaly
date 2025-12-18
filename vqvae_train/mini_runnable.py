@@ -40,11 +40,13 @@ class AnomalyDataset(Dataset):
             raw_data_path,
             indices_path,
             one_channel,
+            max_length,
     ):
         super().__init__()
         self.index_lines = load_jsonl(indices_path)
         self.raw_data_path = raw_data_path
         self.one_channel = one_channel
+        self.max_length = max_length
 
         raw_data = np.load(raw_data_path)
         raw_signal = raw_data["signal"]
@@ -59,7 +61,8 @@ class AnomalyDataset(Dataset):
         # start, end = self.index_lines[index]
         start = self.index_lines[index]["start"]
         end = self.index_lines[index]["end"]
-
+        if end - start > self.max_length:
+            end = start + self.max_length
         if self.one_channel:
             return torch.from_numpy(self.data[start:end, :1]).float()
         else:
@@ -313,6 +316,7 @@ class ResNetDecoder1D(nn.Module):
         blocks_per_stage=1,
         code_dim=128,
         kernel_size=3,
+        up_ratio=2
     ):
         super().__init__()
 
@@ -329,7 +333,8 @@ class ResNetDecoder1D(nn.Module):
                 stages.append(
                     UpResBlock1D(
                         in_ch, out_ch,
-                        kernel_size=kernel_size
+                        kernel_size=kernel_size,
+                        up_ratio=up_ratio,
                     )
                 )
                 in_ch = out_ch
@@ -360,7 +365,11 @@ class ResNetDecoder1D(nn.Module):
 
 
 class VQVAE1D(nn.Module):
-    def __init__(self, in_channels, encoder_channels, decoder_channels, code_dim, num_codes):
+    def __init__(
+        self,
+        in_channels, encoder_channels, decoder_channels, code_dim, num_codes,
+        down_ratio, up_ratio
+    ):
         super().__init__()
         # self.encoder = ResNetEncoder1D(
         #     in_channels=in_channels,
@@ -373,6 +382,7 @@ class VQVAE1D(nn.Module):
             channels=encoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
+            down_ratio=down_ratio
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
         # self.decoder = ResNetDecoder1D(
@@ -386,6 +396,7 @@ class VQVAE1D(nn.Module):
             channels=decoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
+            up_ratio=up_ratio
         )
 
     def forward(self, x):
@@ -402,6 +413,10 @@ class VQVAE1D(nn.Module):
 class TrainConfig:
     encoder_channels: tuple
     decoder_channels: tuple
+    down_ratio: int
+    up_ratio: int
+    max_length: int
+
     raw_data_path: str
     indices_path: str
     one_channel: bool = True
@@ -495,6 +510,7 @@ def train_vqvae(cfg: TrainConfig):
         raw_data_path=cfg.raw_data_path,
         indices_path=cfg.indices_path,
         one_channel=cfg.one_channel,
+        max_length=cfg.max_length
     )
 
     loader = DataLoader(
@@ -513,6 +529,8 @@ def train_vqvae(cfg: TrainConfig):
         decoder_channels=cfg.decoder_channels,
         code_dim=cfg.code_dim,
         num_codes=cfg.num_codes,
+        down_ratio=cfg.down_ratio,
+        up_ratio=cfg.up_ratio
     ).to(device)
 
     optim = torch.optim.AdamW(
@@ -619,12 +637,21 @@ def extract_code_segments(
     indices_path,
     one_channel,
     device,
-    save_path
+    save_path,
+    down_ratio,
+    up_ratio,
+    max_length,
+    encoder_channels,
+    decoder_channels,
 ):
     model = VQVAE1D(
         in_channels=in_channels,
         code_dim=code_dim,
         num_codes=num_codes,
+        down_ratio=down_ratio,
+        up_ratio=up_ratio,
+        encoder_channels=encoder_channels,
+        decoder_channels=decoder_channels,
     ).to(device)
     model.eval()
     ckpt = torch.load(model_path, map_location=device)
@@ -638,6 +665,7 @@ def extract_code_segments(
         raw_data_path=raw_data_path,
         indices_path=indices_path,
         one_channel=one_channel,
+        max_length=max_length,
     )
 
     loader = DataLoader(
@@ -758,9 +786,12 @@ if __name__ == "__main__":
     cfg = TrainConfig(
         encoder_channels=(16,16,32,32,64,64),
         decoder_channels=(64,64,32,32,16,16),
+        down_ratio=2,
+        up_ratio=2,
+        max_length=100,
 
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
         one_channel=True,
 
         batch_size=64,
@@ -774,9 +805,8 @@ if __name__ == "__main__":
 
         recon_loss="mse",
         vq_loss_weight=1.0,
-
-        # device="cuda:0",
-        device="cpu",
+        device="cuda:0",
+        # device="cpu",
         save_path="vqvae_1d.pt",
     )
 
@@ -791,7 +821,12 @@ if __name__ == "__main__":
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
         one_channel=True,
         device="cuda:0",
-        save_path="code_segments.pt"
+        save_path="code_segments.pt",
+        down_ratio=2,
+        up_ratio=2,
+        max_length=100,
+        encoder_channels=(16,16,32,32,64,64),
+        decoder_channels=(64,64,32,32,16,16),
     )
 
     # 2️⃣ 离线画图

@@ -816,7 +816,7 @@ if __name__ == "__main__":
     #     npz_file=f"./raw_data/{name}.npz",
     #     output_dir=f"./indices/slide_windows_{name}npz",
     #     window_size=1800,
-    #     stride=80,
+    #     stride=40,
     #     train_ratio=0.99,
     #     max_anomaly_ratio=0.2
     # )
@@ -853,8 +853,8 @@ if __name__ == "__main__":
             # plt.legend()
             # plt.title("anomaly signal")
             # plt.show()
-        # print(max(lengths))
-        # print(min(lengths))
+        print(max(lengths))
+        print(min(lengths))
 
         with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
             for start, end in segments:
