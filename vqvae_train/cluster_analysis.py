@@ -26,8 +26,8 @@ state_dict = model_ckpt["model_state"]
 for k in state_dict:
     if 'quantizer' in k and 'weight' in k:
         print(f"Found codebook: {k}")
-        codebook = state_dict[k]
-        print("Shape:", codebook.shape)
+        codebook_embedding = state_dict[k]
+        print("Shape:", codebook_embedding.shape)
         break
 
 # Step 1: Compute embedding for each time series

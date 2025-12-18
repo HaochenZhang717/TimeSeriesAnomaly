@@ -362,14 +362,14 @@ class VQVAE1D(nn.Module):
         super().__init__()
         self.encoder = ResNetEncoder1D(
             in_channels=in_channels,
-            channels=(16, 16, 32, 32, 64),
-            blocks_per_stage=2,
+            channels=(16, 16, 32, 32, 64, 64),
+            blocks_per_stage=1,
             code_dim=code_dim,
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
         self.decoder = ResNetDecoder1D(
             out_channels=in_channels,
-            channels=(64, 32, 32, 32, 16),
+            channels=(64, 64, 32, 32, 16, 16),
             blocks_per_stage=1,
             code_dim=code_dim,
         )
