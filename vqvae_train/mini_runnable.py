@@ -21,6 +21,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+
 # --------------------------
 # Dataset (copied from you)
 # --------------------------
@@ -216,6 +217,7 @@ class ResNetEncoder1D(nn.Module):
         blocks_per_stage=2,
         code_dim=128,
         kernel_size=3,
+        down_ratio=2
     ):
         super().__init__()
 
@@ -232,7 +234,7 @@ class ResNetEncoder1D(nn.Module):
         for stage_idx, out_ch in enumerate(channels):
             for block_idx in range(blocks_per_stage):
                 # downsample only at first block of each stage (except stage 0)
-                stride = 2 if (block_idx == 0 and stage_idx > 0) else 1
+                stride = down_ratio if (block_idx == 0 and stage_idx > 0) else 1
                 stages.append(
                     ResBlock1D(
                         in_ch, out_ch,
@@ -260,11 +262,11 @@ class ResNetEncoder1D(nn.Module):
 
 
 class UpResBlock1D(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size=3):
+    def __init__(self, in_channels, out_channels, kernel_size, up_ratio):
         super().__init__()
         padding = kernel_size // 2
 
-        self.upsample = nn.Upsample(scale_factor=2, mode="nearest")
+        self.upsample = nn.Upsample(scale_factor=up_ratio, mode="nearest")
 
         self.conv1 = nn.Conv1d(
             in_channels, out_channels,
@@ -358,18 +360,30 @@ class ResNetDecoder1D(nn.Module):
 
 
 class VQVAE1D(nn.Module):
-    def __init__(self, in_channels, code_dim, num_codes):
+    def __init__(self, in_channels, encoder_channels, decoder_channels, code_dim, num_codes):
         super().__init__()
+        # self.encoder = ResNetEncoder1D(
+        #     in_channels=in_channels,
+        #     channels=(16, 16, 32, 32, 64, 64),
+        #     blocks_per_stage=1,
+        #     code_dim=code_dim,
+        # )
         self.encoder = ResNetEncoder1D(
             in_channels=in_channels,
-            channels=(16, 16, 32, 32, 64, 64),
+            channels=encoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
+        # self.decoder = ResNetDecoder1D(
+        #     out_channels=in_channels,
+        #     channels=(64, 64, 32, 32, 16, 16),
+        #     blocks_per_stage=1,
+        #     code_dim=code_dim,
+        # )
         self.decoder = ResNetDecoder1D(
             out_channels=in_channels,
-            channels=(64, 64, 32, 32, 16, 16),
+            channels=decoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
         )
@@ -386,6 +400,8 @@ class VQVAE1D(nn.Module):
 
 @dataclass
 class TrainConfig:
+    encoder_channels: tuple
+    decoder_channels: tuple
     raw_data_path: str
     indices_path: str
     one_channel: bool = True
@@ -493,6 +509,8 @@ def train_vqvae(cfg: TrainConfig):
     in_channels = 1 if cfg.one_channel else dataset.data.shape[1]
     model = VQVAE1D(
         in_channels=in_channels,
+        encoder_channels=cfg.encoder_channels,
+        decoder_channels=cfg.decoder_channels,
         code_dim=cfg.code_dim,
         num_codes=cfg.num_codes,
     ).to(device)
@@ -738,6 +756,9 @@ def plot_code_waveforms(
 
 if __name__ == "__main__":
     cfg = TrainConfig(
+        encoder_channels=(16,16,32,32,64,64),
+        decoder_channels=(64,64,32,32,16,16),
+
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
         one_channel=True,

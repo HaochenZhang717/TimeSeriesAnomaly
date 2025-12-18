@@ -10,7 +10,7 @@ python mTANDPrototypeFlow.py \
   --use_prototype ${USE_PROTOTPYE} \
   \
   --n_layer_enc 4 \
-  --n_layer_dec 4 \
+  --n_layer_dec 6 \
   --d_model 64 \
   --n_heads 4 \
   --num_prototypes 8 \
