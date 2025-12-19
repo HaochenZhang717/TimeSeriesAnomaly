@@ -846,7 +846,7 @@ if __name__ == "__main__":
         hidden=64,
         code_dim=8,
         code_len=4,
-        num_codes=300,
+        num_codes=500,
         beta=0.25,
 
         recon_loss="mse",
@@ -861,7 +861,7 @@ if __name__ == "__main__":
     extract_code_segments(
         in_channels=1,
         code_dim=8,
-        num_codes=300,
+        num_codes=500,
         model_path="/root/tianyi/vqvae_save_path/vqvae_1d.pt",
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
