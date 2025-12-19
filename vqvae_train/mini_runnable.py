@@ -60,9 +60,16 @@ class AnomalyDataset(Dataset):
     def __getitem__(self, index):
         # start, end = self.index_lines[index]
         start = self.index_lines[index]["start"]
-        end = self.index_lines[index]["end"]
-        if end - start > self.max_length:
-            end = start + self.max_length
+        if "source_file" in self.index_lines[index].keys():
+            # this is a normal data, we apply random length
+            random_length = random.randint(160, 800)
+            end = start + random_length
+        else: # this is anomaly data, we use fix length
+            end = self.index_lines[index]["end"]
+
+        assert end - start <= self.max_length
+        # if end - start > self.max_length:
+        #     end = start + self.max_length
         # if self.one_channel:
         #     return torch.from_numpy(self.data[start:end, :1]).float()
         # else:
@@ -71,10 +78,12 @@ class AnomalyDataset(Dataset):
         ts_dim = self.data.shape[1]
         signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
         signal[:end-start] = torch.from_numpy(self.data[start:end]).float()
+        pad_mask = torch.zeros(self.max_length, 1)
+        pad_mask[:end-start] = 1
         if self.one_channel:
-            return signal[:, :1]
+            return signal[:, :1], pad_mask
         else:
-            return signal
+            return signal, pad_mask
 
 def pad_collate_fn(batch):
     """
@@ -548,7 +557,6 @@ def train_vqvae(cfg: TrainConfig):
         batch_size=cfg.batch_size,
         shuffle=True,
         drop_last=True,
-        collate_fn=pad_collate_fn,
     )
 
     # -------- model --------
@@ -586,15 +594,15 @@ def train_vqvae(cfg: TrainConfig):
 
         epoch_ids = []   # 👈 收集整个 epoch 的 code ids
 
-        for x, lengths in loader:
+        for x, loss_mask in loader:
             x = x.to(device)                 # [B, T, C]
-            lengths = lengths.to(device)
+            loss_mask = loss_mask.to(device)
             B, T, C = x.shape
 
-            valid = make_valid_mask(lengths, T).unsqueeze(-1)  # [B, T, 1]
+            # valid = make_valid_mask(lengths, T).unsqueeze(-1)  # [B, T, 1]
 
             x_hat, ids, vq_loss = model(x)
-            rec_loss = recon_criterion(x_hat, x, valid)
+            rec_loss = recon_criterion(x_hat, x, loss_mask)
 
             loss = rec_loss + cfg.vq_loss_weight * vq_loss
 
@@ -676,6 +684,8 @@ def extract_code_segments(
     max_length,
     encoder_channels,
     decoder_channels,
+    code_len,
+    seq_len,
 ):
     model = VQVAE1D(
         in_channels=in_channels,
@@ -685,6 +695,8 @@ def extract_code_segments(
         up_ratio=up_ratio,
         encoder_channels=encoder_channels,
         decoder_channels=decoder_channels,
+        code_len=code_len,
+        seq_len=seq_len,
     ).to(device)
     model.eval()
     ckpt = torch.load(model_path, map_location=device)
@@ -861,6 +873,8 @@ if __name__ == "__main__":
         max_length=100,
         encoder_channels=(16,16,32,32,64,64),
         decoder_channels=(64,64,32,32,16,16),
+        code_len=4,
+        seq_len=800
     )
 
     # 2️⃣ 离线画图
