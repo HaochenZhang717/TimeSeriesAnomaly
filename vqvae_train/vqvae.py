@@ -182,7 +182,7 @@ class TransformerDecoder(nn.Module):
         z = self.input_proj(z) # (B, K, hidden_dim)
 
         hidden_states = self.time_queries[:T].unsqueeze(0).expand(B, -1, -1)# (B, T, hidden_dim)
-        hidden_states = torch.cat([hidden_states, z], dim=1) # (B, K+T, hidden_dim)
+        hidden_states = torch.cat([z, hidden_states], dim=1) # (B, K+T, hidden_dim)
 
         input_length = hidden_states.shape[1]
         # ---- rotary embeddings ----
