@@ -821,7 +821,7 @@ if __name__ == "__main__":
         decoder_channels=(64,64,32,32,16,16),
         down_ratio=2,
         up_ratio=2,
-        max_length=100,
+        max_length=800,
 
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
         indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",

@@ -815,78 +815,78 @@ if __name__ == "__main__":
     stats = build_single_ts_train_val(
         npz_file=f"./raw_data/{name}.npz",
         output_dir=f"./indices/slide_windows_{name}npz",
-        window_size=1800,
-        stride=40,
+        window_size=800,
+        stride=10,
         train_ratio=0.99,
         max_anomaly_ratio=0.2
     )
 
 
 
-    name = '106'
-    raw_data = np.load(f"./raw_data/{name}.npz")
-    raw_signal = raw_data["signal"]
-    anomaly_label = raw_data["anomaly_label"]
-
-    # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
-    anomaly_type_maps = {'V' :1}
-    # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
-    # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
-    # anomaly_type_maps = {'R': 5}
-
-    for k, v in anomaly_type_maps.items():
-        # segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
-        segments, cluster_ids = load_prototype_jsonl(
-            f"./indices/slide_windows_{name}npz/train/anomaly_segments_with_prototype.jsonl"
-        )
-
-        print(f"总共有 {len(segments)} 段 anomaly")
-        lengths = []
-        for i, (s, e) in enumerate(segments):
-            print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
-            lengths.append(e - s + 1)
-            # sampled_signal = raw_signal[s:s+1800]
-            # sampled_anomaly_label = anomaly_label[s:s+1800]
-            # plt.plot(sampled_signal[:, 0], label="signal channel 0")
-            # # plt.plot(sampled_signal[:, 1], label="signal channel 1")
-            # plt.plot(sampled_anomaly_label)
-            # plt.legend()
-            # plt.title("anomaly signal")
-            # plt.show()
-        print(max(lengths))
-        print(min(lengths))
-
-        # with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
-        #     for start, end in segments:
-        #         f.write(json.dumps([int(start), int(end)]) + "\n")
-
-
-        # windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
-        #     signal=raw_signal,
-        #     labels=anomaly_label,
-        #     segments=segments,
-        #     cluster_ids=cluster_ids,
-        #     window_size=1000,
-        #     length_range=(150, 900),  # 调这个
-        #     step=100,
-        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
-        #     anomaly_type=v
-        # )
-
-
-        # extract_more_windows_containing_segments(
-        #     signal=raw_signal,
-        #     segments=segments,
-        #     cluster_ids=cluster_ids,
-        #     window_size=1800,
-        #     step=100,
-        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
-        # )
-        # signal,
-        # segments,
-        # cluster_ids,
-        # window_size,
-        # step = 1,  # 滑窗步长，可以调大速度更快
-        # jsonl_path = None,
-        # print(min_anomaly_length)
-        # print(max_anomaly_length)
+    # name = '106'
+    # raw_data = np.load(f"./raw_data/{name}.npz")
+    # raw_signal = raw_data["signal"]
+    # anomaly_label = raw_data["anomaly_label"]
+    #
+    # # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
+    # anomaly_type_maps = {'V' :1}
+    # # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
+    # # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
+    # # anomaly_type_maps = {'R': 5}
+    #
+    # for k, v in anomaly_type_maps.items():
+    #     # segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+    #     segments, cluster_ids = load_prototype_jsonl(
+    #         f"./indices/slide_windows_{name}npz/train/anomaly_segments_with_prototype.jsonl"
+    #     )
+    #
+    #     print(f"总共有 {len(segments)} 段 anomaly")
+    #     lengths = []
+    #     for i, (s, e) in enumerate(segments):
+    #         print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
+    #         lengths.append(e - s + 1)
+    #         # sampled_signal = raw_signal[s:s+1800]
+    #         # sampled_anomaly_label = anomaly_label[s:s+1800]
+    #         # plt.plot(sampled_signal[:, 0], label="signal channel 0")
+    #         # # plt.plot(sampled_signal[:, 1], label="signal channel 1")
+    #         # plt.plot(sampled_anomaly_label)
+    #         # plt.legend()
+    #         # plt.title("anomaly signal")
+    #         # plt.show()
+    #     print(max(lengths))
+    #     print(min(lengths))
+    #
+    #     # with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
+    #     #     for start, end in segments:
+    #     #         f.write(json.dumps([int(start), int(end)]) + "\n")
+    #
+    #
+    #     # windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+    #     #     signal=raw_signal,
+    #     #     labels=anomaly_label,
+    #     #     segments=segments,
+    #     #     cluster_ids=cluster_ids,
+    #     #     window_size=1000,
+    #     #     length_range=(150, 900),  # 调这个
+    #     #     step=100,
+    #     #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
+    #     #     anomaly_type=v
+    #     # )
+    #
+    #
+    #     # extract_more_windows_containing_segments(
+    #     #     signal=raw_signal,
+    #     #     segments=segments,
+    #     #     cluster_ids=cluster_ids,
+    #     #     window_size=1800,
+    #     #     step=100,
+    #     #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
+    #     # )
+    #     # signal,
+    #     # segments,
+    #     # cluster_ids,
+    #     # window_size,
+    #     # step = 1,  # 滑窗步长，可以调大速度更快
+    #     # jsonl_path = None,
+    #     # print(min_anomaly_length)
+    #     # print(max_anomaly_length)
