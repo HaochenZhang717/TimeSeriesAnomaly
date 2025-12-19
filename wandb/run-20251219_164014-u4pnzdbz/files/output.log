@@ -1,0 +1,30 @@
+Train Epoch 0:   0%|                                                                                           | 0/489 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 255, in <module>
+    main()
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 233, in main
+    no_context_pretrain(args)
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 219, in no_context_pretrain
+    trainer.no_context_train(config=vars(args))
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/Trainers/DSPFlow_trainer/trainer.py", line 55, in no_context_train
+    for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 788, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dataset_utils/ECG_datasets/ecg_datasets.py", line 397, in __getitem__
+    relative_anomaly_start = random.randint(0, ts_length - infill_length)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/random.py", line 336, in randint
+    return self.randrange(a, b+1)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/random.py", line 319, in randrange
+    raise ValueError(f"empty range in randrange({start}, {stop})")
+ValueError: empty range in randrange(0, -365)

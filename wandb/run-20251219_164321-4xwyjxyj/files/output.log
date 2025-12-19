@@ -1,0 +1,70 @@
+Train Epoch 0:   0%|                                                                                           | 0/482 [01:03<?, ?it/s]
+> /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py(444)forward()
+-> x1, x2 = self.proj(x).chunk(2, dim=1)
+TrendBlock(
+  (trend): Sequential(
+    (0): Conv1d(1800, 3, kernel_size=(3,), stride=(1,), padding=(1,))
+    (1): GELU(approximate='none')
+    (2): Transpose()
+    (3): Conv1d(64, 1, kernel_size=(3,), stride=(1,), padding=(1,))
+  )
+)
+torch.Size([64, 800, 64])
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 255, in <module>
+    main()
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 233, in main
+    no_context_pretrain(args)
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 219, in no_context_pretrain
+    trainer.no_context_train(config=vars(args))
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/Trainers/DSPFlow_trainer/trainer.py", line 59, in no_context_train
+    loss = self.model(batch, mode="no_context")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 158, in forward
+    return self._no_context_loss(signals, attn_mask)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 187, in _no_context_loss
+    model_out = self.output(
+                ^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 66, in output
+    output = self.model(x, t, prototypes, padding_masks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 553, in forward
+    output, mean, trend, season = self.decoder(
+                                  ^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 494, in forward
+    self.blocks[block_idx](x, enc, t, prototype_embeds, mask=padding_masks)
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 444, in forward
+    x1, x2 = self.proj(x).chunk(2, dim=1)
+             ^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/bdb.py", line 90, in trace_dispatch
+    return self.dispatch_line(frame)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/bdb.py", line 115, in dispatch_line
+    if self.quitting: raise BdbQuit
+                      ^^^^^^^^^^^^^
+bdb.BdbQuit

@@ -1,0 +1,154 @@
+_wandb:
+    value:
+        cli_version: 0.22.3
+        e:
+            4aeyhrh3emldt5bne44xfa5vpq7v64ro:
+                apple:
+                    ecpuCores: 6
+                    gpuCores: 18
+                    memoryGb: 36
+                    name: Apple M3 Pro
+                    pcpuCores: 6
+                    ramTotalBytes: "38654705664"
+                    swapTotalBytes: "6442450944"
+                args:
+                    - --what_to_do
+                    - no_context_pretrain
+                    - --seq_len
+                    - "1800"
+                    - --feature_size
+                    - "1"
+                    - --one_channel
+                    - "1"
+                    - --n_layer_enc
+                    - "4"
+                    - --n_layer_dec
+                    - "4"
+                    - --d_model
+                    - "64"
+                    - --n_heads
+                    - "4"
+                    - --raw_data_path_train
+                    - ./dataset_utils/ECG_datasets/raw_data/106.npz
+                    - --indices_path_train
+                    - ./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl
+                    - --min_infill_length
+                    - "180"
+                    - --max_infill_length
+                    - "800"
+                    - --lr
+                    - "1e-4"
+                    - --batch_size
+                    - "64"
+                    - --max_epochs
+                    - "1000"
+                    - --grad_clip_norm
+                    - "1.0"
+                    - --grad_accum_steps
+                    - "1"
+                    - --early_stop
+                    - "true"
+                    - --patience
+                    - "50"
+                    - --wandb_project
+                    - dsp_flow
+                    - --wandb_run
+                    - 106npz_no_context_pretrain
+                    - --ckpt_dir
+                    - ../TSA-ckpts/dsp_flow/106npz/impute_pretrain_ckpt
+                    - --vqvae_ckpt
+                    - /root/tianyi/vqvae_save_path/vqvae_1d.pt
+                    - --generated_dir
+                    - none
+                    - --gpu_id
+                    - "0"
+                codePath: dsp_flow.py
+                codePathLocal: dsp_flow.py
+                cpu_count: 12
+                cpu_count_logical: 12
+                disk:
+                    /:
+                        total: "994662584320"
+                        used: "929663418368"
+                email: haochen235@g.ucla.edu
+                executable: /opt/anaconda3/envs/ColOCR_env/bin/python
+                git:
+                    commit: a9bb24206e37ea5124e0c6693b55f8c95d913fae
+                    remote: git@github.com:HaochenZhang717/TimeSeriesAnomaly.git
+                host: haochens-mbp.dyndns.rice.edu
+                memory:
+                    total: "38654705664"
+                os: macOS-14.3-arm64-arm-64bit
+                program: /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py
+                python: CPython 3.12.0
+                root: /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code
+                startedAt: "2025-12-19T23:02:49.006577Z"
+                writerId: 4aeyhrh3emldt5bne44xfa5vpq7v64ro
+        m: []
+        python_version: 3.12.0
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 13
+                - 16
+            "4": 3.12.0
+            "5": 0.22.3
+            "12": 0.22.3
+            "13": darwin-arm64
+batch_size:
+    value: 64
+ckpt_dir:
+    value: ../TSA-ckpts/dsp_flow/106npz/impute_pretrain_ckpt
+d_model:
+    value: 64
+early_stop:
+    value: "true"
+feature_size:
+    value: 1
+generated_dir:
+    value: none
+gpu_id:
+    value: 0
+grad_accum_steps:
+    value: 1
+grad_clip_norm:
+    value: 1
+indices_path_train:
+    value: ./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl
+lr:
+    value: 0.0001
+max_epochs:
+    value: 1000
+max_infill_length:
+    value: 800
+min_infill_length:
+    value: 180
+n_heads:
+    value: 4
+n_layer_dec:
+    value: 4
+n_layer_enc:
+    value: 4
+one_channel:
+    value: 1
+patience:
+    value: 50
+raw_data_path_train:
+    value: ./dataset_utils/ECG_datasets/raw_data/106.npz
+seq_len:
+    value: 1800
+vqvae_ckpt:
+    value: /root/tianyi/vqvae_save_path/vqvae_1d.pt
+wandb_project:
+    value: dsp_flow
+wandb_run:
+    value: 106npz_no_context_pretrain
+what_to_do:
+    value: no_context_pretrain

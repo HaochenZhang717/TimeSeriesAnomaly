@@ -1,0 +1,81 @@
+Train Epoch 0:   0%|                                                                                                            | 0/31 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 184, in <module>
+    main()
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 162, in main
+    imputation_pretrain(args)
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 146, in imputation_pretrain
+    trainer.imputation_train(config=vars(args))
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/Trainers/DSPFlow_trainer/trainer.py", line 153, in imputation_train
+    loss = self.model(batch, mode="imputation")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 135, in forward
+    return self._imputation_loss(signals, missing_signals, attn_mask, noise_mask)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 194, in _imputation_loss
+    model_out = self.output(
+                ^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 57, in output
+    output = self.model(x, t, prototypes, padding_masks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 627, in forward
+    enc_cond = self.encoder(inp_enc, t, prototype_embeds, padding_masks=padding_masks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 373, in forward
+    x, _ = self.blocks[block_idx](x, t, prototype_embeds, mask=padding_masks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 339, in forward
+    a, att = self.attn(self.ln1(x, timestep, prototype_embeds), mask=mask)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/model_utils.py", line 263, in forward
+    p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/container.py", line 250, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (64x32 and 64x128)

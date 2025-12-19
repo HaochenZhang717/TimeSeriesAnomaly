@@ -1,0 +1,23 @@
+2025-12-19 16:46:14,827 INFO    MainThread:62285 [wandb_setup.py:_flush():81] Current SDK version is 0.22.3
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_setup.py:_flush():81] Configure stats pid to 62285
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_setup.py:_flush():81] Loading settings from /Users/zhc/.config/wandb/settings
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_setup.py:_flush():81] Loading settings from /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/wandb/settings
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_init.py:setup_run_log_directory():706] Logging user logs to /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/wandb/run-20251219_164614-ye1mnxmm/logs/debug.log
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_init.py:setup_run_log_directory():707] Logging internal logs to /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/wandb/run-20251219_164614-ye1mnxmm/logs/debug-internal.log
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_init.py:init():833] calling init triggers
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_init.py:init():838] wandb.init called with sweep_config: {}
+config: {'what_to_do': 'no_context_pretrain', 'seq_len': 800, 'feature_size': 1, 'one_channel': 1, 'n_layer_enc': 4, 'n_layer_dec': 4, 'd_model': 64, 'n_heads': 4, 'raw_data_path_train': './dataset_utils/ECG_datasets/raw_data/106.npz', 'indices_path_train': './dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl', 'min_infill_length': 180, 'max_infill_length': 800, 'lr': 0.0001, 'batch_size': 64, 'max_epochs': 1000, 'grad_clip_norm': 1.0, 'grad_accum_steps': 1, 'early_stop': 'true', 'patience': 50, 'wandb_project': 'dsp_flow', 'wandb_run': '106npz_impute_pretrain', 'ckpt_dir': '../TSA-ckpts/dsp_flow/106npz/impute_pretrain_ckpt', 'vqvae_ckpt': '/root/tianyi/vqvae_save_path/vqvae_1d.pt', 'generated_dir': 'none', 'gpu_id': 0, '_wandb': {}}
+2025-12-19 16:46:14,828 INFO    MainThread:62285 [wandb_init.py:init():881] starting backend
+2025-12-19 16:46:15,058 INFO    MainThread:62285 [wandb_init.py:init():884] sending inform_init request
+2025-12-19 16:46:15,099 INFO    MainThread:62285 [wandb_init.py:init():892] backend started and connected
+2025-12-19 16:46:15,103 INFO    MainThread:62285 [wandb_init.py:init():962] updated telemetry
+2025-12-19 16:46:15,121 INFO    MainThread:62285 [wandb_init.py:init():986] communicating run to backend with 90.0 second timeout
+2025-12-19 16:46:15,514 INFO    MainThread:62285 [wandb_init.py:init():1033] starting run threads in backend
+2025-12-19 16:46:15,583 INFO    MainThread:62285 [wandb_run.py:_console_start():2506] atexit reg
+2025-12-19 16:46:15,583 INFO    MainThread:62285 [wandb_run.py:_redirect():2354] redirect: wrap_raw
+2025-12-19 16:46:15,583 INFO    MainThread:62285 [wandb_run.py:_redirect():2423] Wrapping output streams.
+2025-12-19 16:46:15,583 INFO    MainThread:62285 [wandb_run.py:_redirect():2446] Redirects installed.
+2025-12-19 16:46:15,584 INFO    MainThread:62285 [wandb_init.py:init():1073] run started, returning control to user process
+2025-12-19 16:53:38,345 INFO    wandb-AsyncioManager-main:62285 [service_client.py:_forward_responses():80] Reached EOF.
+2025-12-19 16:53:38,345 INFO    wandb-AsyncioManager-main:62285 [mailbox.py:close():137] Closing mailbox, abandoning 1 handles.

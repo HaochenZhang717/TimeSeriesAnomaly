@@ -1,0 +1,79 @@
+Train Epoch 0:   0%|                                                                                                            | 0/31 [00:17<?, ?it/s]
+> /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/model_utils.py(264)forward()
+-> p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
+> /Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/model_utils.py(264)forward()
+-> p_scale, p_shift = self.proto_mlp(prototype_embeds).chunk(2, dim=-1)
+--Call--
+> /opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py(1951)__getattr__()
+-> def __getattr__(self, name: str) -> Union[Tensor, "Module"]:
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 184, in <module>
+    main()
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 162, in main
+    imputation_pretrain(args)
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 146, in imputation_pretrain
+    trainer.imputation_train(config=vars(args))
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/Trainers/DSPFlow_trainer/trainer.py", line 153, in imputation_train
+    loss = self.model(batch, mode="imputation")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 138, in forward
+    return self._imputation_loss(signals, missing_signals, attn_mask, noise_mask)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 197, in _imputation_loss
+    model_out = self.output(
+                ^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/FMTS.py", line 60, in output
+    output = self.model(x, t, prototypes, padding_masks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 548, in forward
+    enc_cond = self.encoder(inp_enc, t, prototype_embeds, padding_masks=padding_masks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 376, in forward
+    x, _ = self.blocks[block_idx](x, t, prototype_embeds, mask=padding_masks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/transformer.py", line 340, in forward
+    a, att = self.attn(self.ln1(x, timestep, prototype_embeds), mask=mask)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/generation_models/DSPFlow/interpretable_flow/model_utils.py", line 264, in forward
+    h = h * (1 + p_scale.unsqueeze(1)) + p_shift.unsqueeze(1)
+                       ^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1951, in __getattr__
+    def __getattr__(self, name: str) -> Union[Tensor, "Module"]:
+
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/bdb.py", line 92, in trace_dispatch
+    return self.dispatch_call(frame, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/bdb.py", line 137, in dispatch_call
+    if self.quitting: raise BdbQuit
+                      ^^^^^^^^^^^^^
+bdb.BdbQuit
