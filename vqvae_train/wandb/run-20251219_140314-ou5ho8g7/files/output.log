@@ -1,0 +1,13 @@
+[Epoch 001/50] loss=0.031278  rec=0.016965  vq=0.014312  active=0.163  ppl=21.5  dead=251
+[Epoch 002/50] loss=0.007546  rec=0.005407  vq=0.002139  active=0.160  ppl=19.4  dead=252
+[Epoch 003/50] loss=0.006150  rec=0.004197  vq=0.001952  active=0.150  ppl=22.3  dead=255
+[Epoch 004/50] loss=0.005342  rec=0.003548  vq=0.001794  active=0.190  ppl=25.0  dead=243
+[Epoch 005/50] loss=0.004684  rec=0.003052  vq=0.001633  active=0.183  ppl=27.5  dead=245
+[Epoch 006/50] loss=0.004405  rec=0.002751  vq=0.001654  active=0.190  ppl=29.8  dead=243
+[Epoch 007/50] loss=0.004150  rec=0.002533  vq=0.001617  active=0.193  ppl=31.7  dead=242
+[Epoch 008/50] loss=0.004038  rec=0.002363  vq=0.001675  active=0.193  ppl=34.3  dead=242
+[Epoch 009/50] loss=0.003941  rec=0.002208  vq=0.001734  active=0.210  ppl=35.9  dead=237
+[Epoch 010/50] loss=0.003934  rec=0.002090  vq=0.001843  active=0.210  ppl=38.0  dead=237
+[Epoch 011/50] loss=0.003771  rec=0.001881  vq=0.001890  active=0.213  ppl=39.7  dead=236
+[Epoch 012/50] loss=0.003592  rec=0.001733  vq=0.001859  active=0.217  ppl=40.1  dead=235
+[Epoch 013/50] loss=0.003562  rec=0.001597  vq=0.001965  active=0.227  ppl=41.1  dead=232

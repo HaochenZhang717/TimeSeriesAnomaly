@@ -810,16 +810,16 @@ if __name__ == "__main__":
     #         max_anomaly_ratio=0.2
     #     )
 
-    # name = '106'
-    #
-    # stats = build_single_ts_train_val(
-    #     npz_file=f"./raw_data/{name}.npz",
-    #     output_dir=f"./indices/slide_windows_{name}npz",
-    #     window_size=1800,
-    #     stride=40,
-    #     train_ratio=0.99,
-    #     max_anomaly_ratio=0.2
-    # )
+    name = '106'
+
+    stats = build_single_ts_train_val(
+        npz_file=f"./raw_data/{name}.npz",
+        output_dir=f"./indices/slide_windows_{name}npz",
+        window_size=1800,
+        stride=40,
+        train_ratio=0.99,
+        max_anomaly_ratio=0.2
+    )
 
 
 
@@ -856,9 +856,9 @@ if __name__ == "__main__":
         print(max(lengths))
         print(min(lengths))
 
-        with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
-            for start, end in segments:
-                f.write(json.dumps([int(start), int(end)]) + "\n")
+        # with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
+        #     for start, end in segments:
+        #         f.write(json.dumps([int(start), int(end)]) + "\n")
 
 
         # windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
@@ -874,14 +874,14 @@ if __name__ == "__main__":
         # )
 
 
-        extract_more_windows_containing_segments(
-            signal=raw_signal,
-            segments=segments,
-            cluster_ids=cluster_ids,
-            window_size=1800,
-            step=100,
-            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
-        )
+        # extract_more_windows_containing_segments(
+        #     signal=raw_signal,
+        #     segments=segments,
+        #     cluster_ids=cluster_ids,
+        #     window_size=1800,
+        #     step=100,
+        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
+        # )
         # signal,
         # segments,
         # cluster_ids,

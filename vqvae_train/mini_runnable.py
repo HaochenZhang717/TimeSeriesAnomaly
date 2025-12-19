@@ -63,11 +63,18 @@ class AnomalyDataset(Dataset):
         end = self.index_lines[index]["end"]
         if end - start > self.max_length:
             end = start + self.max_length
-        if self.one_channel:
-            return torch.from_numpy(self.data[start:end, :1]).float()
-        else:
-            return torch.from_numpy(self.data[start:end]).float()
+        # if self.one_channel:
+        #     return torch.from_numpy(self.data[start:end, :1]).float()
+        # else:
+        #     return torch.from_numpy(self.data[start:end]).float()
 
+        ts_dim = self.data.shape[1]
+        signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
+        signal[:end-start] = torch.from_numpy(self.data[start:end]).float()
+        if self.one_channel:
+            return signal[:, :1]
+        else:
+            return signal
 
 def pad_collate_fn(batch):
     """
@@ -171,13 +178,15 @@ class ResBlock1D(nn.Module):
             in_channels, out_channels,
             kernel_size=kernel_size,
             stride=stride,
-            padding=padding
+            padding=padding,
+            bias=False,
         )
         self.conv2 = nn.Conv1d(
             out_channels, out_channels,
             kernel_size=kernel_size,
             stride=1,
-            padding=padding
+            padding=padding,
+            bias=False,
         )
 
         self.norm1 = nn.BatchNorm1d(out_channels)
@@ -188,7 +197,8 @@ class ResBlock1D(nn.Module):
             self.skip = nn.Conv1d(
                 in_channels, out_channels,
                 kernel_size=1,
-                stride=stride
+                stride=stride,
+                bias=False,
             )
         else:
             self.skip = nn.Identity()
@@ -220,7 +230,8 @@ class ResNetEncoder1D(nn.Module):
         blocks_per_stage=2,
         code_dim=128,
         kernel_size=3,
-        down_ratio=2
+        down_ratio=2,
+        code_len=4
     ):
         super().__init__()
 
@@ -228,7 +239,8 @@ class ResNetEncoder1D(nn.Module):
             in_channels, channels[0],
             kernel_size=kernel_size,
             stride=1,
-            padding=kernel_size // 2
+            padding=kernel_size // 2,
+            bias=False,
         )
 
         stages = []
@@ -249,9 +261,11 @@ class ResNetEncoder1D(nn.Module):
 
         self.stages = nn.Sequential(*stages)
 
+        self.global_pooling = nn.AdaptiveAvgPool1d(code_len)
         self.proj = nn.Conv1d(
             in_ch, code_dim,
-            kernel_size=1
+            kernel_size=1,
+            bias=False,
         )
 
     def forward(self, x):
@@ -260,6 +274,7 @@ class ResNetEncoder1D(nn.Module):
         h = self.stem(x)
         h = self.stages(h)
         z = self.proj(h)          # [B, D, T']
+        z = self.global_pooling(z)
         z = z.transpose(1, 2)     # [B, T', D]
         return z
 
@@ -274,19 +289,21 @@ class UpResBlock1D(nn.Module):
         self.conv1 = nn.Conv1d(
             in_channels, out_channels,
             kernel_size=kernel_size,
-            padding=padding
+            padding=padding,
+            bias=False,
         )
         self.conv2 = nn.Conv1d(
             out_channels, out_channels,
             kernel_size=kernel_size,
-            padding=padding
+            padding=padding,
+            bias=False,
         )
 
         self.norm1 = nn.BatchNorm1d(out_channels)
         self.norm2 = nn.BatchNorm1d(out_channels)
         self.act = nn.ReLU(inplace=True)
 
-        self.skip = nn.Conv1d(in_channels, out_channels, kernel_size=1)
+        self.skip = nn.Conv1d(in_channels, out_channels, kernel_size=1, bias=False)
 
     def forward(self, x):
         x = self.upsample(x)
@@ -316,14 +333,11 @@ class ResNetDecoder1D(nn.Module):
         blocks_per_stage=1,
         code_dim=128,
         kernel_size=3,
-        up_ratio=2
+        up_ratio=2,
+        code_len=123,
+        seq_len=123
     ):
         super().__init__()
-
-        self.stem = nn.Conv1d(
-            code_dim, channels[0],
-            kernel_size=1
-        )
 
         stages = []
         in_ch = channels[0]
@@ -344,13 +358,26 @@ class ResNetDecoder1D(nn.Module):
         self.head = nn.Conv1d(
             in_ch, out_channels,
             kernel_size=kernel_size,
-            padding=kernel_size // 2
+            padding=kernel_size // 2,
+            bias=False,
         )
 
+        n_upsample = len(channels) - 1
+        T0 = math.ceil(seq_len / (up_ratio ** n_upsample))
+
+        self.input_proj_1 = nn.Linear(code_dim, channels[0])   # channel
+        self.input_proj_2 = nn.Linear(code_len, T0)            # time
+
+
     def forward(self, z, target_len):
-        z = z.transpose(1, 2)      # [B, D, T']
-        h = self.stem(z)
-        h = self.stages(h)
+        '''
+        z: [B, T, C]
+        '''
+        z = self.input_proj_1(z)
+
+        z = z.transpose(1, 2)           # [B, C0, 4]
+        z = self.input_proj_2(z)
+        h = self.stages(z)
         x_hat = self.head(h)       # [B, C, T_recon]
         x_hat = x_hat.transpose(1, 2)
 
@@ -363,12 +390,11 @@ class ResNetDecoder1D(nn.Module):
         return x_hat
 
 
-
 class VQVAE1D(nn.Module):
     def __init__(
         self,
         in_channels, encoder_channels, decoder_channels, code_dim, num_codes,
-        down_ratio, up_ratio
+        down_ratio, up_ratio, code_len, seq_len
     ):
         super().__init__()
         # self.encoder = ResNetEncoder1D(
@@ -382,7 +408,8 @@ class VQVAE1D(nn.Module):
             channels=encoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
-            down_ratio=down_ratio
+            down_ratio=down_ratio,
+            code_len=code_len
         )
         self.quantizer = VectorQuantizer(num_codes, code_dim)
         # self.decoder = ResNetDecoder1D(
@@ -396,7 +423,9 @@ class VQVAE1D(nn.Module):
             channels=decoder_channels,
             blocks_per_stage=1,
             code_dim=code_dim,
-            up_ratio=up_ratio
+            up_ratio=up_ratio,
+            code_len=code_len,
+            seq_len=seq_len
         )
 
     def forward(self, x):
@@ -428,6 +457,7 @@ class TrainConfig:
 
     hidden: int = 64
     code_dim: int = 128
+    code_len: int = 4
     num_codes: int = 1024
     beta: float = 0.25
 
@@ -530,7 +560,9 @@ def train_vqvae(cfg: TrainConfig):
         code_dim=cfg.code_dim,
         num_codes=cfg.num_codes,
         down_ratio=cfg.down_ratio,
-        up_ratio=cfg.up_ratio
+        up_ratio=cfg.up_ratio,
+        code_len=cfg.code_len,
+        seq_len=cfg.max_length
     ).to(device)
 
     optim = torch.optim.AdamW(
@@ -801,6 +833,7 @@ if __name__ == "__main__":
 
         hidden=64,
         code_dim=8,
+        code_len=4,
         num_codes=300,
         beta=0.25,
 
