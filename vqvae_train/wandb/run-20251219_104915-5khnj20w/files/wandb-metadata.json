@@ -1,0 +1,17 @@
+{
+  "os": "macOS-14.3-arm64-arm-64bit",
+  "python": "CPython 3.12.0",
+  "startedAt": "2025-12-19T16:49:15.299610Z",
+  "program": "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train/train_utils.py",
+  "codePath": "vqvae_train/train_utils.py",
+  "codePathLocal": "train_utils.py",
+  "git": {
+    "remote": "git@github.com:HaochenZhang717/TimeSeriesAnomaly.git",
+    "commit": "e440b85f7d114ea7ac9224294d168491482d5675"
+  },
+  "email": "haochen235@g.ucla.edu",
+  "root": "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/vqvae_train",
+  "host": "haochens-mbp.dyndns.rice.edu",
+  "executable": "/opt/anaconda3/envs/ColOCR_env/bin/python",
+  "writerId": "h8dav9i49yioha0imsuev3ys7aw8izc3"
+}

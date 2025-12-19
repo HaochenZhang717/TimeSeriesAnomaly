@@ -11,8 +11,6 @@ from mini_runnable import AnomalyDataset
 
 
 
-
-
 def find_nearest_neighbors(
     all_embeddings: torch.Tensor,
     anchor_idx: int,
@@ -103,8 +101,9 @@ def inspect_embedding_neighborhood(
 
     print("Anchor embedding index:", anchor_emb_idx)
     print("Nearest neighbors (embedding indices):")
-    for i, d in zip(neighbors, dists):
-        print(f"  idx={i}, dist={float(d):.4f}")
+
+    for neighbor_idx, (i, d) in enumerate(zip(neighbors, dists)):
+        print(f" Neighbor{neighbor_idx}: idx={i}, dist={float(d):.4f}")
 
     plot_neighbor_time_series(
         code_segments,
@@ -130,15 +129,16 @@ if __name__ == "__main__":
 
     dataset = AnomalyDataset(
         raw_data_path="../dataset_utils/ECG_datasets/raw_data/106.npz",
-        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_small.jsonl",
+        indices_path="../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl",
         one_channel=True,
+        max_length=100
     )
 
-    code_segments = torch.load("code_segments.pt", map_location='cpu')
+    code_segments = torch.load("/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/vqvae_save_path/code_segments.pt", map_location='cpu')
     for i, code_segment in enumerate(code_segments):
         code_segment.update({'signal': dataset.__getitem__(i)})
 
-    model_ckpt = torch.load("vqvae_1d.pt", map_location='cpu')
+    model_ckpt = torch.load("/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/vqvae_save_path/vqvae_1d.pt", map_location='cpu')
     state_dict = model_ckpt["model_state"]
     # 自动查找 codebook 的 key
     for k in state_dict:
@@ -166,15 +166,15 @@ if __name__ == "__main__":
     all_embeddings = torch.stack(all_embeddings)  # (N, D)
     all_embeddings_np = all_embeddings.cpu().numpy()
 
-    inspect_embedding_neighborhood(
-        all_embeddings=all_embeddings,
-        code_segments=code_segments,
-        valid_indices=valid_indices,
-        anchor_emb_idx=39,  # 任选一个
-        k=10,
-        metric="l2",
-        signal_key="signal",
-    )
+    # inspect_embedding_neighborhood(
+    #     all_embeddings=all_embeddings,
+    #     code_segments=code_segments,
+    #     valid_indices=valid_indices,
+    #     anchor_emb_idx=1,  # 任选一个
+    #     k=200,
+    #     metric="l2",
+    #     signal_key="signal",
+    # )
 
     # # Step 2: KMeans Clustering
     # num_clusters = 5
@@ -198,4 +198,66 @@ if __name__ == "__main__":
     # plt.tight_layout()
     # plt.show()
 
+
+    # num_anomalies = 423
+    # # the first 422 are anomaly
+    # anomaly_codes = []
+    # for i in range(num_anomalies):
+    #     for code in code_segments[i]['ids']:
+    #         anomaly_codes.append(code.item())
+    #
+    # plt.hist(anomaly_codes, bins=len(np.unique(anomaly_codes)))
+    # plt.title("Histogram of anomaly codes")
+    # plt.show()
+    #
+    # normal_codes = []
+    # for i in range(num_anomalies, len(code_segments)):
+    #     for code in code_segments[i]['ids']:
+    #         normal_codes.append(code.item())
+    # plt.hist(normal_codes, bins=len(np.unique(normal_codes)))
+    # plt.title("Histogram of normal codes")
+    # plt.show()
+
+
+
+    num_anomalies = 423
+    anomaly_codes = []
+    for i in range(num_anomalies):
+        for code in code_segments[i]['ids']:
+            anomaly_codes.append(code.item())
+
+    normal_codes = []
+    for i in range(num_anomalies, len(code_segments)):
+        for code in code_segments[i]['ids']:
+            normal_codes.append(code.item())
+
+    anomaly_codes = np.array(anomaly_codes)
+    normal_codes = np.array(normal_codes)
+
+    # 统一 bin：code index 是整数
+    all_codes = np.concatenate([anomaly_codes, normal_codes])
+    bins = np.arange(all_codes.min(), all_codes.max() + 2) - 0.5
+
+    plt.figure(figsize=(8, 4))
+
+    plt.hist(
+        anomaly_codes,
+        bins=bins,
+        alpha=0.6,
+        label="Anomaly",
+    )
+
+    plt.hist(
+        normal_codes,
+        bins=bins,
+        alpha=0.6,
+        label="Normal",
+    )
+
+plt.xlabel("VQ code index")
+plt.ylabel("Count")
+plt.title("VQ Code Usage: Anomaly vs Normal")
+plt.legend()
+plt.tight_layout()
+plt.show()
 

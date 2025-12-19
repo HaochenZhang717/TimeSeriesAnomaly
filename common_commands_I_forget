@@ -44,6 +44,11 @@ scp -r root@134.199.134.61:/root/tianyi/TimeSeriesAnomaly/contrastive_learning/a
 scp -r root@134.199.134.61:/root/tianyi/samples_path/PrototypeFlow/mitdb1800_106/normal_len100/samples.pth ./
 scp -r root@134.199.134.61:/root/tianyi/samples_path/PrototypeFlow/mitdb1800_106/mask_normal_len800/samples.pth ./
 scp -r root@134.199.134.61:/root/tianyi/samples_path/PrototypeFlow/mitdb1800_106/imputation_len1200/samples.pth ./
+scp -r root@134.199.134.61:/root/tianyi/vqvae_save_path/code_segments.pt ./
+scp -r root@134.199.134.61:/root/tianyi/vqvae_save_path/vqvae_1d.pt ./
+
+
+scp -r root@134.199.134.61:/root/tianyi/509_final/dpll_results_parallel_4.json ./
 
 
 
