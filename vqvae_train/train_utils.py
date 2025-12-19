@@ -206,8 +206,8 @@ if __name__ == "__main__":
         beta=0.25,
 
         batch_size=64,
-        epochs=50,
-        lr=1e-3,
+        epochs=1000,
+        lr=1e-4,
         weight_decay=1e-3,
 
         recon_loss="mse",
