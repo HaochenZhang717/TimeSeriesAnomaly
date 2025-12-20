@@ -554,6 +554,7 @@ def posterior_impute_sample(args):
 
     all_samples = []
     all_labels = []
+    all_reals = []
     num_samples = 0
     while num_samples < 10000:
         for normal_batch in normal_loader:
@@ -573,6 +574,7 @@ def posterior_impute_sample(args):
 
             all_samples.append(samples)
             all_labels.append(noise_mask)
+            all_reals.append(signals)
 
             num_samples += samples.shape[0]
             print(f"Generated {num_samples}/10000 ")
@@ -581,10 +583,12 @@ def posterior_impute_sample(args):
 
     all_samples = torch.cat(all_samples, dim=0)
     all_labels = torch.cat(all_labels, dim=0)
+    all_reals = torch.cat(all_reals, dim=0)
 
     all_results = {
         'all_samples': all_samples,
         'all_labels': all_labels,
+        'all_reals': all_reals,
     }
     torch.save(all_results, f"{args.ckpt_dir}/posterior_impute_samples.pth")
 
