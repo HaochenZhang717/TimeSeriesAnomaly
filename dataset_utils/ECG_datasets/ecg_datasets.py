@@ -468,7 +468,7 @@ class NoContextAnomalyECGDataset(Dataset):
 
         data = self.normed_signal[ts_start:ts_end]
         signal = torch.zeros(self.seq_len, data.shape[-1])
-        signal[:ts_length] = data
+        signal[:ts_length] = torch.from_numpy(data)
 
         if self.one_channel:
             signal = signal[:, :1]
