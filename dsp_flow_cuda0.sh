@@ -202,7 +202,7 @@ python dsp_flow.py \
   --n_heads 4 \
   \
   --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-  --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+  --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal.jsonl" \
   --indices_path_anomaly_for_sample "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype.jsonl" \
   --min_infill_length 180 \
   --max_infill_length 800 \

@@ -323,7 +323,6 @@ class ImputationNormalECGDataset(Dataset):
 
 
     def __getitem__(self, index):
-
         ts_start = self.index_lines[index]['start']
         ts_end = self.index_lines[index]['end']
         ts_length = ts_end - ts_start
