@@ -265,12 +265,12 @@ def no_context_sample(args):
         signals = signals.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len, ts_dim)
         attn_mask = attn_mask.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len)
 
-        signals = signals.reshape(-1, args.seq_len, args.feature_size) #(batch_size*10, seq_len, ts_dim)
-        attn_mask = attn_mask.reshape(-1, args.seq_len) # (batch_size*10, seq_len)
+        signals = signals.reshape(-1, args.max_infill_length, args.feature_size) #(batch_size*10, seq_len, ts_dim)
+        attn_mask = attn_mask.reshape(-1, args.max_infill_length) # (batch_size*10, seq_len)
 
         with torch.no_grad():
             samples = model.no_context_generation(signals, attn_mask)
-        samples = samples.reshape(args.batch_size, -1, args.seq_len, args.feature_size)
+        samples = samples.reshape(args.batch_size, -1, args.max_infill_length, args.feature_size)
         torch.save(samples, f"{args.ckpt_dir}/no_context_samples.pth")
         break
 
