@@ -259,14 +259,14 @@ def no_context_sample(args):
         signals = batch['signals'].to(device=device, dtype=torch.float32) #(batch_size, seq_len, ts_dim)
         attn_mask = batch['attn_mask'].to(device=device, dtype=torch.bool) # (batch_size, seq_len)
 
-        signals = signals.unsqueeze(-1) #(batch_size, 1, seq_len, ts_dim)
-        attn_mask = attn_mask.unsqueeze(-1) #(batch_size, 1, seq_len)
+        repeat_signals = signals.unsqueeze(-1) #(batch_size, 1, seq_len, ts_dim)
+        repeat_attn_mask = attn_mask.unsqueeze(-1) #(batch_size, 1, seq_len)
 
-        signals = signals.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len, ts_dim)
-        attn_mask = attn_mask.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len)
+        repeat_signals = repeat_signals.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len, ts_dim)
+        repeat_attn_mask = repeat_attn_mask.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len)
 
-        repeat_signals = signals.reshape(-1, args.max_infill_length, args.feature_size) #(batch_size*10, seq_len, ts_dim)
-        repeat_attn_mask = attn_mask.reshape(-1, args.max_infill_length) # (batch_size*10, seq_len)
+        repeat_signals = repeat_signals.reshape(-1, args.max_infill_length, args.feature_size) #(batch_size*10, seq_len, ts_dim)
+        repeat_attn_mask = repeat_attn_mask.reshape(-1, args.max_infill_length) # (batch_size*10, seq_len)
 
         with torch.no_grad():
             samples = model.no_context_generation(repeat_signals, repeat_attn_mask)
