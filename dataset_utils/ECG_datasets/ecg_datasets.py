@@ -326,7 +326,14 @@ class ImputationNormalECGDataset(Dataset):
         ts_start = self.index_lines[index]['start']
         ts_end = self.index_lines[index]['end']
         ts_length = ts_end - ts_start
-        infill_length = random.randint(self.min_infill_length, self.max_infill_length)
+
+
+
+        # infill_length = random.randint(self.min_infill_length, self.max_infill_length)
+
+        infill_length = self.min_infill_length + torch.sigmoid(torch.rand(1)).item() * (self.max_infill_length - self.min_infill_length)
+
+
 
         relative_anomaly_start = random.randint(0, ts_length - infill_length)
         relative_anomaly_end = relative_anomaly_start + infill_length
