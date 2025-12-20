@@ -17,7 +17,7 @@ python dsp_flow.py \
   --min_infill_length 180 \
   --max_infill_length 800 \
   \
-  --lr 1e-4 \
+  --lr 1e-5 \
   --batch_size 64 \
   --max_epochs 500 \
   --grad_clip_norm 1.0 \
