@@ -560,7 +560,7 @@ def posterior_impute_sample(args):
             noise_mask = normal_batch['noise_mask'].to(device=device, dtype=torch.long)
 
             idx = torch.randint(0, discrete_embeds.shape[0], (noise_mask.shape[0],), device=device)
-            posterior = discrete_embeds[idx]
+            posterior = discrete_embeds[idx].to(device=device)
 
             with torch.no_grad():
                 samples = model.posterior_impute(
