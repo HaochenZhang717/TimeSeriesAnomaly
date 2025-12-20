@@ -52,6 +52,10 @@ scp -r root@134.199.134.61:/root/tianyi/509_final/dpll_results_parallel_4.json .
 scp -r root@134.199.134.61:/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt/no_context_samples.pth ./
 
 
+scp -r root@134.199.134.61:/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_from_scratch_ckpt/posterior_impute_samples.pth ./
+scp -r root@134.199.134.61:/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_fintune_ckpt/posterior_impute_samples.pth ./
+
+
 
 
 

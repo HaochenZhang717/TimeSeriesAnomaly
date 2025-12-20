@@ -1,4 +1,3 @@
-from torch import dtype
 from Trainers import DSPFlowTrainer
 from generation_models import DSPFlow
 from dataset_utils import ImputationNormalECGDataset, NoContextAnomalyECGDataset
@@ -7,6 +6,8 @@ import argparse
 import torch
 import json
 import os
+import numpy as np
+from evaluation_utils import calculate_robustTAD
 
 
 
@@ -552,6 +553,7 @@ def posterior_impute_sample(args):
 
 
     all_samples = []
+    all_labels = []
     num_samples = 0
     while num_samples < 10000:
         for normal_batch in normal_loader:
@@ -570,15 +572,142 @@ def posterior_impute_sample(args):
                 )
 
             all_samples.append(samples)
+            all_labels.append(noise_mask)
+
             num_samples += samples.shape[0]
             print(f"Generated {num_samples}/10000 ")
             if num_samples >= 10000:
                 break
 
     all_samples = torch.cat(all_samples, dim=0)
-    torch.save(all_samples, f"{args.ckpt_dir}/posterior_impute_samples.pth")
+    all_labels = torch.cat(all_labels, dim=0)
+
+    all_results = {
+        'all_samples': all_samples,
+        'all_labels': all_labels,
+    }
+    torch.save(all_results, f"{args.ckpt_dir}/posterior_impute_samples.pth")
 
 
+def anomaly_evaluate(args):
+    device = torch.device(f"cuda:{args.gpu_id}")
+
+    real_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        use_prototype="true",
+        max_infill_length=args.max_infill_length,
+    )
+    real_data = []
+    real_labels = []
+    for index_line in real_set.index_lines:
+        ts_start = index_line['ts_start']
+        ts_end = index_line['ts_end']
+        anomaly_start = index_line['anomaly_start']
+        anomaly_end = index_line['anomaly_end']
+        relative_anomaly_start = anomaly_start - ts_start
+        relative_anomaly_end = anomaly_end - ts_start
+        real_datum = real_set.normed_signal[ts_start:ts_end]
+        real_label = torch.zeros(len(real_datum))
+        real_label[relative_anomaly_start:relative_anomaly_end] = 1
+
+        real_data.append(real_datum)
+        real_labels.append(real_label)
+
+    real_data = torch.cat(real_data, dim=0).to(device=device)
+    real_labels = torch.cat(real_labels, dim=0).to(device=device)
+
+
+    all_anomalies = torch.load(
+        f"{args.generated_path}/posterior_impute_samples.pth",
+        map_location=device
+    )
+
+    gen_data = all_anomalies['all_samples']
+    gen_labels = all_anomalies['all_labels']
+
+    # ---- Step 1: 找出含 NaN 的样本 ----
+    nan_mask = torch.isnan(gen_data).any(dim=(1, 2))  # True 表示该样本含 NaN
+
+    print("Samples containing NaN:", nan_mask.sum().item(), "/", gen_data.size(0))
+
+    # ---- Step 2: 删除这些样本 ----
+    gen_data = gen_data[~nan_mask]
+    gen_labels = gen_labels[~nan_mask]
+
+
+    precisions = []
+    recalls = []
+    f1s = []
+    normal_accuracies = []
+    anomaly_accuracies = []
+    for _ in range(5):
+        # random_indices = torch.randperm(len(gen_data))[:args.eval_train_size]
+        # sampled_gen_data = gen_data[random_indices]
+        # sampled_gen_labels = gen_labels[random_indices]
+
+        normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
+            anomaly_weight=5.0,
+            feature_size=args.feature_size,
+            ori_data=real_data,
+            ori_labels=real_labels,
+            gen_data=gen_data,
+            gen_labels=gen_labels,
+            device=device,
+            lr=1e-5,
+            max_epochs=2000,
+            batch_size=64,
+            patience=20)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)
+        normal_accuracies.append(normal_accuracy)
+        anomaly_accuracies.append(anomaly_accuracy)
+
+    mean_precision = np.mean(precisions)
+    mean_recall = np.mean(recalls)
+    mean_f1 = np.mean(f1s)
+    mean_normal_accuracy = np.mean(normal_accuracies)
+    mean_anomaly_accuracy = np.mean(anomaly_accuracies)
+
+    std_precision = np.std(precisions)
+    std_recall = np.std(recalls)
+    std_f1 = np.std(f1s)
+    std_normal_accuracy = np.std(normal_accuracies)
+    std_anomaly_accuracy = np.std(anomaly_accuracies)
+
+    print(f"precision: {mean_precision}+-{std_precision}")
+    print(f"recall: {mean_recall}+-{std_recall}")
+    print(f"f1: {mean_f1}+-{std_f1}")
+    print(f"normal_accuracy: {mean_normal_accuracy}+-{std_normal_accuracy}")
+    print(f"anomaly_accuracy: {mean_anomaly_accuracy}+-{std_anomaly_accuracy}")
+
+
+    result = {
+        "precision_mean": float(mean_precision),
+        "precision_std": float(std_precision),
+        "recall_mean": float(mean_recall),
+        "recall_std": float(std_recall),
+        "f1_mean": float(mean_f1),
+        "f1_std": float(std_f1),
+        "normal_accuracy_mean": float(mean_normal_accuracy),
+        "normal_accuracy_std": float(std_normal_accuracy),
+        "anomaly_accuracy_mean": float(mean_anomaly_accuracy),
+        "anomaly_accuracy_std": float(std_anomaly_accuracy),
+    }
+
+    output_record = {
+        "args": vars(args),
+        "result": result,
+    }
+    qweqwe = args.generated_file.split(".")[0]
+    save_path = os.path.join(args.generated_path, f"evaluation_results_{qweqwe}.jsonl")
+    os.makedirs(args.generated_path, exist_ok=True)
+
+    with open(save_path, "a") as f:
+        f.write(json.dumps(output_record) + "\n")
 
 
 def main():
