@@ -198,23 +198,6 @@ class RMSNorm(torch.nn.Module):
         return (x * rrms).to(dtype=x_dtype) * self.scale
 
 
-# class AdaLayerNorm(nn.Module):
-#     def __init__(self, n_embd):
-#         super().__init__()
-#         self.emb = SinusoidalPosEmb(n_embd)
-#         self.silu = nn.SiLU()
-#         self.linear = nn.Linear(n_embd*2, n_embd*2)
-#         self.layernorm = nn.LayerNorm(n_embd, elementwise_affine=False)
-#
-#     def forward(self, x, timestep, prototype_embeds):
-#         emb = self.emb(timestep)
-#         emb = torch.cat([emb, prototype_embeds], dim=1)
-#         emb = self.linear(self.silu(emb)).unsqueeze(1)
-#         scale, shift = torch.chunk(emb, 2, dim=2)
-#         x = self.layernorm(x) * (1 + scale) + shift
-#         return x
-
-
 class AdaLayerNorm(nn.Module):
     def __init__(self, n_embd, proto_dim):
         super().__init__()

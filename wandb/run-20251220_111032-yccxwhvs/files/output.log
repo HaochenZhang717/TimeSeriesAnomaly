@@ -1,0 +1,25 @@
+Train Epoch 0:   0%|                                                                                                             | 0/6 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 375, in <module>
+    main()
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 365, in main
+    imputation_finetune(args)
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dsp_flow.py", line 229, in imputation_finetune
+    trainer.imputation_train(config=vars(args))
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/Trainers/DSPFlow_trainer/trainer.py", line 143, in imputation_train
+    for batch in tqdm(self.train_loader, desc=f"Train Epoch {epoch}"):
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 788, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/ColOCR_env/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/Users/zhc/Documents/PhD/projects/TimeSeriesAnomaly/code/dataset_utils/ECG_datasets/ecg_datasets.py", line 246, in __getitem__
+    ts_start = self.index_lines[index]['ts_start']
+               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'ts_start'

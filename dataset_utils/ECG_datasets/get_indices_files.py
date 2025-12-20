@@ -742,8 +742,10 @@ def extract_windows_containing_segments(
                 # plt.show()
 
                 record = {
-                    "start": int(start),
-                    "end": int(end),
+                    "ts_start": int(start),
+                    "ts_end": int(end),
+                    "anomaly_start": int(seg_start),
+                    "anomaly_end": int(seg_end),
                     "anomaly_type": 1,
                     "cluster_id": int(cluster_id),
                 }
