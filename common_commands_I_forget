@@ -49,6 +49,7 @@ scp -r root@134.199.134.61:/root/tianyi/vqvae_save_path/vqvae_1d.pt ./
 
 
 scp -r root@134.199.134.61:/root/tianyi/509_final/dpll_results_parallel_4.json ./
+scp -r root@134.199.134.61:/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt/no_context_samples.pth ./
 
 
 

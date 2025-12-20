@@ -271,7 +271,13 @@ def no_context_sample(args):
         with torch.no_grad():
             samples = model.no_context_generation(signals, attn_mask)
         samples = samples.reshape(args.batch_size, -1, args.max_infill_length, args.feature_size)
-        torch.save(samples, f"{args.ckpt_dir}/no_context_samples.pth")
+
+        result = {
+            'reals': signals,
+            'samples': samples,
+            'attn_mask': attn_mask,
+        }
+        torch.save(result, f"{args.ckpt_dir}/no_context_samples.pth")
         break
 
 
