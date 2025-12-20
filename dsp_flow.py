@@ -551,12 +551,12 @@ def posterior_impute_sample(args):
         discrete_embeds.append(discrete_embed)
     discrete_embeds = torch.cat(discrete_embeds, dim=0)
 
-
+    num_generate = 10
     all_samples = []
     all_labels = []
     all_reals = []
     num_samples = 0
-    while num_samples < 10000:
+    while num_samples < num_generate:
         for normal_batch in normal_loader:
             signals = normal_batch['signals'].to(device=device, dtype=torch.float32) #(batch_size, seq_len, ts_dim)
             attn_mask = normal_batch['attn_mask'].to(device=device, dtype=torch.bool) # (batch_size, seq_len)
@@ -577,8 +577,8 @@ def posterior_impute_sample(args):
             all_reals.append(signals)
 
             num_samples += samples.shape[0]
-            print(f"Generated {num_samples}/10000 ")
-            if num_samples >= 10000:
+            print(f"Generated {num_samples}/{num_generate} ")
+            if num_samples >= num_generate:
                 break
 
     all_samples = torch.cat(all_samples, dim=0)
