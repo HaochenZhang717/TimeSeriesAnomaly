@@ -225,11 +225,13 @@ class ImputationECGDataset(Dataset):
             seq_len,
             one_channel,
             use_prototype,
+            max_infill_length,
     ):
         super(ImputationECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
         self.use_prototype = use_prototype
+        self.max_infill_length = max_infill_length
 
         raw_data = np.load(raw_data_path)
         raw_signal = raw_data["signal"]
@@ -264,6 +266,12 @@ class ImputationECGDataset(Dataset):
         noise_mask = torch.zeros(T, dtype=torch.long)
         noise_mask[relative_anomaly_start:relative_anomaly_end] = 1
 
+        # ===== missing signals =====
+        missing_signals = torch.zeros(self.max_infill_length, signal.shape[-1])
+        infill_length = anomaly_end - anomaly_start
+        missing_signals[:infill_length] = signal[relative_anomaly_start:relative_anomaly_end]
+
+
         if self.use_prototype == "true":
             prototype_id = self.index_lines[index].get('prototype_id', -100)
         elif self.use_prototype == "false":
@@ -277,6 +285,7 @@ class ImputationECGDataset(Dataset):
         )
         return {
             'signals': signal,
+            'missing_signals': missing_signals,
             'prototypes': prototype_id,
             'attn_mask': context_mask,
             'noise_mask': noise_mask,
