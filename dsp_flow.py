@@ -551,7 +551,7 @@ def posterior_impute_sample(args):
         discrete_embeds.append(discrete_embed)
     discrete_embeds = torch.cat(discrete_embeds, dim=0)
 
-    num_generate = 10
+    num_generate = 10000
     all_samples = []
     all_labels = []
     all_reals = []
