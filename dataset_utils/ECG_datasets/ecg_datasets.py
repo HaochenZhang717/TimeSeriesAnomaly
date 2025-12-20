@@ -284,7 +284,6 @@ class ImputationECGDataset(Dataset):
             dtype=torch.long
         )
 
-        breakpoint()
         return {
             'signals': signal,
             'missing_signals': missing_signals,
