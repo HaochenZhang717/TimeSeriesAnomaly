@@ -72,6 +72,7 @@ def get_args():
 
     """save and load parameters"""
     parser.add_argument("--ckpt_dir", type=str, required=True)
+    parser.add_argument("--pretrained_ckpt", type=str, required=True)
     parser.add_argument("--vqvae_ckpt", type=str, required=True)
 
     """save path """
@@ -81,9 +82,6 @@ def get_args():
     parser.add_argument("--gpu_id", type=int, required=True)
 
     return parser.parse_args()
-
-
-
 
 
 def imputation_pretrain(args):
@@ -100,6 +98,10 @@ def imputation_pretrain(args):
         mlp_hidden_times=4,
         vqvae_ckpt=args.vqvae_ckpt
     )
+    # prepare for imputation training
+    pretrained_state_dict = torch.load(f"{args.pretrained_ckpt}/ckpt.pth")
+    model.load_state_dict(pretrained_state_dict)
+    model.freeze_proto_mlp()
 
     train_set = ImputationNormalECGDataset(
         raw_data_path=args.raw_data_path_train,

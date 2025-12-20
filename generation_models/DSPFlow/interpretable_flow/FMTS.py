@@ -35,7 +35,6 @@ class DSPFlow(nn.Module):
             max_len=seq_length, n_embd=d_model, conv_params=[kernel_size, padding_size],
             proto_dim=32
         )
-
         self.vqvae = VQVAE(
             in_channels=feature_size,
             encoder_channels=(16, 16, 32, 32, 64, 64),
@@ -60,7 +59,15 @@ class DSPFlow(nn.Module):
         self.time_scalar = 1000 ## scale 0-1 to 0-1000 for time embedding
 
         self.num_timesteps = int(os.environ.get('hucfg_num_steps', '100'))
-    
+
+
+
+    def freeze_proto_mlp(self):
+        for name, param in self.model.named_parameters():
+            if 'proto_mlp' in name:
+                param.requires_grad = False
+        print('Frozen proto_mlp')
+
     def output(self, x, t, prototypes, padding_masks):
         if padding_masks is not None:
             x = x * padding_masks.unsqueeze(-1)
