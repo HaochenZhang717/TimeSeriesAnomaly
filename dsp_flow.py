@@ -1,3 +1,5 @@
+from torch import dtype
+
 from Trainers import DSPFlowTrainer
 from generation_models import DSPFlow
 from dataset_utils import ImputationNormalECGDataset
@@ -33,6 +35,7 @@ def get_args():
         choices=[
             "imputation_pretrain",
             "no_context_pretrain",
+            "no_context_sample",
         ],
         help="what to do"
     )
@@ -221,6 +224,55 @@ def no_context_pretrain(args):
 
 
 
+def no_context_sample(args):
+    model = DSPFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        vqvae_ckpt=args.vqvae_ckpt
+    )
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model.to(device=device)
+    model.eval()
+
+    train_set = NoContextNormalECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        min_infill_length=args.min_infill_length,
+        max_infill_length=args.max_infill_length,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn=dict_collate_fn,
+    )
+
+    for batch in train_loader:
+        signals = batch['signals'].to(device=device, dtype=torch.float32) #(batch_size, seq_len, ts_dim)
+        attn_mask = batch['attn_mask'].to(device=device, dtype=torch.bool) # (batch_size, seq_len)
+
+        signals = signals.unsqueeze(-1) #(batch_size, 1, seq_len, ts_dim)
+        attn_mask = attn_mask.unsqueeze(-1) #(batch_size, 1, seq_len)
+
+        signals = signals.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len, ts_dim)
+        attn_mask = attn_mask.repeat(1, 10, 1, 1) #(batch_size, 10, seq_len)
+
+        signals = signals.reshape(-1, args.seq_len, args.feature_size) #(batch_size*10, seq_len, ts_dim)
+        attn_mask = attn_mask.reshape(-1, args.seq_len) # (batch_size*10, seq_len)
+
+        with torch.no_grad():
+            samples = model.no_context_generation(signals, attn_mask)
+        samples = samples.reshape(args.batch_size, -1, args.seq_len, args.feature_size)
+        torch.save(samples, f"{args.ckpt_dir}/no_context_samples.pth")
+        break
 
 
 
@@ -231,22 +283,8 @@ def main():
         imputation_pretrain(args)
     elif args.what_to_do == "no_context_pretrain":
         no_context_pretrain(args)
-    # elif args.what_to_do == "imputation_sample":
-    #     imputation_sample(args)
-    # elif args.what_to_do == "conditional_sample_on_real_anomaly":
-    #     conditional_sample_on_real_anomaly(args)
-    # elif args.what_to_do == "conditional_sample_on_real_normal":
-    #     conditional_sample_on_real_normal(args)
-    # elif args.what_to_do == "conditional_sample_on_fake":
-    #     conditional_sample_on_fake(args)
-    # elif args.what_to_do == "unconditional_sample":
-    #     unconditional_sample(args)
-    # elif args.what_to_do == "unconditional_evaluate":
-    #     unconditional_evaluate(args)
-    # elif args.what_to_do == "anomaly_evaluate":
-    #     anomaly_evaluate(args)
-    # elif args.what_to_do == "unconditional_training":
-    #     unconditional_train(args)
+    elif args.what_to_do == "no_context_sample":
+        no_context_sample(args)
     else:
         raise NotImplementedError
 
