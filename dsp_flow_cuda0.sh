@@ -150,9 +150,47 @@ export hucfg_t_sampling=logitnorm
 
 
 
+#
+#python dsp_flow.py \
+#  --what_to_do "imputation_finetune" \
+#  \
+#  --seq_len 1000 \
+#  --feature_size 1 \
+#  --one_channel 1 \
+#  \
+#  --n_layer_enc 4 \
+#  --n_layer_dec 4 \
+#  --d_model 64 \
+#  --n_heads 4 \
+#  \
+#  --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+#  --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+#  --min_infill_length 180 \
+#  --max_infill_length 800 \
+#  \
+#  --lr 1e-4 \
+#  --batch_size 64 \
+#  --max_epochs 2000 \
+#  --grad_clip_norm 1.0 \
+#  --grad_accum_steps 1 \
+#  --early_stop "true" \
+#  --patience 50 \
+#  \
+#  --wandb_project "dsp_flow" \
+#  --wandb_run "106npz_impute_from_scratch" \
+#  \
+#  --ckpt_dir "../TSA-ckpts/dsp_flow/106npz/impute_from_scratch_ckpt" \
+#  --pretrained_ckpt "none" \
+#  --vqvae_ckpt "/root/tianyi/vqvae_save_path/vqvae_1d.pt" \
+#  \
+#  --generated_dir "none" \
+#  \
+#  --gpu_id 0
+
+
 
 python dsp_flow.py \
-  --what_to_do "imputation_finetune" \
+  --what_to_do "posterior_impute_sample" \
   \
   --seq_len 1000 \
   --feature_size 1 \
@@ -165,6 +203,7 @@ python dsp_flow.py \
   \
   --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
   --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V.jsonl" \
+  --indices_path_anomaly_for_sample "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype.jsonl" \
   --min_infill_length 180 \
   --max_infill_length 800 \
   \
@@ -183,6 +222,6 @@ python dsp_flow.py \
   --pretrained_ckpt "none" \
   --vqvae_ckpt "/root/tianyi/vqvae_save_path/vqvae_1d.pt" \
   \
-  --generated_dir "none" \
+  --generated_dir "../TSA-ckpts/dsp_folw/106npz/impute_from_scratch_samples" \
   \
   --gpu_id 0

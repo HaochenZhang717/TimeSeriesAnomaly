@@ -436,6 +436,56 @@ class NoContextNormalECGDataset(Dataset):
         return len(self.index_lines)
 
 
+class NoContextAnomalyECGDataset(Dataset):
+    def __init__(
+            self,
+            raw_data_path,
+            indices_path,
+            seq_len,
+            one_channel,
+    ):
+        super(NoContextAnomalyECGDataset, self).__init__()
+        self.seq_len = seq_len
+        self.one_channel = one_channel
+
+        self.raw_data_path = raw_data_path
+        self.indices_path = indices_path
+
+
+        raw_data = np.load(raw_data_path)
+        raw_signal = raw_data["signal"]
+        self.anomaly_label = raw_data["anomaly_label"]
+        scaler = MinMaxScaler()
+        self.normed_signal = scaler.fit_transform(raw_signal)
+        self.index_lines= load_jsonl(indices_path)
+
+
+    def __getitem__(self, index):
+
+        ts_start = self.index_lines[index]['start']
+        ts_end = self.index_lines[index]['end']
+        ts_length = ts_end - ts_start
+
+        data = self.normed_signal[ts_start:ts_end]
+        signal = torch.zeros(self.seq_len, data.shape[-1])
+        signal[:ts_length] = data
+
+        if self.one_channel:
+            signal = signal[:, :1]
+
+
+        context_mask = torch.zeros(self.seq_len, dtype=torch.long)
+        context_mask[:ts_length] = 1
+        return {
+            'signals': signal,
+            'attn_mask': context_mask,
+        }
+
+
+    def __len__(self):
+        return len(self.index_lines)
+
+
 def pad_collate_fn(batch):
     """
     batch: list of Tensor [L_i, C]
