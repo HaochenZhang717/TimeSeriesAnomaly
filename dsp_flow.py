@@ -37,6 +37,8 @@ def get_args():
             "imputation_finetune",
             "no_context_pretrain",
             "no_context_sample",
+            "no_context_no_code_pretrain",
+            "no_code_imputation_finetune"
         ],
         help="what to do"
     )
@@ -356,6 +358,144 @@ def no_context_sample(args):
 
 
 
+def no_context_no_code_pretrain(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = DSPFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        vqvae_ckpt=args.vqvae_ckpt
+    )
+
+    train_set = NoContextNormalECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        min_infill_length=args.min_infill_length,
+        max_infill_length=args.max_infill_length,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn = dict_collate_fn,
+    )
+    val_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=False, drop_last=False,
+        collate_fn=dict_collate_fn,
+    )
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=1,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-5,  # min LR clamp
+    )
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    trainer = DSPFlowTrainer(
+        optimizer=optimizer,
+        scheduler=scheduler,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
+        device=device,
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
+        early_stop=args.early_stop,
+        patience=args.patience,
+    )
+
+    trainer.no_context_no_code_train(config=vars(args))
+
+
+def no_code_imputation_finetune(args):
+    os.makedirs(args.ckpt_dir, exist_ok=True)
+    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+
+    model = DSPFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        vqvae_ckpt=args.vqvae_ckpt
+    )
+    # prepare for imputation training
+    if args.pretrained_ckpt != "none":
+        pretrained_state_dict = torch.load(f"{args.pretrained_ckpt}/ckpt.pth")
+        model.load_state_dict(pretrained_state_dict)
+        model.freeze_proto_mlp()
+
+    train_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        use_prototype="true",
+        max_infill_length=args.max_infill_length,
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn = dict_collate_fn,
+    )
+    val_loader = torch.utils.data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        shuffle=False, drop_last=False,
+        collate_fn=dict_collate_fn,
+    )
+
+    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.8,  # multiply LR by 0.5
+        patience=1,  # wait 3 epochs with no improvement
+        threshold=1e-4,  # improvement threshold
+        min_lr=1e-5,  # min LR clamp
+    )
+
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    trainer = DSPFlowTrainer(
+        optimizer=optimizer,
+        scheduler=scheduler,
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        max_epochs=args.max_epochs,
+        device=device,
+        save_dir=args.ckpt_dir,
+        wandb_run_name=args.wandb_run,
+        wandb_project_name=args.wandb_project,
+        grad_clip_norm=args.grad_clip_norm,
+        grad_accum_steps=args.grad_accum_steps,
+        early_stop=args.early_stop,
+        patience=args.patience,
+    )
+
+    trainer.no_code_imputation_train(config=vars(args))
+
 
 def main():
     args = get_args()
@@ -363,10 +503,14 @@ def main():
         imputation_pretrain(args)
     elif args.what_to_do == "imputation_finetune":
         imputation_finetune(args)
+    elif args.what_to_do == "no_code_imputation_finetune":
+        no_code_imputation_finetune(args)
     elif args.what_to_do == "no_context_pretrain":
         no_context_pretrain(args)
     elif args.what_to_do == "no_context_sample":
         no_context_sample(args)
+    elif args.what_to_do == "no_context_no_code_pretrain":
+        no_context_no_code_pretrain(args)
     else:
         raise NotImplementedError
 
