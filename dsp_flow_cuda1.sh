@@ -29,6 +29,7 @@ python dsp_flow.py \
   \
   --ckpt_dir "../TSA-ckpts/dsp_flow/106npz/no_context_no_code_pretrain_ckpt" \
   --vqvae_ckpt "/root/tianyi/vqvae_save_path/vqvae_1d.pt" \
+  --pretrained_ckpt "none" \
   \
   --generated_dir "none" \
   \
