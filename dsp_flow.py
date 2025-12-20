@@ -545,7 +545,7 @@ def posterior_impute_sample(args):
     # first get all the latent variables of anomaly segments
     discrete_embeds = []
     for anomaly_batch in anomaly_loader:
-        anomaly_signals = anomaly_batch['signals']
+        anomaly_signals = anomaly_batch['signals'].to(device=device)
         discrete_embed = model.vqvae.encode(anomaly_signals)
         discrete_embeds.append(discrete_embed)
     discrete_embeds = torch.cat(discrete_embeds, dim=0)
