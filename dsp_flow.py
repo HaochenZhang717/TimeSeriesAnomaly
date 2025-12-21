@@ -658,7 +658,7 @@ def anomaly_evaluate(args):
         print("real_labels.shape:", real_labels.shape)
         print("gen_data.shape:", gen_data.shape)
         print("gen_labels.shape:", gen_labels.shape)
-        breakpoint()
+
         normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
             anomaly_weight=1.0,
             feature_size=args.feature_size,
@@ -714,7 +714,7 @@ def anomaly_evaluate(args):
         "result": result,
     }
     qweqwe = args.generated_file.split(".")[0]
-    save_path = os.path.join(args.generated_path, f"evaluation_results_{qweqwe}.jsonl")
+    save_path = os.path.join(args.ckpt_dir, f"evaluation_results_{qweqwe}.jsonl")
     os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
