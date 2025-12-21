@@ -150,6 +150,7 @@ def calculate_robustTAD(
         batch_size=64,
         patience=20,
 ):
+    breakpoint()
     X_real = torch.tensor(ori_data, dtype=torch.float32)
     X_fake = torch.tensor(gen_data, dtype=torch.float32)
 

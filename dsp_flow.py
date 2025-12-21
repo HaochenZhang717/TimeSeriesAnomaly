@@ -637,7 +637,6 @@ def anomaly_evaluate(args):
     nan_mask = torch.isnan(gen_data).any(dim=(1, 2))  # True 表示该样本含 NaN
 
     print("Samples containing NaN:", nan_mask.sum().item(), "/", gen_data.size(0))
-    breakpoint()
     # ---- Step 2: 删除这些样本 ----
     gen_data = gen_data[~nan_mask]
     gen_labels = gen_labels[~nan_mask]
