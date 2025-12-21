@@ -615,7 +615,7 @@ def anomaly_evaluate(args):
         relative_anomaly_start = anomaly_start - ts_start
         relative_anomaly_end = anomaly_end - ts_start
         real_datum = torch.from_numpy(real_set.normed_signal[ts_start:ts_end]).unsqueeze(0)
-        real_label = torch.zeros(len(real_datum))
+        real_label = torch.zeros(ts_end - ts_start).to(device=device)
         real_label[relative_anomaly_start:relative_anomaly_end] = 1
 
         real_data.append(real_datum)
