@@ -81,7 +81,7 @@ def get_args():
     parser.add_argument("--vqvae_ckpt", type=str, required=True)
 
     """save path """
-    parser.add_argument("--generated_dir", type=str, required=True)
+    parser.add_argument("--generated_path", type=str, required=True)
 
     """gpu parameters"""
     parser.add_argument("--gpu_id", type=int, required=True)
@@ -636,7 +636,7 @@ def anomaly_evaluate(args):
     nan_mask = torch.isnan(gen_data).any(dim=(1, 2))  # True 表示该样本含 NaN
 
     print("Samples containing NaN:", nan_mask.sum().item(), "/", gen_data.size(0))
-
+    breakpoint()
     # ---- Step 2: 删除这些样本 ----
     gen_data = gen_data[~nan_mask]
     gen_labels = gen_labels[~nan_mask]
@@ -653,7 +653,7 @@ def anomaly_evaluate(args):
         # sampled_gen_labels = gen_labels[random_indices]
 
         normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
-            anomaly_weight=5.0,
+            anomaly_weight=1.0,
             feature_size=args.feature_size,
             ori_data=real_data,
             ori_labels=real_labels,
@@ -730,6 +730,8 @@ def main():
         no_context_no_code_pretrain(args)
     elif args.what_to_do == "posterior_impute_sample":
         posterior_impute_sample(args)
+    elif args.what_to_do == "anomaly_evaluate":
+        anomaly_evaluate(args)
     else:
         raise NotImplementedError
 
