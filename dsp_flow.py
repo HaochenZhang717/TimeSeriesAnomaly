@@ -654,6 +654,11 @@ def anomaly_evaluate(args):
         # sampled_gen_data = gen_data[random_indices]
         # sampled_gen_labels = gen_labels[random_indices]
 
+        print("real_data.shape:", real_data.shape)
+        print("real_labels.shape:", real_labels.shape)
+        print("gen_data.shape:", gen_data.shape)
+        print("gen_labels.shape:", gen_labels.shape)
+        breakpoint()
         normal_accuracy, anomaly_accuracy, precision, recall, f1 = calculate_robustTAD(
             anomaly_weight=1.0,
             feature_size=args.feature_size,
