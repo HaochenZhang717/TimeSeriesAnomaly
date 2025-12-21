@@ -39,7 +39,8 @@ def get_args():
             "no_context_sample",
             "no_context_no_code_pretrain",
             "no_code_imputation_finetune",
-            "posterior_impute_sample"
+            "posterior_impute_sample",
+            "anomaly_evaluate"
         ],
         help="what to do"
     )
