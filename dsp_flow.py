@@ -812,7 +812,7 @@ def anomaly_evaluate(args):
         "result": result,
     }
     save_path = os.path.join(args.ckpt_dir, f"evaluation_results.jsonl")
-    os.makedirs(args.generated_path, exist_ok=True)
+    # os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
         f.write(json.dumps(output_record) + "\n")

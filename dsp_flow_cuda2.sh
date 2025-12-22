@@ -54,7 +54,7 @@ for LR in "${LRS[@]}"; do
     \
     --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
     --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_1000.jsonl" \
-    --indices-path_test "" \
+    --indices_path_test "" \
     --indices_path_anomaly_for_sample "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype_train.jsonl" \
     --min_infill_length 180 \
     --max_infill_length 800 \
