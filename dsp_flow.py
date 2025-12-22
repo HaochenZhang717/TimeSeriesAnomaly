@@ -572,7 +572,7 @@ def posterior_impute_sample(args):
         discrete_embeds.append(discrete_embed)
     discrete_embeds = torch.cat(discrete_embeds, dim=0)
 
-    num_generate = 10000
+    num_generate = 50000
     all_samples = []
     all_labels = []
     all_reals = []
@@ -650,7 +650,7 @@ def no_code_impute_sample(args):
 
 
 
-    num_generate = 10000
+    num_generate = 50000
     all_samples = []
     all_labels = []
     all_reals = []
@@ -748,9 +748,9 @@ def anomaly_evaluate(args):
     normal_accuracies = []
     anomaly_accuracies = []
     for _ in range(5):
-        # random_indices = torch.randperm(len(gen_data))[:args.eval_train_size]
-        # sampled_gen_data = gen_data[random_indices]
-        # sampled_gen_labels = gen_labels[random_indices]
+        random_indices = torch.randperm(len(gen_data))[:10000]
+        sampled_gen_data = gen_data[random_indices]
+        sampled_gen_labels = gen_labels[random_indices]
 
         print("real_data.shape:", real_data.shape)
         print("real_labels.shape:", real_labels.shape)
