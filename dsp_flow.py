@@ -703,10 +703,13 @@ def anomaly_evaluate(args):
     real_labels = torch.cat(real_labels, dim=0).to(device=device)
 
 
-    all_anomalies = torch.load(
-        f"{args.generated_path}/posterior_impute_samples.pth",
-        map_location=device
-    )
+    # all_anomalies = torch.load(
+    #     f"{args.generated_path}/posterior_impute_samples.pth",
+    #     map_location=device
+    # )
+
+    all_anomalies = torch.load(args.generated_path, map_location=device)
+
 
     gen_data = all_anomalies['all_samples']
     gen_labels = all_anomalies['all_labels']
