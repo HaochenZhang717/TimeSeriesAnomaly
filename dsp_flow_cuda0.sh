@@ -262,4 +262,4 @@ python dsp_flow.py \
   \
   --generated_path "../TSA-ckpts/dsp_flow/106npz/impute_from_scratch_ckpt" \
   \
-  --gpu_id 2
+  --gpu_id 0

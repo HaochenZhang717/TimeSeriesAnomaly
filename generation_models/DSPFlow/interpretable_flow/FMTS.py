@@ -98,38 +98,38 @@ class DSPFlow(nn.Module):
     #     return zt
 
 
-    @torch.no_grad()
-    def impute(self, signals, missing_signals, attn_mask, noise_mask):
-        """
-        x_start: (B, T, C)
-        anomaly_label: (B, T, C)   1 = missing, 0 = observed
-        """
-        self.eval()
-
-        batch_size = signals.shape[0]
-        prototype_embeds = self.vqvae.encode(missing_signals)
-        prototype_embeds = prototype_embeds.reshape(batch_size, -1)
-
-
-        zt = torch.randn_like(signals) * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
-
-        # --- identical timestep shifting as unconditional sample ---
-        timesteps = torch.linspace(0, 1, self.num_timesteps + 1)
-        t_shifted = 1 - (self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
-        t_shifted = t_shifted.flip(0).to(signals.device)
-
-        # 2) Integrate ODE from t=1 → t=0
-        for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
-            step = t_prev - t_curr
-            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(signals.device).view(-1)
-            v = self.output(zt.clone(), t_input, prototype_embeds, attn_mask)
-
-            #update missing region ONLY
-            zt = zt + step * v * noise_mask.unsqueeze(-1)
-            #restore known region
-            zt = zt * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
-
-        return zt
+    # @torch.no_grad()
+    # def impute(self, signals, missing_signals, attn_mask, noise_mask):
+    #     """
+    #     x_start: (B, T, C)
+    #     anomaly_label: (B, T, C)   1 = missing, 0 = observed
+    #     """
+    #     self.eval()
+    #
+    #     batch_size = signals.shape[0]
+    #     prototype_embeds = self.vqvae.encode(missing_signals)
+    #     prototype_embeds = prototype_embeds.reshape(batch_size, -1)
+    #
+    #
+    #     zt = torch.randn_like(signals) * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
+    #
+    #     # --- identical timestep shifting as unconditional sample ---
+    #     timesteps = torch.linspace(0, 1, self.num_timesteps + 1)
+    #     t_shifted = 1 - (self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
+    #     t_shifted = t_shifted.flip(0).to(signals.device)
+    #
+    #     # 2) Integrate ODE from t=1 → t=0
+    #     for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
+    #         step = t_prev - t_curr
+    #         t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(signals.device).view(-1)
+    #         v = self.output(zt.clone(), t_input, prototype_embeds, attn_mask)
+    #
+    #         #update missing region ONLY
+    #         zt = zt + step * v * noise_mask.unsqueeze(-1)
+    #         #restore known region
+    #         zt = zt * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
+    #
+    #     return zt
 
 
     @torch.no_grad()
@@ -156,6 +156,39 @@ class DSPFlow(nn.Module):
             step = t_prev - t_curr
             t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(signals.device).view(-1)
             v = self.output(zt.clone(), t_input, prototype_embeds, attn_mask)
+
+            #update missing region ONLY
+            zt = zt + step * v * noise_mask.unsqueeze(-1)
+            #restore known region
+            zt = zt * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
+
+        return zt
+
+
+    @torch.no_grad()
+    def no_code_impute(self, signals, attn_mask, noise_mask):
+        """
+        x_start: (B, T, C)
+        anomaly_label: (B, T, C)   1 = missing, 0 = observed
+        """
+        self.eval()
+
+        # batch_size = signals.shape[0]
+        # prototype_embeds = posterior.reshape(batch_size, -1)
+
+
+        zt = torch.randn_like(signals) * noise_mask.unsqueeze(-1) + signals * (1 - noise_mask.unsqueeze(-1))
+
+        # --- identical timestep shifting as unconditional sample ---
+        timesteps = torch.linspace(0, 1, self.num_timesteps + 1)
+        t_shifted = 1 - (self.alpha * timesteps) / (1 + (self.alpha - 1) * timesteps)
+        t_shifted = t_shifted.flip(0).to(signals.device)
+
+        # 2) Integrate ODE from t=1 → t=0
+        for t_curr, t_prev in zip(t_shifted[:-1], t_shifted[1:]):
+            step = t_prev - t_curr
+            t_input = torch.tensor([t_curr*self.time_scalar]).unsqueeze(0).repeat(zt.shape[0], 1).to(signals.device).view(-1)
+            v = self.output(zt.clone(), t_input, None, attn_mask)
 
             #update missing region ONLY
             zt = zt + step * v * noise_mask.unsqueeze(-1)

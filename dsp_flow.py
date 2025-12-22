@@ -40,6 +40,7 @@ def get_args():
             "no_context_no_code_pretrain",
             "no_code_imputation_finetune",
             "posterior_impute_sample",
+            "no_code_impute_sample",
             "anomaly_evaluate"
         ],
         help="what to do"
@@ -594,6 +595,81 @@ def posterior_impute_sample(args):
     torch.save(all_results, f"{args.ckpt_dir}/posterior_impute_samples.pth")
 
 
+def no_code_impute_sample(args):
+    model = DSPFlow(
+        seq_length=args.seq_len,
+        feature_size=args.feature_size,
+        n_layer_enc=args.n_layer_enc,
+        n_layer_dec=args.n_layer_dec,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        mlp_hidden_times=4,
+        vqvae_ckpt=args.vqvae_ckpt
+    )
+    model.load_state_dict(torch.load(f"{args.ckpt_dir}/ckpt.pth"))
+    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+    model.to(device=device)
+    model.eval()
+
+
+
+    normal_set = ImputationNormalECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_train,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        min_infill_length=args.min_infill_length,
+        max_infill_length=args.max_infill_length,
+    )
+
+
+    normal_loader = torch.utils.data.DataLoader(
+        normal_set, batch_size=args.batch_size,
+        shuffle=True, drop_last=True,
+        collate_fn=dict_collate_fn,
+    )
+
+
+
+    num_generate = 10000
+    all_samples = []
+    all_labels = []
+    all_reals = []
+    num_samples = 0
+    while num_samples < num_generate:
+        for normal_batch in normal_loader:
+            signals = normal_batch['signals'].to(device=device, dtype=torch.float32) #(batch_size, seq_len, ts_dim)
+            attn_mask = normal_batch['attn_mask'].to(device=device, dtype=torch.bool) # (batch_size, seq_len)
+            noise_mask = normal_batch['noise_mask'].to(device=device, dtype=torch.long)
+
+            with torch.no_grad():
+                samples = model.no_code_impute(
+                    signals,
+                    attn_mask=attn_mask,
+                    noise_mask=noise_mask
+                )
+
+            all_samples.append(samples)
+            all_labels.append(noise_mask)
+            all_reals.append(signals)
+
+            num_samples += samples.shape[0]
+            print(f"Generated {num_samples}/{num_generate} ")
+            if num_samples >= num_generate:
+                break
+
+    all_samples = torch.cat(all_samples, dim=0)
+    all_labels = torch.cat(all_labels, dim=0)
+    all_reals = torch.cat(all_reals, dim=0)
+
+    all_results = {
+        'all_samples': all_samples,
+        'all_labels': all_labels,
+        'all_reals': all_reals,
+    }
+    torch.save(all_results, f"{args.ckpt_dir}/no_code_impute_samples.pth")
+
+
 def anomaly_evaluate(args):
     device = torch.device(f"cuda:{args.gpu_id}")
 
@@ -713,8 +789,7 @@ def anomaly_evaluate(args):
         "args": vars(args),
         "result": result,
     }
-    qweqwe = args.generated_file.split(".")[0]
-    save_path = os.path.join(args.ckpt_dir, f"evaluation_results_{qweqwe}.jsonl")
+    save_path = os.path.join(args.ckpt_dir, f"evaluation_results.jsonl")
     os.makedirs(args.generated_path, exist_ok=True)
 
     with open(save_path, "a") as f:
@@ -737,6 +812,8 @@ def main():
         no_context_no_code_pretrain(args)
     elif args.what_to_do == "posterior_impute_sample":
         posterior_impute_sample(args)
+    elif args.what_to_do == "no_code_impute_sample":
+        no_code_impute_sample(args)
     elif args.what_to_do == "anomaly_evaluate":
         anomaly_evaluate(args)
     else:
