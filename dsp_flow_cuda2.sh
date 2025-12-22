@@ -2,42 +2,42 @@ export hucfg_t_sampling=logitnorm
 LRS=(1e-4)
 
 for LR in "${LRS[@]}"; do
-  python dsp_flow.py \
-    --what_to_do "imputation_finetune" \
-    \
-    --seq_len 1000 \
-    --feature_size 1 \
-    --one_channel 1 \
-    \
-    --n_layer_enc 4 \
-    --n_layer_dec 4 \
-    --d_model 64 \
-    --n_heads 4 \
-    \
-    --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
-    --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_train.jsonl" \
-    --indices_path_test "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_test.jsonl" \
-    --min_infill_length 180 \
-    --max_infill_length 800 \
-    \
-    --lr ${LR} \
-    --batch_size 64 \
-    --max_epochs 500 \
-    --grad_clip_norm 1.0 \
-    --grad_accum_steps 1 \
-    --early_stop "true" \
-    --patience 50 \
-    \
-    --wandb_project "dsp_flow" \
-    --wandb_run "106npz_impute_finetune_lr${LR}" \
-    \
-    --ckpt_dir "../TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}" \
-    --pretrained_ckpt "../TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt" \
-    --vqvae_ckpt "/root/tianyi/vqvae_save_path/vqvae_1d.pt" \
-    \
-    --generated_path "none" \
-    \
-    --gpu_id 2
+#  python dsp_flow.py \
+#    --what_to_do "imputation_finetune" \
+#    \
+#    --seq_len 1000 \
+#    --feature_size 1 \
+#    --one_channel 1 \
+#    \
+#    --n_layer_enc 4 \
+#    --n_layer_dec 4 \
+#    --d_model 64 \
+#    --n_heads 4 \
+#    \
+#    --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
+#    --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_train.jsonl" \
+#    --indices_path_test "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_test.jsonl" \
+#    --min_infill_length 180 \
+#    --max_infill_length 800 \
+#    \
+#    --lr ${LR} \
+#    --batch_size 64 \
+#    --max_epochs 500 \
+#    --grad_clip_norm 1.0 \
+#    --grad_accum_steps 1 \
+#    --early_stop "true" \
+#    --patience 50 \
+#    \
+#    --wandb_project "dsp_flow" \
+#    --wandb_run "106npz_impute_finetune_lr${LR}" \
+#    \
+#    --ckpt_dir "../TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}" \
+#    --pretrained_ckpt "../TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt" \
+#    --vqvae_ckpt "/root/tianyi/vqvae_save_path/vqvae_1d.pt" \
+#    \
+#    --generated_path "none" \
+#    \
+#    --gpu_id 2
 
 
   python dsp_flow.py \
@@ -54,6 +54,7 @@ for LR in "${LRS[@]}"; do
     \
     --raw_data_path_train "./dataset_utils/ECG_datasets/raw_data/106.npz" \
     --indices_path_train "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_1000.jsonl" \
+    --indices-path_test "" \
     --indices_path_anomaly_for_sample "./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype_train.jsonl" \
     --min_infill_length 180 \
     --max_infill_length 800 \
@@ -113,7 +114,7 @@ for LR in "${LRS[@]}"; do
     --pretrained_ckpt "none" \
     --vqvae_ckpt "" \
     \
-    --generated_path "../TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}" \
+    --generated_path "../TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}/posterior_impute_samples.pth" \
     \
     --gpu_id 2
 done
