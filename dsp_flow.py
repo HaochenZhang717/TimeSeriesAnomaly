@@ -60,6 +60,7 @@ def get_args():
     """data parameters"""
     parser.add_argument("--raw_data_path_train", type=str, required=True)
     parser.add_argument("--indices_path_train", type=str, required=True)
+    parser.add_argument("--indices_path_test", type=str, required=True)
     parser.add_argument("--indices_path_anomaly_for_sample", type=str, default="none")
     parser.add_argument("--min_infill_length", type=int, required=True)
     parser.add_argument("--max_infill_length", type=int, required=True)
@@ -192,13 +193,22 @@ def imputation_finetune(args):
         max_infill_length=args.max_infill_length,
     )
 
+    val_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_test,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        use_prototype="true",
+        max_infill_length=args.max_infill_length,
+    )
+
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
         shuffle=True, drop_last=True,
         collate_fn = dict_collate_fn,
     )
     val_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
+        val_set, batch_size=args.batch_size,
         shuffle=False, drop_last=False,
         collate_fn=dict_collate_fn,
     )
@@ -455,13 +465,22 @@ def no_code_imputation_finetune(args):
         max_infill_length=args.max_infill_length,
     )
 
+    val_set = ImputationECGDataset(
+        raw_data_path=args.raw_data_path_train,
+        indices_path=args.indices_path_test,
+        seq_len=args.seq_len,
+        one_channel=args.one_channel,
+        use_prototype="true",
+        max_infill_length=args.max_infill_length,
+    )
+
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
         shuffle=True, drop_last=True,
         collate_fn = dict_collate_fn,
     )
     val_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
+        val_set, batch_size=args.batch_size,
         shuffle=False, drop_last=False,
         collate_fn=dict_collate_fn,
     )
@@ -675,7 +694,7 @@ def anomaly_evaluate(args):
 
     real_set = ImputationECGDataset(
         raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        indices_path=args.indices_path_test,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         use_prototype="true",
