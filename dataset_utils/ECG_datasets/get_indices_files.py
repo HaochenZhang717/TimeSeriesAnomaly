@@ -678,78 +678,145 @@ def extract_windows_containing_segments(
     windows_label = []
     window_starts = []
 
-    for (seg_start, seg_end), cluster_id in zip(segments, cluster_ids):
+    if cluster_ids is not None:
+        for (seg_start, seg_end), cluster_id in zip(segments, cluster_ids):
 
-        # 为完全包含异常段，需要窗口满足：
-        # start <= seg_start AND start+window_size-1 >= seg_end
-        earliest = seg_end - window_size + 1
-        latest = seg_start
+            earliest = seg_end - window_size + 1
+            latest = seg_start
 
-        # 合法窗口起点范围
-        valid_range_start = max(0, earliest)
-        valid_range_end   = min(latest, T - window_size)
+            valid_range_start = max(0, earliest)
+            valid_range_end   = min(latest, T - window_size)
 
-        if valid_range_start > valid_range_end:
-            # 异常段比窗口还长，无解
-            continue
-
-        min_seg_len = float("inf")
-        max_seg_len = 0
-        # 遍历所有可能起点
-        for start in range(valid_range_start, valid_range_end + 1, step):
-            end = start + window_size
-
-            label_win = labels[start:end]
-
-            if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
+            if valid_range_start > valid_range_end:
+                # 异常段比窗口还长，无解
                 continue
 
-            if not has_exactly_one_anomaly_segment(label_win):
+            min_seg_len = float("inf")
+            max_seg_len = 0
+            # 遍历所有可能起点
+            for start in range(valid_range_start, valid_range_end + 1, step):
+                end = start + window_size
+
+                label_win = labels[start:end]
+
+                if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
+                    continue
+
+                if not has_exactly_one_anomaly_segment(label_win):
+                    continue
+
+                anomaly_ratio = label_win.sum() / window_size
+
+                if min_ratio <= anomaly_ratio <= max_ratio:
+                    windows.append(signal[start:end])
+                    windows_label.append(label_win)
+                    window_starts.append(start)
+
+
+                    # ====== 在窗口内部重新统计“连续 1 段”的长度 ======
+                    idx = np.where(label_win == anomaly_type)[0]
+                    if len(idx) > 0:
+                        # 找出所有连续段
+                        seg_start_idx = idx[0]
+                        prev = idx[0]
+                        for i in idx[1:]:
+                            if i == prev + 1:
+                                prev = i
+                            else:
+                                # 前一段结束
+                                seg_len = prev - seg_start_idx + 1
+                                min_seg_len = min(min_seg_len, seg_len)
+                                max_seg_len = max(max_seg_len, seg_len)
+                                # 新的一段开始
+                                seg_start_idx = i
+                                prev = i
+                        # 别忘了最后一段
+                        seg_len = prev - seg_start_idx + 1
+                        min_seg_len = min(min_seg_len, seg_len)
+                        max_seg_len = max(max_seg_len, seg_len)
+
+                    # plt.plot(signal[start:end,0], label="signal channel 0")
+                    # plt.plot(label_win, label="anomaly label")
+                    # plt.show()
+
+                    record = {
+                        "ts_start": int(start),
+                        "ts_end": int(end),
+                        "anomaly_start": int(seg_start),
+                        "anomaly_end": int(seg_end),
+                        "anomaly_type": 1,
+                        "cluster_id": int(cluster_id),
+                    }
+                    jsonl_file.write(json.dumps(record) + "\n")
+
+    else:
+        for seg_start, seg_end in segments:
+
+            earliest = seg_end - window_size + 1
+            latest = seg_start
+
+            valid_range_start = max(0, earliest)
+            valid_range_end = min(latest, T - window_size)
+
+            if valid_range_start > valid_range_end:
+                # 异常段比窗口还长，无解
                 continue
 
-            anomaly_ratio = label_win.sum() / window_size
+            min_seg_len = float("inf")
+            max_seg_len = 0
+            # 遍历所有可能起点
+            for start in range(valid_range_start, valid_range_end + 1, step):
+                end = start + window_size
 
-            if min_ratio <= anomaly_ratio <= max_ratio:
-                windows.append(signal[start:end])
-                windows_label.append(label_win)
-                window_starts.append(start)
+                label_win = labels[start:end]
 
+                if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
+                    continue
 
-                # ====== 在窗口内部重新统计“连续 1 段”的长度 ======
-                idx = np.where(label_win == anomaly_type)[0]
-                if len(idx) > 0:
-                    # 找出所有连续段
-                    seg_start_idx = idx[0]
-                    prev = idx[0]
-                    for i in idx[1:]:
-                        if i == prev + 1:
-                            prev = i
-                        else:
-                            # 前一段结束
-                            seg_len = prev - seg_start_idx + 1
-                            min_seg_len = min(min_seg_len, seg_len)
-                            max_seg_len = max(max_seg_len, seg_len)
-                            # 新的一段开始
-                            seg_start_idx = i
-                            prev = i
-                    # 别忘了最后一段
-                    seg_len = prev - seg_start_idx + 1
-                    min_seg_len = min(min_seg_len, seg_len)
-                    max_seg_len = max(max_seg_len, seg_len)
+                if not has_exactly_one_anomaly_segment(label_win):
+                    continue
 
-                # plt.plot(signal[start:end,0], label="signal channel 0")
-                # plt.plot(label_win, label="anomaly label")
-                # plt.show()
+                anomaly_ratio = label_win.sum() / window_size
 
-                record = {
-                    "ts_start": int(start),
-                    "ts_end": int(end),
-                    "anomaly_start": int(seg_start),
-                    "anomaly_end": int(seg_end),
-                    "anomaly_type": 1,
-                    "cluster_id": int(cluster_id),
-                }
-                jsonl_file.write(json.dumps(record) + "\n")
+                if min_ratio <= anomaly_ratio <= max_ratio:
+                    windows.append(signal[start:end])
+                    windows_label.append(label_win)
+                    window_starts.append(start)
+
+                    # ====== 在窗口内部重新统计“连续 1 段”的长度 ======
+                    idx = np.where(label_win == anomaly_type)[0]
+                    if len(idx) > 0:
+                        # 找出所有连续段
+                        seg_start_idx = idx[0]
+                        prev = idx[0]
+                        for i in idx[1:]:
+                            if i == prev + 1:
+                                prev = i
+                            else:
+                                # 前一段结束
+                                seg_len = prev - seg_start_idx + 1
+                                min_seg_len = min(min_seg_len, seg_len)
+                                max_seg_len = max(max_seg_len, seg_len)
+                                # 新的一段开始
+                                seg_start_idx = i
+                                prev = i
+                        # 别忘了最后一段
+                        seg_len = prev - seg_start_idx + 1
+                        min_seg_len = min(min_seg_len, seg_len)
+                        max_seg_len = max(max_seg_len, seg_len)
+
+                    # plt.plot(signal[start:end,0], label="signal channel 0")
+                    # plt.plot(label_win, label="anomaly label")
+                    # plt.show()
+
+                    record = {
+                        "ts_start": int(start),
+                        "ts_end": int(end),
+                        "anomaly_start": int(seg_start),
+                        "anomaly_end": int(seg_end),
+                        "anomaly_type": 1,
+                    }
+                    jsonl_file.write(json.dumps(record) + "\n")
 
     if min_seg_len == float("inf"):
         min_seg_len = None
@@ -812,83 +879,97 @@ if __name__ == "__main__":
     #         max_anomaly_ratio=0.2
     #     )
 
-    name = '106'
+    # name = '106'
+    #
+    # stats = build_single_ts_train_val(
+    #     npz_file=f"./raw_data/{name}.npz",
+    #     output_dir=f"./indices/slide_windows_{name}npz",
+    #     window_size=1000,
+    #     stride=10,
+    #     train_ratio=0.99,
+    #     max_anomaly_ratio=0.2
+    # )
+
+
+    # path = Path("./raw_data")
+    # files = [p.name for p in path.iterdir() if p.is_file()]
+    # files = sorted(files)
+    # for file_full in files:
+    #     # name = '107'
+    #     name = file_full.split(".")[0]
+    #     print(name)
+    #     raw_data = np.load(f"./raw_data/{name}.npz")
+    #     raw_signal = raw_data["signal"]
+    #     anomaly_label = raw_data["anomaly_label"]
+    #
+    #     # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
+    #     anomaly_type_maps = {'V' :1}
+    #     # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
+    #     # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
+    #     # anomaly_type_maps = {'R': 5}
+    #
+    #     for k, v in anomaly_type_maps.items():
+    #         segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+    #         # segments, cluster_ids = load_prototype_jsonl(
+    #         #     f"./indices/slide_windows_{name}npz/train/anomaly_segments_with_prototype.jsonl"
+    #         # )
+    #
+    #         print(f"总共有 {len(segments)} 段 anomaly")
+    #         # lengths = []
+    #         # for i, (s, e) in enumerate(segments):
+    #             # print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
+    #             # lengths.append(e - s + 1)
+    #             # sampled_signal = raw_signal[s:s+1800]
+    #             # sampled_anomaly_label = anomaly_label[s:s+1800]
+    #             # plt.plot(sampled_signal[:, 0], label="signal channel 0")
+    #             # # plt.plot(sampled_signal[:, 1], label="signal channel 1")
+    #             # plt.plot(sampled_anomaly_label)
+    #             # plt.legend()
+    #             # plt.title("anomaly signal")
+    #             # plt.show()
+    #         # print(max(lengths))
+    #         # print(min(lengths))
+    #     print("-"*80)
+
+    name = 228
+    print(name)
+    raw_data = np.load(f"./raw_data/{name}.npz")
+    raw_signal = raw_data["signal"]
+    anomaly_label = raw_data["anomaly_label"]
+
 
     stats = build_single_ts_train_val(
         npz_file=f"./raw_data/{name}.npz",
         output_dir=f"./indices/slide_windows_{name}npz",
         window_size=1000,
-        stride=10,
+        stride=1,
         train_ratio=0.99,
         max_anomaly_ratio=0.2
     )
 
 
+    anomaly_type_maps = {'V': 1}
 
-    # name = '106'
-    # raw_data = np.load(f"./raw_data/{name}.npz")
-    # raw_signal = raw_data["signal"]
-    # anomaly_label = raw_data["anomaly_label"]
-    #
-    # # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3, 'R': 5}
-    # anomaly_type_maps = {'V' :1}
-    # # anomaly_type_maps = {'V' :1, 'A': 2, 'F': 3}
-    # # anomaly_type_maps = {'V' :1, 'A': 1, 'F': 1}
-    # # anomaly_type_maps = {'R': 5}
-    #
-    # for k, v in anomaly_type_maps.items():
-    #     # segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
-    #     segments, cluster_ids = load_prototype_jsonl(
-    #         f"./indices/slide_windows_{name}npz/train/anomaly_segments_with_prototype.jsonl"
-    #     )
-    #
-    #     print(f"总共有 {len(segments)} 段 anomaly")
-    #     lengths = []
-    #     for i, (s, e) in enumerate(segments):
-    #         print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
-    #         lengths.append(e - s + 1)
-    #         # sampled_signal = raw_signal[s:s+1800]
-    #         # sampled_anomaly_label = anomaly_label[s:s+1800]
-    #         # plt.plot(sampled_signal[:, 0], label="signal channel 0")
-    #         # # plt.plot(sampled_signal[:, 1], label="signal channel 1")
-    #         # plt.plot(sampled_anomaly_label)
-    #         # plt.legend()
-    #         # plt.title("anomaly signal")
-    #         # plt.show()
-    #     print(max(lengths))
-    #     print(min(lengths))
+    for k, v in anomaly_type_maps.items():
+        segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
 
-        # with open(f"./indices/slide_windows_{name}npz/train/raw_anomaly_segments.jsonl", "w") as f:
-        #     for start, end in segments:
-        #         f.write(json.dumps([int(start), int(end)]) + "\n")
+        print(f"总共有 {len(segments)} 段 anomaly")
+        lengths = []
+        for i, (s, e) in enumerate(segments):
+            print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
+            lengths.append(e - s + 1)
+        print(max(lengths))
+        print(min(lengths))
 
-        #
-        # windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
-        #     signal=raw_signal,
-        #     labels=anomaly_label,
-        #     segments=segments,
-        #     cluster_ids=cluster_ids,
-        #     window_size=1000,
-        #     length_range=(150, 900),  # 调这个
-        #     step=100,
-        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
-        #     anomaly_type=v
-        # )
+        windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+            signal=raw_signal,
+            labels=anomaly_label,
+            segments=segments,
+            cluster_ids=None,
+            window_size=1000,
+            length_range=(66, 608),  # 调这个
+            step=100,
+            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
+            anomaly_type=v
+        )
 
-
-        # extract_more_windows_containing_segments(
-        #     signal=raw_signal,
-        #     segments=segments,
-        #     cluster_ids=cluster_ids,
-        #     window_size=1800,
-        #     step=100,
-        #     jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}_more.jsonl",
-        # )
-        # signal,
-        # segments,
-        # cluster_ids,
-        # window_size,
-        # step = 1,  # 滑窗步长，可以调大速度更快
-        # jsonl_path = None,
-        # print(min_anomaly_length)
-        # print(max_anomaly_length)
