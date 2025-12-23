@@ -15,16 +15,16 @@ PRETRAIN_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/no_context_pretrain
 FINETUNE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/impute_finetune_ckpt_lr${LR}"
 
 
-DATA_PATHS="[./dataset_utils/ECG_datasets/raw_data/106.npz]"
-PRETRAIN_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl]"
-FINETUNE_TRAIN_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_train.jsonl]"
-FINETUNE_TEST_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_test.jsonl]"
-ANOMALY_INDICES_FOR_SAMPLE="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype_train.jsonl]"
-NORMAL_INDICES_FOR_SAMPLE="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_1000.jsonl]"
+DATA_PATHS='["./dataset_utils/ECG_datasets/raw_data/106.npz"]'
+PRETRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl"]'
+FINETUNE_TRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_train.jsonl"]'
+FINETUNE_TEST_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_test.jsonl"]'
+ANOMALY_INDICES_FOR_SAMPLE='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype_train.jsonl"]'
+NORMAL_INDICES_FOR_SAMPLE='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_1000.jsonl"]'
 
 #VQVAE Train Parameters
 #VQVAE_TRAIN_INDICES_PATHS="[../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl]"
-VQVAE_TRAIN_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl]"
+VQVAE_TRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl"]'
 CODE_DIM=8
 CODE_LEN=4
 NUM_CODES=500
