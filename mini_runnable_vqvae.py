@@ -38,53 +38,84 @@ def load_jsonl(path):
 class AnomalyDataset(Dataset):
     def __init__(
             self,
-            raw_data_path,
-            indices_path,
+            raw_data_paths,
+            indices_paths,
             one_channel,
             max_length,
+            data_type,
     ):
         super().__init__()
-        self.index_lines = load_jsonl(indices_path)
-        self.raw_data_path = raw_data_path
+        self.raw_data_paths = raw_data_paths
+        self.indices_paths = indices_paths
         self.one_channel = one_channel
         self.max_length = max_length
+        self.data_type = data_type
 
-        raw_data = np.load(raw_data_path)
-        raw_signal = raw_data["signal"]
-        scaler = MinMaxScaler()
-        normed_signal = scaler.fit_transform(raw_signal)
-        self.data = normed_signal
+        if data_type == "ecg":
+            self.normed_signal_list = []
+            self.index_lines_list = []
+
+            for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+                raw_data = np.load(raw_data_path)
+                raw_signal = raw_data["signal"]
+
+                scaler = MinMaxScaler()
+                normed_signal = scaler.fit_transform(raw_signal)
+                index_lines = load_jsonl(indices_path)
+
+                self.normed_signal_list.append(normed_signal)
+                self.index_lines_list.append(index_lines)
+
+        elif data_type == "ercot":
+            self.normed_signal_list = []
+            self.index_lines_list = []
+            for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+                raw_data = np.load(raw_data_path)
+                raw_signal = np.expand_dims(raw_data, axis=-1)
+                scaler = MinMaxScaler()
+                normed_signal = scaler.fit_transform(raw_signal)
+                index_lines = load_jsonl(indices_path)
+                self.normed_signal_list.append(normed_signal)
+                self.index_lines_list.append(index_lines)
+
+        else:
+            raise NotImplementedError
+
+        self.global_index = []
+        for region_id, index_lines in enumerate(self.index_lines_list):
+            for i in range(len(index_lines)):
+                self.global_index.append((region_id, i))
+
 
     def __len__(self):
-        return len(self.index_lines)
+        return len(self.global_index)
 
     def __getitem__(self, index):
-        # start, end = self.index_lines[index]
-        start = self.index_lines[index]["start"]
-        if "source_file" in self.index_lines[index].keys():
-            # this is a normal data, we apply random length
-            random_length = random.randint(160, 800)
-            end = start + random_length
-        else: # this is anomaly data, we use fix length
-            end = self.index_lines[index]["end"]
+        if self.data_type == "ecg":
+            which_list, which_index = self.global_index[index]
 
-        assert end - start <= self.max_length
-        # if end - start > self.max_length:
-        #     end = start + self.max_length
-        # if self.one_channel:
-        #     return torch.from_numpy(self.data[start:end, :1]).float()
-        # else:
-        #     return torch.from_numpy(self.data[start:end]).float()
+            # start, end = self.index_lines[index]
+            start = self.index_lines_list[which_list][which_index]["start"]
+            if "source_file" in self.index_lines_list[which_list][which_index].keys():
+                # this is a normal data, we apply random length
+                random_length = random.randint(160, 800)
+                end = start + random_length
+            else: # this is anomaly data, we use fix length
+                end = self.index_lines_list[which_list][which_index]["end"]
 
-        ts_dim = self.data.shape[1]
-        signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
-        signal[:end-start] = torch.from_numpy(self.data[start:end]).float()
-        pad_mask = torch.zeros(self.max_length, 1)
-        pad_mask[:end-start] = 1
-        if self.one_channel:
-            return signal[:, :1], pad_mask
+            assert end - start <= self.max_length
+
+            ts_dim = self.data.shape[1]
+            signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
+            signal[:end-start] = torch.from_numpy(self.data[start:end]).float()
+            pad_mask = torch.zeros(self.max_length, 1)
+            pad_mask[:end-start] = 1
+            if self.one_channel:
+                return signal[:, :1], pad_mask
+            else:
+                return signal, pad_mask
         else:
-            return signal, pad_mask
+            raise NotImplementedError
 
 def pad_collate_fn(batch):
     """
@@ -456,9 +487,10 @@ class TrainConfig:
     up_ratio: int
     max_length: int
 
-    raw_data_path: str
-    indices_path: str
+    raw_data_paths: str
+    indices_paths: str
     one_channel: bool = True
+    data_type: str = 'blahblah'
 
     batch_size: int = 64
     epochs: int = 50
@@ -547,10 +579,11 @@ def train_vqvae(cfg: TrainConfig):
 
     # -------- dataset / loader --------
     dataset = AnomalyDataset(
-        raw_data_path=cfg.raw_data_path,
-        indices_path=cfg.indices_path,
+        raw_data_paths=cfg.raw_data_paths,
+        indices_paths=cfg.indices_paths,
         one_channel=cfg.one_channel,
-        max_length=cfg.max_length
+        max_length=cfg.max_length,
+        data_type=cfg.data_type
     )
 
     loader = DataLoader(
@@ -831,8 +864,9 @@ def get_args():
     parser = argparse.ArgumentParser(description="parameters for vqvae pretraining")
 
     parser.add_argument("--max_seq_len", type=int, required=True)
-    parser.add_argument("--data_path", type=int, required=True)
-    parser.add_argument("--indices_path", type=json.loads, required=True)
+    parser.add_argument("--data_paths", type=json.loads, required=True)
+    parser.add_argument("--indices_paths", type=json.loads, required=True)
+    parser.add_argument("--data_type", type=str, required=True)
     parser.add_argument("--gpu_id", type=int, required=True)
     parser.add_argument("--save_dir", type=str, required=True)
 
@@ -881,9 +915,10 @@ if __name__ == "__main__":
         up_ratio=2,
         max_length=args.max_seq_len,
 
-        raw_data_path=args.data_path,
-        indices_path=args.indice_path,
+        raw_data_paths=args.data_paths,
+        indices_paths=args.indice_paths,
         one_channel=True,
+        data_type=args.data_type,
 
         batch_size=64,
         epochs=50,
@@ -900,6 +935,7 @@ if __name__ == "__main__":
         device=f"cuda:{args.gpu_id}",
         # device="cpu",
         save_path=args.save_dir,
+
     )
 
     model = train_vqvae(cfg)

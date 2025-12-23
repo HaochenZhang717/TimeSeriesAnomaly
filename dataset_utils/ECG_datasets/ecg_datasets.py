@@ -220,41 +220,70 @@ class NoContextECGDataset(Dataset):
 class ImputationECGDataset(Dataset):
     def __init__(
             self,
-            raw_data_path,
-            indices_path,
+            raw_data_paths,
+            indices_paths,
             seq_len,
             one_channel,
-            use_prototype,
+            # use_prototype,
             max_infill_length,
     ):
         super(ImputationECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
-        self.use_prototype = use_prototype
+        # self.use_prototype = use_prototype
         self.max_infill_length = max_infill_length
+        self.raw_data_paths = raw_data_paths
+        self.indices_paths = indices_paths
 
-        raw_data = np.load(raw_data_path)
-        raw_signal = raw_data["signal"]
-        self.anomaly_label = raw_data["anomaly_label"]
-        scaler = MinMaxScaler()
-        self.normed_signal = scaler.fit_transform(raw_signal)
-        self.index_lines= load_jsonl(indices_path)
+        self.normed_signal_list = []
+        self.index_lines_list = []
+        self.anomaly_label_list = []
+
+        for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+            raw_data = np.load(raw_data_path)
+            raw_signal = raw_data["signal"]
+            anomaly_label = raw_data["anomaly_label"]
+
+            scaler = MinMaxScaler()
+            normed_signal = scaler.fit_transform(raw_signal)
+            index_lines = load_jsonl(indices_path)
+
+            self.normed_signal_list.append(normed_signal)
+            self.anomaly_label_list.append(anomaly_label)
+            self.index_lines_list.append(index_lines)
+
+
+        self.global_index = []
+        for region_id, index_lines in enumerate(self.index_lines_list):
+            for i in range(len(index_lines)):
+                self.global_index.append((region_id, i))
+
+        # raw_data = np.load(raw_data_path)
+        # raw_signal = raw_data["signal"]
+        # self.anomaly_label = raw_data["anomaly_label"]
+        # scaler = MinMaxScaler()
+        # self.normed_signal = scaler.fit_transform(raw_signal)
+        # self.index_lines= load_jsonl(indices_path)
 
 
     def __getitem__(self, index):
+        which_list, which_index = self.global_index[index]
 
-        ts_start = self.index_lines[index]['ts_start']
-        ts_end = self.index_lines[index]['ts_end']
-        anomaly_start = self.index_lines[index]['anomaly_start']
-        anomaly_end = self.index_lines[index]['anomaly_end']
+        ts_start = self.index_lines_list[which_list][which_index]["ts_start"]
+        ts_end = self.index_lines_list[which_list][which_index]["ts_end"]
+        anomaly_start = self.index_lines_list[which_list][which_index]["anomaly_start"]
+        anomaly_end = self.index_lines_list[which_list][which_index]["anomaly_end"]
+
         relative_anomaly_start = anomaly_start - ts_start
         relative_anomaly_end = anomaly_end - ts_start
 
         if self.one_channel:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end, :1])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end, :1])
         else:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end])
-        anomaly_label = torch.from_numpy(self.anomaly_label[ts_start:ts_end])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end])
+
+
+        anomaly_label = torch.from_numpy(self.anomaly_label_list[which_list][ts_start:ts_end])
         T = anomaly_label.shape[0]
         # ===== attention mask =====
         # normal + target anomaly are visible
@@ -262,6 +291,9 @@ class ImputationECGDataset(Dataset):
         context_mask[anomaly_label == 0] = 1
         context_mask[relative_anomaly_start:relative_anomaly_end] = 1
 
+        # plt.plot(anomaly_label, label="anomaly_label")
+        # plt.plot(context_mask, label="context_mask")
+        # plt.show()
         # ===== noise mask =====
         noise_mask = torch.zeros(T, dtype=torch.long)
         noise_mask[relative_anomaly_start:relative_anomaly_end] = 1
@@ -272,36 +304,26 @@ class ImputationECGDataset(Dataset):
         missing_signals[:infill_length] = signal[relative_anomaly_start:relative_anomaly_end]
 
 
-        if self.use_prototype == "true":
-            prototype_id = self.index_lines[index].get('prototype_id', -100)
-        elif self.use_prototype == "false":
-            prototype_id = -100
-        else:
-            raise NotImplementedError
-
-        prototype_id = torch.tensor(
-            prototype_id,
-            dtype=torch.long
-        )
 
         return {
             'signals': signal,
             'missing_signals': missing_signals,
-            'prototypes': prototype_id,
+            # 'prototypes': prototype_id,
             'attn_mask': context_mask,
             'noise_mask': noise_mask,
         }
 
 
     def __len__(self):
-        return len(self.index_lines)
+        return len(self.global_index)
+
 
 
 class ImputationNormalECGDataset(Dataset):
     def __init__(
             self,
-            raw_data_path,
-            indices_path,
+            raw_data_paths,
+            indices_paths,
             seq_len,
             one_channel,
             min_infill_length,
@@ -310,26 +332,44 @@ class ImputationNormalECGDataset(Dataset):
         super(ImputationNormalECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
-
+        self.raw_data_paths = raw_data_paths
+        self.indices_paths = indices_paths
         self.min_infill_length = min_infill_length
         self.max_infill_length = max_infill_length
 
-        raw_data = np.load(raw_data_path)
-        raw_signal = raw_data["signal"]
-        self.anomaly_label = raw_data["anomaly_label"]
-        scaler = MinMaxScaler()
-        self.normed_signal = scaler.fit_transform(raw_signal)
-        self.index_lines= load_jsonl(indices_path)
+        self.normed_signal_list = []
+        self.index_lines_list = []
+        self.anomaly_label_list = []
+
+        for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+            raw_data = np.load(raw_data_path)
+            raw_signal = raw_data["signal"]
+            anomaly_label = raw_data["anomaly_label"]
+
+            scaler = MinMaxScaler()
+            normed_signal = scaler.fit_transform(raw_signal)
+            index_lines = load_jsonl(indices_path)
+
+            self.normed_signal_list.append(normed_signal)
+            self.anomaly_label_list.append(anomaly_label)
+            self.index_lines_list.append(index_lines)
+
+
+        self.global_index = []
+        for region_id, index_lines in enumerate(self.index_lines_list):
+            for i in range(len(index_lines)):
+                self.global_index.append((region_id, i))
+
+
+
 
 
     def __getitem__(self, index):
-        ts_start = self.index_lines[index]['start']
-        ts_end = self.index_lines[index]['end']
+        which_list, which_index = self.global_index[index]
+
+        ts_start = self.index_lines_list[which_list][which_index]["start"]
+        ts_end = self.index_lines_list[which_list][which_index]["end"]
         ts_length = ts_end - ts_start
-
-
-
-        # infill_length = random.randint(self.min_infill_length, self.max_infill_length)
 
         infill_length = self.min_infill_length + math.floor(torch.sigmoid(torch.rand(1)).item() * (self.max_infill_length - self.min_infill_length))
 
@@ -338,16 +378,16 @@ class ImputationNormalECGDataset(Dataset):
 
 
         if self.one_channel:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end, :1])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end, :1])
         else:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end])
 
         # ===== missing signals =====
         missing_signals = torch.zeros(self.max_infill_length, signal.shape[-1])
         missing_signals[:infill_length] = signal[relative_anomaly_start:relative_anomaly_end]
 
 
-        anomaly_label = torch.from_numpy(self.anomaly_label[ts_start:ts_end])
+        anomaly_label = torch.from_numpy(self.anomaly_label_list[which_list][ts_start:ts_end])
         T = anomaly_label.shape[0]
         # ===== attention mask =====
         # normal + target anomaly are visible
@@ -369,14 +409,15 @@ class ImputationNormalECGDataset(Dataset):
 
 
     def __len__(self):
-        return len(self.index_lines)
+        return len(self.global_index)
+
 
 
 class NoContextNormalECGDataset(Dataset):
     def __init__(
             self,
-            raw_data_path,
-            indices_path,
+            raw_data_paths,
+            indices_paths,
             seq_len,
             one_channel,
             min_infill_length,
@@ -386,19 +427,27 @@ class NoContextNormalECGDataset(Dataset):
         self.seq_len = seq_len
         self.one_channel = one_channel
 
-        self.raw_data_path = raw_data_path
-        self.indices_path = indices_path
+        self.raw_data_paths = raw_data_paths
+        self.indices_paths = indices_paths
 
         self.min_infill_length = min_infill_length
         self.max_infill_length = max_infill_length
 
-        raw_data = np.load(raw_data_path)
-        raw_signal = raw_data["signal"]
-        self.anomaly_label = raw_data["anomaly_label"]
-        scaler = MinMaxScaler()
-        self.normed_signal = scaler.fit_transform(raw_signal)
-        self.index_lines= load_jsonl(indices_path)
+        self.normed_signal_list = []
+        self.index_lines_list = []
+        for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+            raw_data = np.load(raw_data_path)
+            raw_signal = np.expand_dims(raw_data, axis=-1)
+            scaler = MinMaxScaler()
+            normed_signal = scaler.fit_transform(raw_signal)
+            index_lines = load_jsonl(indices_path)
+            self.normed_signal_list.append(normed_signal)
+            self.index_lines_list.append(index_lines)
 
+        self.global_index = []
+        for region_id, index_lines in enumerate(self.index_lines_list):
+            for i in range(len(index_lines)):
+                self.global_index.append((region_id, i))
 
     def __getitem__(self, index):
 
@@ -437,40 +486,58 @@ class NoContextNormalECGDataset(Dataset):
 
 
     def __len__(self):
-        return len(self.index_lines)
+        return len(self.global_index)
+
 
 
 class NoContextAnomalyECGDataset(Dataset):
     def __init__(
             self,
-            raw_data_path,
-            indices_path,
+            raw_data_paths,
+            indices_paths,
             seq_len,
             one_channel,
     ):
         super(NoContextAnomalyECGDataset, self).__init__()
         self.seq_len = seq_len
         self.one_channel = one_channel
+        self.raw_data_paths = raw_data_paths
+        self.indices_paths = indices_paths
 
-        self.raw_data_path = raw_data_path
-        self.indices_path = indices_path
+        self.normed_signal_list = []
+        self.index_lines_list = []
+        self.anomaly_label_list = []
 
+        for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
+            raw_data = np.load(raw_data_path)
+            raw_signal = raw_data["signal"]
+            anomaly_label = raw_data["anomaly_label"]
 
-        raw_data = np.load(raw_data_path)
-        raw_signal = raw_data["signal"]
-        self.anomaly_label = raw_data["anomaly_label"]
-        scaler = MinMaxScaler()
-        self.normed_signal = scaler.fit_transform(raw_signal)
-        self.index_lines= load_jsonl(indices_path)
+            scaler = MinMaxScaler()
+            normed_signal = scaler.fit_transform(raw_signal)
+            index_lines = load_jsonl(indices_path)
 
+            self.normed_signal_list.append(normed_signal)
+            self.anomaly_label_list.append(anomaly_label)
+            self.index_lines_list.append(index_lines)
+
+        self.global_index = []
+        for region_id, index_lines in enumerate(self.index_lines_list):
+            for i in range(len(index_lines)):
+                self.global_index.append((region_id, i))
 
     def __getitem__(self, index):
 
-        ts_start = self.index_lines[index]['start']
-        ts_end = self.index_lines[index]['end']
+        which_list, which_index = self.global_index[index]
+
+        ts_start = self.index_lines_list[which_list][which_index]["start"]
+        ts_end = self.index_lines_list[which_list][which_index]["end"]
+
+        # ts_start = self.index_lines[index]['start']
+        # ts_end = self.index_lines[index]['end']
         ts_length = ts_end - ts_start
 
-        data = self.normed_signal[ts_start:ts_end]
+        data = self.normed_signal_list[which_list][ts_start:ts_end]
         signal = torch.zeros(self.seq_len, data.shape[-1])
         signal[:ts_length] = torch.from_numpy(data)
 
@@ -487,7 +554,7 @@ class NoContextAnomalyECGDataset(Dataset):
 
 
     def __len__(self):
-        return len(self.index_lines)
+        return len(self.global_index)
 
 
 def pad_collate_fn(batch):
@@ -509,10 +576,11 @@ def pad_collate_fn(batch):
 if __name__ == "__main__":
 
     dataset = ImputationECGDataset(
-        raw_data_path="./raw_data/106.npz",
-        indices_path="./indices/slide_windows_106npz/train/V_more.jsonl",
+        raw_data_paths=["./raw_data/106.npz"],
+        indices_paths=["./indices/slide_windows_106npz/train/V_more.jsonl"],
         seq_len=1800,
-        one_channel=True,
+        one_channel=1,
+        max_infill_length=800,
     )
 
     # dataset = ECGDataset(
@@ -533,6 +601,7 @@ if __name__ == "__main__":
         plt.legend()
         plt.show()
         print("123")
+        break
 
 
 

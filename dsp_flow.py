@@ -10,8 +10,6 @@ import numpy as np
 from evaluation_utils import calculate_robustTAD
 
 
-
-
 def dict_collate_fn(batch):
     out = {}
     for key in batch[0].keys():
@@ -58,10 +56,10 @@ def get_args():
     parser.add_argument("--n_heads", type=int, required=True)
 
     """data parameters"""
-    parser.add_argument("--raw_data_path_train", type=str, required=True)
-    parser.add_argument("--indices_path_train", type=str, required=True)
-    parser.add_argument("--indices_path_test", type=str, required=True)
-    parser.add_argument("--indices_path_anomaly_for_sample", type=str, default="none")
+    parser.add_argument("--raw_data_paths_train", type=json.loads, required=True)
+    parser.add_argument("--indices_paths_train", type=json.loads, required=True)
+    parser.add_argument("--indices_paths_test", type=json.loads, required=True)
+    parser.add_argument("--indices_paths_anomaly_for_sample", type=json.loads, default="none")
     parser.add_argument("--min_infill_length", type=int, required=True)
     parser.add_argument("--max_infill_length", type=int, required=True)
 
@@ -92,76 +90,76 @@ def get_args():
     return parser.parse_args()
 
 
-def imputation_pretrain(args):
-    os.makedirs(args.ckpt_dir, exist_ok=True)
-    save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
-
-    model = DSPFlow(
-        seq_length=args.seq_len,
-        feature_size=args.feature_size,
-        n_layer_enc=args.n_layer_enc,
-        n_layer_dec=args.n_layer_dec,
-        d_model=args.d_model,
-        n_heads=args.n_heads,
-        mlp_hidden_times=4,
-        vqvae_ckpt=args.vqvae_ckpt
-    )
-    # prepare for imputation training
-    if args.pretrained_ckpt != "none":
-        pretrained_state_dict = torch.load(f"{args.pretrained_ckpt}/ckpt.pth")
-        model.load_state_dict(pretrained_state_dict)
-        model.freeze_proto_mlp()
-
-    train_set = ImputationNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
-
-    train_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
-        shuffle=True, drop_last=True,
-        collate_fn = dict_collate_fn,
-    )
-    val_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
-        shuffle=False, drop_last=False,
-        collate_fn=dict_collate_fn,
-    )
-
-    optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
-
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer,
-        mode='min',
-        factor=0.8,  # multiply LR by 0.5
-        patience=1,  # wait 3 epochs with no improvement
-        threshold=1e-4,  # improvement threshold
-        min_lr=1e-5,  # min LR clamp
-    )
-
-    device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
-    trainer = DSPFlowTrainer(
-        optimizer=optimizer,
-        scheduler=scheduler,
-        model=model,
-        train_loader=train_loader,
-        val_loader=val_loader,
-        max_epochs=args.max_epochs,
-        device=device,
-        save_dir=args.ckpt_dir,
-        wandb_run_name=args.wandb_run,
-        wandb_project_name=args.wandb_project,
-        grad_clip_norm=args.grad_clip_norm,
-        grad_accum_steps=args.grad_accum_steps,
-        early_stop=args.early_stop,
-        patience=args.patience,
-    )
-
-    trainer.imputation_train(config=vars(args))
+# def imputation_pretrain(args):
+#     os.makedirs(args.ckpt_dir, exist_ok=True)
+#     save_args_to_jsonl(args, f"{args.ckpt_dir}/config.jsonl")
+#
+#     model = DSPFlow(
+#         seq_length=args.seq_len,
+#         feature_size=args.feature_size,
+#         n_layer_enc=args.n_layer_enc,
+#         n_layer_dec=args.n_layer_dec,
+#         d_model=args.d_model,
+#         n_heads=args.n_heads,
+#         mlp_hidden_times=4,
+#         vqvae_ckpt=args.vqvae_ckpt
+#     )
+#     # prepare for imputation training
+#     if args.pretrained_ckpt != "none":
+#         pretrained_state_dict = torch.load(f"{args.pretrained_ckpt}/ckpt.pth")
+#         model.load_state_dict(pretrained_state_dict)
+#         model.freeze_proto_mlp()
+#
+#     train_set = ImputationNormalECGDataset(
+#         raw_data_path=args.raw_data_path_train,
+#         indices_path=args.indices_path_train,
+#         seq_len=args.seq_len,
+#         one_channel=args.one_channel,
+#         min_infill_length=args.min_infill_length,
+#         max_infill_length=args.max_infill_length,
+#     )
+#
+#     train_loader = torch.utils.data.DataLoader(
+#         train_set, batch_size=args.batch_size,
+#         shuffle=True, drop_last=True,
+#         collate_fn = dict_collate_fn,
+#     )
+#     val_loader = torch.utils.data.DataLoader(
+#         train_set, batch_size=args.batch_size,
+#         shuffle=False, drop_last=False,
+#         collate_fn=dict_collate_fn,
+#     )
+#
+#     optimizer= torch.optim.Adam(model.parameters(), lr=args.lr)
+#
+#     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+#         optimizer,
+#         mode='min',
+#         factor=0.8,  # multiply LR by 0.5
+#         patience=1,  # wait 3 epochs with no improvement
+#         threshold=1e-4,  # improvement threshold
+#         min_lr=1e-5,  # min LR clamp
+#     )
+#
+#     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
+#     trainer = DSPFlowTrainer(
+#         optimizer=optimizer,
+#         scheduler=scheduler,
+#         model=model,
+#         train_loader=train_loader,
+#         val_loader=val_loader,
+#         max_epochs=args.max_epochs,
+#         device=device,
+#         save_dir=args.ckpt_dir,
+#         wandb_run_name=args.wandb_run,
+#         wandb_project_name=args.wandb_project,
+#         grad_clip_norm=args.grad_clip_norm,
+#         grad_accum_steps=args.grad_accum_steps,
+#         early_stop=args.early_stop,
+#         patience=args.patience,
+#     )
+#
+#     trainer.imputation_train(config=vars(args))
 
 
 def imputation_finetune(args):
@@ -185,20 +183,18 @@ def imputation_finetune(args):
         model.freeze_proto_mlp()
 
     train_set = ImputationECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
-        use_prototype="true",
         max_infill_length=args.max_infill_length,
     )
 
     val_set = ImputationECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_test,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_test,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
-        use_prototype="true",
         max_infill_length=args.max_infill_length,
     )
 
@@ -261,8 +257,8 @@ def no_context_pretrain(args):
     )
 
     train_set = NoContextNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         min_infill_length=args.min_infill_length,
@@ -329,8 +325,8 @@ def no_context_sample(args):
     model.eval()
 
     train_set = NoContextNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         min_infill_length=args.min_infill_length,
@@ -385,8 +381,8 @@ def no_context_no_code_pretrain(args):
     )
 
     train_set = NoContextNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         min_infill_length=args.min_infill_length,
@@ -457,20 +453,18 @@ def no_code_imputation_finetune(args):
         model.freeze_proto_mlp()
 
     train_set = ImputationECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
-        use_prototype="true",
         max_infill_length=args.max_infill_length,
     )
 
     val_set = ImputationECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_test,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_test,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
-        use_prototype="true",
         max_infill_length=args.max_infill_length,
     )
 
@@ -535,16 +529,16 @@ def posterior_impute_sample(args):
 
 
     anomaly_set = NoContextAnomalyECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_anomaly_for_sample,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_anomaly_for_sample,
         seq_len=args.max_infill_length,
         one_channel=args.one_channel,
     )
 
 
     normal_set = ImputationNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         min_infill_length=args.min_infill_length,
@@ -633,8 +627,8 @@ def no_code_impute_sample(args):
 
 
     normal_set = ImputationNormalECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_train,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
         min_infill_length=args.min_infill_length,
@@ -693,23 +687,23 @@ def anomaly_evaluate(args):
     device = torch.device(f"cuda:{args.gpu_id}")
 
     real_set = ImputationECGDataset(
-        raw_data_path=args.raw_data_path_train,
-        indices_path=args.indices_path_test,
+        raw_data_paths=args.raw_data_paths_train,
+        indices_paths=args.indices_paths_test,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
-        use_prototype="true",
         max_infill_length=args.max_infill_length,
     )
     real_data = []
     real_labels = []
-    for index_line in real_set.index_lines:
-        ts_start = index_line['ts_start']
-        ts_end = index_line['ts_end']
-        anomaly_start = index_line['anomaly_start']
-        anomaly_end = index_line['anomaly_end']
+    for which_list, which_index in real_set.global_index:
+        ts_start = real_set.index_lines_list[which_list][which_index]["ts_start"]
+        ts_end = real_set.index_lines_list[which_list][which_index]["ts_end"]
+        anomaly_start = real_set.index_lines_list[which_list][which_index]["anomaly_start"]
+        anomaly_end = real_set.index_lines_list[which_list][which_index]["anomaly_end"]
+
         relative_anomaly_start = anomaly_start - ts_start
         relative_anomaly_end = anomaly_end - ts_start
-        real_datum = torch.from_numpy(real_set.normed_signal[ts_start:ts_end])
+        real_datum = torch.from_numpy(real_set.normed_signal_list[which_list][ts_start:ts_end])
         real_label = torch.zeros(len(real_datum)).to(device=device)
         real_label[relative_anomaly_start:relative_anomaly_end] = 1
 
@@ -721,11 +715,6 @@ def anomaly_evaluate(args):
         real_data = real_data[:,:,:1]
     real_labels = torch.cat(real_labels, dim=0).to(device=device)
 
-
-    # all_anomalies = torch.load(
-    #     f"{args.generated_path}/posterior_impute_samples.pth",
-    #     map_location=device
-    # )
 
     all_anomalies = torch.load(args.generated_path, map_location=device)
 
@@ -820,9 +809,9 @@ def anomaly_evaluate(args):
 
 def main():
     args = get_args()
-    if args.what_to_do == "imputation_pretrain":
-        imputation_pretrain(args)
-    elif args.what_to_do == "imputation_finetune":
+    # if args.what_to_do == "imputation_pretrain":
+    #     imputation_pretrain(args)
+    if args.what_to_do == "imputation_finetune":
         imputation_finetune(args)
     elif args.what_to_do == "no_code_imputation_finetune":
         no_code_imputation_finetune(args)
