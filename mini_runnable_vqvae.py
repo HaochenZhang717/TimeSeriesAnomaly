@@ -108,7 +108,6 @@ class AnomalyDataset(Dataset):
             data_in_use = self.normed_signal_list[which_list]
             if self.one_channel:
                 data_in_use = data_in_use[:, :1]
-            breakpoint()
             ts_dim = data_in_use.shape[1]
             signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
             signal[:end-start] = torch.from_numpy(data_in_use[start:end]).float()
