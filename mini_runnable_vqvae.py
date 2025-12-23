@@ -694,7 +694,7 @@ def train_vqvae(cfg: TrainConfig):
             "model_state": model.state_dict(),
             "config": cfg.__dict__,
         },
-        cfg.save_path,
+        f"{cfg.save_path}/vqvae.pt",
     )
     print(f"Saved: {cfg.save_path}")
 

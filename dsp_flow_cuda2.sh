@@ -10,7 +10,7 @@ WANDB_PROJECT="dsp_flow"
 #PRETRAIN_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
 #FINETUNE_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}"
 
-VQVAE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/vqvae_save_path/vqvae.pt"
+VQVAE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/vqvae_save_path"
 PRETRAIN_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/no_context_pretrain_ckpt"
 FINETUNE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/impute_finetune_ckpt_lr${LR}"
 
@@ -73,7 +73,7 @@ python dsp_flow.py \
   \
   --ckpt_dir ${PRETRAIN_CKPT} \
   --pretrained_ckpt "none" \
-  --vqvae_ckpt ${VQVAE_CKPT} \
+  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt"\
   \
   --generated_path "none" \
   \
@@ -113,7 +113,7 @@ python dsp_flow.py \
   \
   --ckpt_dir ${FINETUNE_CKPT} \
   --pretrained_ckpt ${PRETRAIN_CKPT} \
-  --vqvae_ckpt ${VQVAE_CKPT} \
+  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
   \
   --generated_path "none" \
   \
@@ -152,7 +152,7 @@ python dsp_flow.py \
   \
   --ckpt_dir ${FINETUNE_CKPT} \
   --pretrained_ckpt "none" \
-  --vqvae_ckpt ${VQVAE_CKPT} \
+  --vqvae_ckpt "${VQVAE_CKPT}//vqvae.pt" \
   \
   --generated_path "" \
   \
@@ -192,7 +192,7 @@ python dsp_flow.py \
   \
   --ckpt_dir "" \
   --pretrained_ckpt "none" \
-  --vqvae_ckpt ${VQVAE_CKPT} \
+  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
   \
   --generated_path "${FINETUNE_CKPT}/posterior_impute_samples.pth" \
   \
