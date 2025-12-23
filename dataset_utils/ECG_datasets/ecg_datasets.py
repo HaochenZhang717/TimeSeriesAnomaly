@@ -439,6 +439,7 @@ class NoContextNormalECGDataset(Dataset):
             raw_data = np.load(raw_data_path)
             raw_signal = np.expand_dims(raw_data, axis=-1)
             scaler = MinMaxScaler()
+            breakpoint()
             normed_signal = scaler.fit_transform(raw_signal)
             index_lines = load_jsonl(indices_path)
             self.normed_signal_list.append(normed_signal)
