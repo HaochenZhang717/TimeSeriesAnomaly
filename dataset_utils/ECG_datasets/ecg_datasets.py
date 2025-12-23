@@ -435,14 +435,18 @@ class NoContextNormalECGDataset(Dataset):
 
         self.normed_signal_list = []
         self.index_lines_list = []
+        # self.anomaly_label_list = []
         for raw_data_path, indices_path in zip(self.raw_data_paths, self.indices_paths):
             raw_data = np.load(raw_data_path)
             raw_signal = raw_data["signal"]
+            # anomaly_label = raw_data["anomaly_label"]
+
             scaler = MinMaxScaler()
             normed_signal = scaler.fit_transform(raw_signal)
             index_lines = load_jsonl(indices_path)
             self.normed_signal_list.append(normed_signal)
             self.index_lines_list.append(index_lines)
+            # self.anomaly_label_list.append(anomaly_label)
 
         self.global_index = []
         for region_id, index_lines in enumerate(self.index_lines_list):
@@ -451,8 +455,10 @@ class NoContextNormalECGDataset(Dataset):
 
     def __getitem__(self, index):
 
-        ts_start = self.index_lines[index]['start']
-        ts_end = self.index_lines[index]['end']
+        which_list, which_index = self.global_index[index]
+
+        ts_start = self.index_lines_list[which_list][which_index]["start"]
+        ts_end = self.index_lines_list[which_list][which_index]["end"]
         ts_length = ts_end - ts_start
         infill_length = random.randint(self.min_infill_length, self.max_infill_length)
 
@@ -461,21 +467,13 @@ class NoContextNormalECGDataset(Dataset):
 
 
         if self.one_channel:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end, :1])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end, :1])
         else:
-            signal = torch.from_numpy(self.normed_signal[ts_start:ts_end])
+            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end])
 
         # ===== missing signals =====
         missing_signals = torch.zeros(self.max_infill_length, signal.shape[-1])
         missing_signals[:infill_length] = signal[relative_anomaly_start:relative_anomaly_end]
-
-        anomaly_label = torch.from_numpy(self.anomaly_label[ts_start:ts_end])
-        T = anomaly_label.shape[0]
-        # ===== attention mask =====
-        # normal + target anomaly are visible
-        # context_mask = torch.zeros(T, dtype=torch.long)
-        # context_mask[anomaly_label == 0] = 1
-        # context_mask[relative_anomaly_start:relative_anomaly_end] = 1
 
         context_mask = torch.zeros(self.max_infill_length, dtype=torch.long)
         context_mask[:infill_length] = 1
