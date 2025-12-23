@@ -572,7 +572,7 @@ def _compute_codebook_stats(epoch_ids, num_codes):
 
 def train_vqvae(cfg: TrainConfig):
     device = torch.device(cfg.device if torch.cuda.is_available() else "cpu")
-
+    os.makedirs(cfg.save_path, exist_ok=True)
     # -------- wandb --------
     wandb.init(
         project="vqvae-ts",
