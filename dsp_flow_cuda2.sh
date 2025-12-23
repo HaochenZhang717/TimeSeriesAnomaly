@@ -5,7 +5,7 @@ MAX_LEN_ANOMALY=800
 MIN_LEN_ANOMALY=180
 GPU_ID=2
 
-WANDB_PROJECT="dsp_flow"
+WANDB_PROJECT="dsp_flow_mitdb"
 #VQVAE_CKPT="/root/tianyi/vqvae_save_path/vqvae_1d.pt"
 #PRETRAIN_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
 #FINETUNE_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}"
