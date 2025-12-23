@@ -105,9 +105,11 @@ class AnomalyDataset(Dataset):
 
             assert end - start <= self.max_length
 
-            ts_dim = self.data.shape[1]
+            data_in_use = self.normed_signal_list[which_list]
+            breakpoint()
+            ts_dim = data_in_use.shape[1]
             signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
-            signal[:end-start] = torch.from_numpy(self.data[start:end]).float()
+            signal[:end-start] = torch.from_numpy(data_in_use[start:end]).float()
             pad_mask = torch.zeros(self.max_length, 1)
             pad_mask[:end-start] = 1
             if self.one_channel:
