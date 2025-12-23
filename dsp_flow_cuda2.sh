@@ -6,9 +6,14 @@ MIN_LEN_ANOMALY=180
 GPU_ID=2
 
 WANDB_PROJECT="dsp_flow"
-VQVAE_CKPT="/root/tianyi/vqvae_save_path/vqvae_1d.pt"
-PRETRAIN_CKPT="../TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
-FINETUNE_CKPT="../TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}"
+#VQVAE_CKPT="/root/tianyi/vqvae_save_path/vqvae_1d.pt"
+#PRETRAIN_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
+#FINETUNE_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}"
+
+VQVAE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/vqvae_save_path/vqvae.pt"
+PRETRAIN_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/no_context_pretrain_ckpt"
+FINETUNE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/impute_finetune_ckpt_lr${LR}"
+
 
 DATA_PATHS="[./dataset_utils/ECG_datasets/raw_data/106.npz]"
 PRETRAIN_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl]"
@@ -19,7 +24,7 @@ NORMAL_INDICES_FOR_SAMPLE="[./dataset_utils/ECG_datasets/indices/slide_windows_1
 
 #VQVAE Train Parameters
 #VQVAE_TRAIN_INDICES_PATHS="[../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl]"
-VQVAE_TRAIN_INDICES_PATHS="[../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl]"
+VQVAE_TRAIN_INDICES_PATHS="[./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl]"
 CODE_DIM=8
 CODE_LEN=4
 NUM_CODES=500
