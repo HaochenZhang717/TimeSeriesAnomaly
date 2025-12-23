@@ -916,7 +916,7 @@ if __name__ == "__main__":
         max_length=args.max_seq_len,
 
         raw_data_paths=args.data_paths,
-        indices_paths=args.indice_paths,
+        indices_paths=args.indices_paths,
         one_channel=True,
         data_type=args.data_type,
 
