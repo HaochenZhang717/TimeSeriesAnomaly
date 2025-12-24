@@ -297,25 +297,20 @@ class NoContextAnomalyERCOTDataset(Dataset):
         ts_start = self.index_lines_list[which_list][which_index]["start"]
         ts_end = self.index_lines_list[which_list][which_index]["end"]
         ts_length = ts_end - ts_start
-        infill_length = random.randint(self.min_infill_length, self.max_infill_length)
 
-        relative_anomaly_start = random.randint(0, ts_length - infill_length)
-        relative_anomaly_end = relative_anomaly_start + infill_length
-
+        data = self.normed_signal_list[which_list][ts_start:ts_end]
+        signal = torch.zeros(self.seq_len, data.shape[-1])
+        signal[:ts_length] = torch.from_numpy(data)
 
         if self.one_channel:
-            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end, :1])
-        else:
-            signal = torch.from_numpy(self.normed_signal_list[which_list][ts_start:ts_end])
+            signal = signal[:, :1]
 
-        # ===== missing signals =====
-        missing_signals = torch.zeros(self.max_infill_length, signal.shape[-1])
-        missing_signals[:infill_length] = signal[relative_anomaly_start:relative_anomaly_end]
+        context_mask = torch.zeros(self.seq_len, dtype=torch.long)
+        context_mask[:ts_length] = 1
 
-        context_mask = torch.zeros(self.max_infill_length, dtype=torch.long)
-        context_mask[:infill_length] = 1
+
         return {
-            'signals': missing_signals,
+            'signals': signal,
             'attn_mask': context_mask,
         }
 
