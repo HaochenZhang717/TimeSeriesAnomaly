@@ -22,6 +22,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from torch.utils.data import Subset
 
 # --------------------------
 # Dataset (copied from you)
@@ -117,6 +118,27 @@ class AnomalyDataset(Dataset):
                 return signal[:, :1], pad_mask
             else:
                 return signal, pad_mask
+
+        elif self.data_type == "ercot":
+            which_list, which_index = self.global_index[index]
+            start = self.index_lines_list[which_list][which_index]["start"]
+            end = self.index_lines_list[which_list][which_index]["end"]
+
+            assert end - start <= self.max_length
+
+            data_in_use = self.normed_signal_list[which_list]
+            if self.one_channel:
+                data_in_use = data_in_use[:, :1]
+            ts_dim = data_in_use.shape[1]
+            signal = torch.zeros(self.max_length, ts_dim, dtype=torch.float32)
+            signal[:end - start] = torch.from_numpy(data_in_use[start:end]).float()
+            pad_mask = torch.zeros(self.max_length, 1)
+            pad_mask[:end - start] = 1
+            if self.one_channel:
+                return signal[:, :1], pad_mask
+            else:
+                return signal, pad_mask
+
         else:
             raise NotImplementedError
 
@@ -581,13 +603,22 @@ def train_vqvae(cfg: TrainConfig):
     )
 
     # -------- dataset / loader --------
-    dataset = AnomalyDataset(
+    full_set = AnomalyDataset(
         raw_data_paths=cfg.raw_data_paths,
         indices_paths=cfg.indices_paths,
         one_channel=cfg.one_channel,
         max_length=cfg.max_length,
         data_type=cfg.data_type
     )
+    N = len(full_set)
+    indices = np.arange(N)
+
+    split = int(0.8 * N)
+    train_idx = indices[:split]
+    # val_idx = indices[split:]
+
+    dataset = Subset(full_set, train_idx)
+    # val_set = Subset(full_set, val_idx)
 
     loader = DataLoader(
         dataset,
@@ -597,7 +628,10 @@ def train_vqvae(cfg: TrainConfig):
     )
 
     # -------- model --------
-    in_channels = 1 if cfg.one_channel else dataset.data.shape[1]
+    if cfg.one_channel:
+        in_channels = 1
+    else:
+        raise NotImplementedError
     model = VQVAE1D(
         in_channels=in_channels,
         encoder_channels=cfg.encoder_channels,
@@ -700,8 +734,6 @@ def train_vqvae(cfg: TrainConfig):
 
     wandb.finish()
     return model
-
-
 
 
 

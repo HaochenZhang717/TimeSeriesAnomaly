@@ -31,16 +31,16 @@ CODE_DIM=8
 CODE_LEN=4
 NUM_CODES=500
 
-#python mini_runnable_vqvae.py \
-#  --max_seq_len ${MAX_LEN_ANOMALY} \
-#  --data_paths ${DATA_PATHS} \
-#  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
-#  --data_type "ecg" \
-#  --gpu_id ${GPU_ID} \
-#  --save_dir ${VQVAE_CKPT} \
-#  --code_dim ${CODE_DIM} \
-#  --code_len ${CODE_LEN} \
-#  --num_codes ${NUM_CODES}
+python mini_runnable_vqvae.py \
+  --max_seq_len ${MAX_LEN_ANOMALY} \
+  --data_paths ${DATA_PATHS} \
+  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
+  --data_type ${DATA_TYPE} \
+  --gpu_id ${GPU_ID} \
+  --save_dir ${VQVAE_CKPT} \
+  --code_dim ${CODE_DIM} \
+  --code_len ${CODE_LEN} \
+  --num_codes ${NUM_CODES}
 
 
 python dsp_flow.py \

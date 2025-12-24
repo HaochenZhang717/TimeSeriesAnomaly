@@ -445,7 +445,7 @@ def no_context_no_code_pretrain(args):
     )
 
     if args.data_type == "ecg":
-        train_set = NoContextNormalECGDataset(
+        full_set = NoContextNormalECGDataset(
             raw_data_paths=args.raw_data_paths_train,
             indices_paths=args.indices_paths_train,
             seq_len=args.seq_len,
@@ -454,7 +454,7 @@ def no_context_no_code_pretrain(args):
             max_infill_length=args.max_infill_length,
         )
     elif args.data_type == "ercot":
-        train_set = NoContextNormalERCOTDataset(
+        full_set = NoContextNormalERCOTDataset(
             raw_data_paths=args.raw_data_paths_train,
             indices_paths=args.indices_paths_train,
             seq_len=args.seq_len,
@@ -463,7 +463,18 @@ def no_context_no_code_pretrain(args):
             max_infill_length=args.max_infill_length,
         )
     else:
-        raise ValueError(f"{args.data_type} is not supported.")
+        raise ValueError(f"{args.data_type} is not supported")
+
+
+    N = len(full_set)
+    indices = np.arange(N)
+
+    split = int(0.8 * N)
+    train_idx = indices[:split]
+    val_idx = indices[split:]
+
+    train_set = Subset(full_set, train_idx)
+    val_set = Subset(full_set, val_idx)
 
 
     train_loader = torch.utils.data.DataLoader(
@@ -472,7 +483,7 @@ def no_context_no_code_pretrain(args):
         collate_fn = dict_collate_fn,
     )
     val_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
+        val_set, batch_size=args.batch_size,
         shuffle=False, drop_last=False,
         collate_fn=dict_collate_fn,
     )

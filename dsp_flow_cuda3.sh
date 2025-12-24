@@ -33,7 +33,7 @@ python mini_runnable_vqvae.py \
   --max_seq_len ${MAX_LEN_ANOMALY} \
   --data_paths ${DATA_PATHS} \
   --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
-  --data_type "ercot" \
+  --data_type ${DATA_TYPE} \
   --gpu_id ${GPU_ID} \
   --save_dir ${VQVAE_CKPT} \
   --code_dim ${CODE_DIM} \
