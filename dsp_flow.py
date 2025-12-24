@@ -176,6 +176,7 @@ def imputation_finetune(args):
 
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -275,6 +276,7 @@ def no_context_pretrain(args):
 
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -363,6 +365,7 @@ def no_context_pretrain(args):
 def no_context_sample(args):
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -435,6 +438,7 @@ def no_context_no_code_pretrain(args):
 
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -526,6 +530,7 @@ def no_code_imputation_finetune(args):
 
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -625,6 +630,7 @@ def no_code_imputation_finetune(args):
 def posterior_impute_sample(args):
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -739,6 +745,7 @@ def posterior_impute_sample(args):
 def no_code_impute_sample(args):
     model = DSPFlow(
         seq_length=args.seq_len,
+        vqvae_seq_len=args.max_infill_length,
         feature_size=args.feature_size,
         n_layer_enc=args.n_layer_enc,
         n_layer_dec=args.n_layer_dec,
@@ -824,13 +831,25 @@ def no_code_impute_sample(args):
 def anomaly_evaluate(args):
     device = torch.device(f"cuda:{args.gpu_id}")
 
-    real_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_test,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        real_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        real_set = ImputationERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"Unknown data_type {args.data_type}")
+
     real_data = []
     real_labels = []
     for which_list, which_index in real_set.global_index:

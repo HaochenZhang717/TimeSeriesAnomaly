@@ -12,6 +12,7 @@ class DSPFlow(nn.Module):
     def __init__(
             self,
             seq_length,
+            vqvae_seq_len,
             feature_size,
             n_layer_enc=3,
             n_layer_dec=6,
@@ -44,7 +45,7 @@ class DSPFlow(nn.Module):
             down_ratio=2,
             up_ratio=2,
             code_len=4,
-            seq_len=800
+            seq_len=vqvae_seq_len
         )
         # when debug i comment this out
         if not vqvae_ckpt.startswith("none"):
