@@ -755,7 +755,6 @@ def extract_code_segments(
     encoder_channels,
     decoder_channels,
     code_len,
-    seq_len,
 ):
     model = VQVAE1D(
         in_channels=in_channels,
@@ -766,7 +765,7 @@ def extract_code_segments(
         encoder_channels=encoder_channels,
         decoder_channels=decoder_channels,
         code_len=code_len,
-        seq_len=seq_len,
+        seq_len=max_length,
     ).to(device)
     model.eval()
     ckpt = torch.load(model_path, map_location=device)
@@ -990,7 +989,7 @@ if __name__ == "__main__":
         save_path=f"{args.save_dir}/code_segments.pt",
         down_ratio=2,
         up_ratio=2,
-        max_length=100,
+        max_length=args.max_seq_len,
         encoder_channels=(16, 16, 32, 32, 64, 64),
         decoder_channels=(64, 64, 32, 32, 16, 16),
         code_len=args.code_len,
