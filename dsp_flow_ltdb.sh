@@ -30,6 +30,7 @@ NUM_CODES=500
 
 python mini_runnable_vqvae.py \
   --max_seq_len ${MAX_LEN_ANOMALY} \
+  --min_seq_len ${MIN_LEN_ANOMALY} \
   --data_paths ${DATA_PATHS} \
   --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
   --data_type ${DATA_TYPE} \

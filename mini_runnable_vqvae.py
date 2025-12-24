@@ -43,6 +43,7 @@ class AnomalyDataset(Dataset):
             indices_paths,
             one_channel,
             max_length,
+            min_length,
             data_type,
     ):
         super().__init__()
@@ -50,6 +51,7 @@ class AnomalyDataset(Dataset):
         self.indices_paths = indices_paths
         self.one_channel = one_channel
         self.max_length = max_length
+        self.min_length = min_length
         self.data_type = data_type
 
         if data_type == "ecg":
@@ -99,7 +101,7 @@ class AnomalyDataset(Dataset):
             start = self.index_lines_list[which_list][which_index]["start"]
             if "source_file" in self.index_lines_list[which_list][which_index].keys():
                 # this is a normal data, we apply random length
-                random_length = random.randint(160, 800)
+                random_length = random.randint(self.min_length, self.max_length)
                 end = start + random_length
             else: # this is anomaly data, we use fix length
                 end = self.index_lines_list[which_list][which_index]["end"]
@@ -510,6 +512,7 @@ class TrainConfig:
     decoder_channels: tuple
     down_ratio: int
     up_ratio: int
+    min_length: int
     max_length: int
 
     raw_data_paths: str
@@ -607,6 +610,7 @@ def train_vqvae(cfg: TrainConfig):
         raw_data_paths=cfg.raw_data_paths,
         indices_paths=cfg.indices_paths,
         one_channel=cfg.one_channel,
+        min_length=cfg.min_length,
         max_length=cfg.max_length,
         data_type=cfg.data_type
     )
@@ -899,6 +903,7 @@ def plot_code_waveforms(
 def get_args():
     parser = argparse.ArgumentParser(description="parameters for vqvae pretraining")
 
+    parser.add_argument("--min_seq_len", type=int, required=True)
     parser.add_argument("--max_seq_len", type=int, required=True)
     parser.add_argument("--data_paths", type=json.loads, required=True)
     parser.add_argument("--indices_paths", type=json.loads, required=True)
@@ -949,6 +954,7 @@ if __name__ == "__main__":
         decoder_channels=(64, 64, 32, 32, 16, 16),
         down_ratio=2,
         up_ratio=2,
+        min_length=args.min_seq_len,
         max_length=args.max_seq_len,
 
         raw_data_paths=args.data_paths,
