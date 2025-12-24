@@ -209,7 +209,7 @@ class DSPFlowTrainer(object):
                 else:
                     torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt.pth")
                     torch.save(ema_state_dict, f"{self.save_dir}/ema_ckpt.pth")
-                torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt_epoch{epoch}.pth")
+                # torch.save(self.model.state_dict(), f"{self.save_dir}/ckpt_epoch{epoch}.pth")
                 self.scheduler.step(val_total)
             else:
                 wandb.log({
