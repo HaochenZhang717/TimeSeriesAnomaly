@@ -8,7 +8,7 @@ GPU_ID=4
 DATA_TYPE="ecg"
 WANDB_PROJECT="dsp_flow_mitdb_no_code"
 
-VQVAE_CKPT=""
+VQVAE_CKPT="none"
 PRETRAIN_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow_no_code/no_context_pretrain_ckpt"
 FINETUNE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow_no_code/impute_finetune_ckpt_lr${LR}"
 
@@ -141,7 +141,7 @@ python dsp_flow.py \
   \
   --ckpt_dir ${FINETUNE_CKPT} \
   --pretrained_ckpt "none" \
-  --vqvae_ckpt "${VQVAE_CKPT}//vqvae.pt" \
+  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
   \
   --generated_path "" \
   \

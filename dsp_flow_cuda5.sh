@@ -8,7 +8,7 @@ GPU_ID=5
 DATA_TYPE="ercot"
 WANDB_PROJECT="dsp_flow_no_code_ercot"
 
-VQVAE_CKPT=""
+VQVAE_CKPT="none"
 PRETRAIN_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow_no_code/no_context_pretrain_ckpt"
 FINETUNE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow_no_code/impute_finetune_ckpt_lr${LR}"
 

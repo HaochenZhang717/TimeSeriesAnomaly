@@ -160,7 +160,7 @@ python dsp_flow.py \
   \
   --ckpt_dir ${FINETUNE_CKPT} \
   --pretrained_ckpt "none" \
-  --vqvae_ckpt "${VQVAE_CKPT}//vqvae.pt" \
+  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
   \
   --generated_path "" \
   \
