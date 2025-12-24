@@ -47,8 +47,9 @@ class DSPFlow(nn.Module):
             seq_len=800
         )
         # when debug i comment this out
-        pretrained_vqvae_ckpt = torch.load(vqvae_ckpt)
-        self.vqvae.load_state_dict(pretrained_vqvae_ckpt["model_state"])
+        if not vqvae_ckpt.startswith("none"):
+            pretrained_vqvae_ckpt = torch.load(vqvae_ckpt)
+            self.vqvae.load_state_dict(pretrained_vqvae_ckpt["model_state"])
 
         for param in self.vqvae.parameters():
             param.requires_grad = False
