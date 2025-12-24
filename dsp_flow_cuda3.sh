@@ -31,8 +31,8 @@ NUM_CODES=500
 
 python mini_runnable_vqvae.py \
   --max_seq_len ${MAX_LEN_ANOMALY} \
-  --data_paths ${DATA_PATHS} \
-  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
+  --data_paths "${DATA_PATHS}" \
+  --indices_paths "${VQVAE_TRAIN_INDICES_PATHS}"\
   --data_type ${DATA_TYPE} \
   --gpu_id ${GPU_ID} \
   --save_dir ${VQVAE_CKPT} \
@@ -54,9 +54,9 @@ python dsp_flow.py \
   --d_model 64 \
   --n_heads 4 \
   \
-  --raw_data_paths_train ${DATA_PATHS} \
-  --raw_data_paths_test ${TEST_DATA_PATHS} \
-  --indices_paths_train ${PRETRAIN_INDICES_PATHS} \
+  --raw_data_paths_train "${DATA_PATHS}" \
+  --raw_data_paths_test "${TEST_DATA_PATHS}" \
+  --indices_paths_train "${PRETRAIN_INDICES_PATHS}" \
   --indices_paths_test "[]" \
   --indices_paths_anomaly_for_sample "[]" \
   --min_infill_length ${MIN_LEN_ANOMALY} \
@@ -96,10 +96,10 @@ python dsp_flow.py \
   --d_model 64 \
   --n_heads 4 \
   \
-  --raw_data_paths_train ${DATA_PATHS} \
-  --raw_data_paths_test ${TEST_DATA_PATHS} \
-  --indices_paths_train ${FINETUNE_TRAIN_INDICES_PATHS} \
-  --indices_paths_test ${FINETUNE_TEST_INDICES_PATHS} \
+  --raw_data_paths_train "${DATA_PATHS}" \
+  --raw_data_paths_test "${TEST_DATA_PATHS}" \
+  --indices_paths_train "${FINETUNE_TRAIN_INDICES_PATHS}" \
+  --indices_paths_test "${FINETUNE_TEST_INDICES_PATHS}" \
   --indices_paths_anomaly_for_sample "[]" \
   --min_infill_length ${MIN_LEN_ANOMALY} \
   --max_infill_length ${MAX_LEN_ANOMALY} \
@@ -137,11 +137,11 @@ python dsp_flow.py \
   --d_model 64 \
   --n_heads 4 \
   \
-  --raw_data_paths_train ${DATA_PATHS} \
-  --raw_data_paths_test ${TEST_DATA_PATHS} \
-  --indices_paths_train ${NORMAL_INDICES_FOR_SAMPLE} \
+  --raw_data_paths_train "${DATA_PATHS}" \
+  --raw_data_paths_test "${TEST_DATA_PATHS}" \
+  --indices_paths_train "${NORMAL_INDICES_FOR_SAMPLE}" \
   --indices_paths_test "[]" \
-  --indices_paths_anomaly_for_sample ${ANOMALY_INDICES_FOR_SAMPLE} \
+  --indices_paths_anomaly_for_sample "${ANOMALY_INDICES_FOR_SAMPLE}" \
   --min_infill_length ${MIN_LEN_ANOMALY} \
   --max_infill_length ${MAX_LEN_ANOMALY} \
   \
@@ -179,10 +179,10 @@ python dsp_flow.py \
   --d_model 64 \
   --n_heads 4 \
   \
-  --raw_data_paths_train ${DATA_PATHS} \
-  --raw_data_paths_test ${TEST_DATA_PATHS} \
+  --raw_data_paths_train "${DATA_PATHS}" \
+  --raw_data_paths_test "${TEST_DATA_PATHS}" \
   --indices_paths_train "[]" \
-  --indices_paths_test ${FINETUNE_TEST_INDICES_PATHS} \
+  --indices_paths_test "${FINETUNE_TEST_INDICES_PATHS}" \
   --indices_paths_anomaly_for_sample "[]" \
   --min_infill_length ${MIN_LEN_ANOMALY} \
   --max_infill_length ${MAX_LEN_ANOMALY} \
