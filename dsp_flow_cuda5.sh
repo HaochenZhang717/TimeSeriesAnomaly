@@ -3,14 +3,14 @@ LR=1e-4
 LEN_WHOLE=1000
 MAX_LEN_ANOMALY=193
 MIN_LEN_ANOMALY=190
-GPU_ID=3
+GPU_ID=5
 
 DATA_TYPE="ercot"
-WANDB_PROJECT="dsp_flow_ercot"
+WANDB_PROJECT="dsp_flow_no_code_ercot"
 
-VQVAE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/vqvae_save_path"
-PRETRAIN_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/no_context_pretrain_ckpt"
-FINETUNE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/impute_finetune_ckpt_lr${LR}"
+VQVAE_CKPT=""
+PRETRAIN_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow_no_code/no_context_pretrain_ckpt"
+FINETUNE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow_no_code/impute_finetune_ckpt_lr${LR}"
 
 
 DATA_PATHS='["./dataset_utils/ERCOT_datasets/raw_data/coast.npy", "./dataset_utils/ERCOT_datasets/raw_data/east.npy", "./dataset_utils/ERCOT_datasets/raw_data/fwest.npy", "./dataset_utils/ERCOT_datasets/raw_data/ncent.npy"]'
@@ -23,26 +23,9 @@ FINETUNE_TEST_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/north_anom
 ANOMALY_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/anomaly_segments_coast.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_east.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_fwest.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_ncent.jsonl"]'
 NORMAL_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/coast_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_1000.jsonl"]'
 
-#VQVAE Train Parameters
-VQVAE_TRAIN_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/coast_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_200.jsonl"]'
-CODE_DIM=8
-CODE_LEN=4
-NUM_CODES=500
-
-python mini_runnable_vqvae.py \
-  --max_seq_len ${MAX_LEN_ANOMALY} \
-  --data_paths ${DATA_PATHS} \
-  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
-  --data_type "ercot" \
-  --gpu_id ${GPU_ID} \
-  --save_dir ${VQVAE_CKPT} \
-  --code_dim ${CODE_DIM} \
-  --code_len ${CODE_LEN} \
-  --num_codes ${NUM_CODES}
-
 
 python dsp_flow.py \
-  --what_to_do "no_context_pretrain" \
+  --what_to_do "no_context_no_code_pretrain" \
   \
   --seq_len ${LEN_WHOLE} \
   --data_type ${DATA_TYPE} \
@@ -84,7 +67,7 @@ python dsp_flow.py \
 
 
 python dsp_flow.py \
-  --what_to_do "imputation_finetune" \
+  --what_to_do "no_code_imputation_finetune" \
   \
   --seq_len ${LEN_WHOLE} \
   --data_type ${DATA_TYPE} \
@@ -125,7 +108,7 @@ python dsp_flow.py \
 
 
 python dsp_flow.py \
-  --what_to_do "posterior_impute_sample" \
+  --what_to_do "no_code_impute_sample" \
   \
   --seq_len ${LEN_WHOLE} \
   --data_type ${DATA_TYPE} \
@@ -202,6 +185,6 @@ python dsp_flow.py \
   --pretrained_ckpt "none" \
   --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
   \
-  --generated_path "${FINETUNE_CKPT}/posterior_impute_samples.pth" \
+  --generated_path "${FINETUNE_CKPT}/no_code_impute_samples.pth" \
   \
   --gpu_id ${GPU_ID}

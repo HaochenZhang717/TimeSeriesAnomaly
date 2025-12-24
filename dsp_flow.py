@@ -1,4 +1,5 @@
 from Trainers import DSPFlowTrainer
+from code.dataset_utils import NoContextAnomalyERCOTDataset
 from generation_models import DSPFlow
 from dataset_utils import ImputationNormalECGDataset, NoContextAnomalyECGDataset
 from dataset_utils import ImputationECGDataset, NoContextNormalECGDataset
@@ -627,23 +628,40 @@ def posterior_impute_sample(args):
     model.to(device=device)
     model.eval()
 
+    if args.data_type == "ecg":
+        anomaly_set = NoContextAnomalyECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_anomaly_for_sample,
+            seq_len=args.max_infill_length,
+            one_channel=args.one_channel,
+        )
 
-    anomaly_set = NoContextAnomalyECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_anomaly_for_sample,
-        seq_len=args.max_infill_length,
-        one_channel=args.one_channel,
-    )
+        normal_set = ImputationNormalECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        anomaly_set = NoContextAnomalyERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_anomaly_for_sample,
+            seq_len=args.max_infill_length,
+            one_channel=args.one_channel,
+        )
 
-
-    normal_set = ImputationNormalECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
+        normal_set = ImputationNormalERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"{args.data_type} is not supported.")
 
     anomaly_loader = torch.utils.data.DataLoader(
         anomaly_set, batch_size=args.batch_size,
@@ -725,16 +743,26 @@ def no_code_impute_sample(args):
     model.eval()
 
 
-
-    normal_set = ImputationNormalECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
-
+    if args.data_type == "ecg":
+        normal_set = ImputationNormalECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        normal_set = ImputationNormalERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"Unknown data_type {args.data_type}")
 
     normal_loader = torch.utils.data.DataLoader(
         normal_set, batch_size=args.batch_size,
