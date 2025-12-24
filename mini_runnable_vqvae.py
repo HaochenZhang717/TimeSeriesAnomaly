@@ -993,7 +993,7 @@ if __name__ == "__main__":
         encoder_channels=(16, 16, 32, 32, 64, 64),
         decoder_channels=(64, 64, 32, 32, 16, 16),
         code_len=args.code_len,
-        seq_len=args.seq_len,
+        seq_len=args.max_seq_len,
     )
 
     # extract_code_segments(
