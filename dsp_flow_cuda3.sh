@@ -1,7 +1,7 @@
 export hucfg_t_sampling=logitnorm
 LR=1e-4
 LEN_WHOLE=1000
-MAX_LEN_ANOMALY=193
+MAX_LEN_ANOMALY=200
 MIN_LEN_ANOMALY=190
 GPU_ID=3
 
