@@ -209,7 +209,7 @@ def imputation_finetune(args):
             max_infill_length=args.max_infill_length,
         )
     elif args.data_type == "ercot":
-        train_set = ImputationECGDataset(
+        train_set = ImputationERCOTDataset(
             raw_data_paths=args.raw_data_paths_train,
             indices_paths=args.indices_paths_train,
             seq_len=args.seq_len,
@@ -217,7 +217,7 @@ def imputation_finetune(args):
             max_infill_length=args.max_infill_length,
         )
 
-        val_set = ImputationECGDataset(
+        val_set = ImputationERCOTDataset(
             raw_data_paths=args.raw_data_paths_test,
             indices_paths=args.indices_paths_test,
             seq_len=args.seq_len,
