@@ -29,16 +29,16 @@ CODE_DIM=8
 CODE_LEN=4
 NUM_CODES=500
 
-#python mini_runnable_vqvae.py \
-#  --max_seq_len ${MAX_LEN_ANOMALY} \
-#  --data_paths "${DATA_PATHS}" \
-#  --indices_paths "${VQVAE_TRAIN_INDICES_PATHS}"\
-#  --data_type ${DATA_TYPE} \
-#  --gpu_id ${GPU_ID} \
-#  --save_dir ${VQVAE_CKPT} \
-#  --code_dim ${CODE_DIM} \
-#  --code_len ${CODE_LEN} \
-#  --num_codes ${NUM_CODES}
+python mini_runnable_vqvae.py \
+  --max_seq_len ${MAX_LEN_ANOMALY} \
+  --data_paths "${DATA_PATHS}" \
+  --indices_paths "${VQVAE_TRAIN_INDICES_PATHS}"\
+  --data_type ${DATA_TYPE} \
+  --gpu_id ${GPU_ID} \
+  --save_dir ${VQVAE_CKPT} \
+  --code_dim ${CODE_DIM} \
+  --code_len ${CODE_LEN} \
+  --num_codes ${NUM_CODES}
 
 
 #python dsp_flow.py \
@@ -124,84 +124,84 @@ NUM_CODES=500
 #  --gpu_id ${GPU_ID}
 
 
-python dsp_flow.py \
-  --what_to_do "posterior_impute_sample" \
-  \
-  --seq_len ${LEN_WHOLE} \
-  --data_type ${DATA_TYPE} \
-  --feature_size 1 \
-  --one_channel 1 \
-  \
-  --n_layer_enc 4 \
-  --n_layer_dec 4 \
-  --d_model 64 \
-  --n_heads 4 \
-  \
-  --raw_data_paths_train "${DATA_PATHS}" \
-  --raw_data_paths_test "${TEST_DATA_PATHS}" \
-  --indices_paths_train "${NORMAL_INDICES_FOR_SAMPLE}" \
-  --indices_paths_test "[]" \
-  --indices_paths_anomaly_for_sample "${ANOMALY_INDICES_FOR_SAMPLE}" \
-  --min_infill_length ${MIN_LEN_ANOMALY} \
-  --max_infill_length ${MAX_LEN_ANOMALY} \
-  \
-  --lr 1e-4 \
-  --batch_size 64 \
-  --max_epochs 2000 \
-  --grad_clip_norm 1.0 \
-  --grad_accum_steps 1 \
-  --early_stop "true" \
-  --patience 50 \
-  \
-  --wandb_project "none" \
-  --wandb_run "none" \
-  \
-  --ckpt_dir ${FINETUNE_CKPT} \
-  --pretrained_ckpt "none" \
-  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
-  \
-  --generated_path "" \
-  \
-  --gpu_id ${GPU_ID}
-
-
-
-python dsp_flow.py \
-  --what_to_do "anomaly_evaluate" \
-  \
-  --seq_len ${LEN_WHOLE} \
-  --data_type ${DATA_TYPE} \
-  --feature_size 1 \
-  --one_channel 1 \
-  \
-  --n_layer_enc 4 \
-  --n_layer_dec 4 \
-  --d_model 64 \
-  --n_heads 4 \
-  \
-  --raw_data_paths_train "${DATA_PATHS}" \
-  --raw_data_paths_test "${TEST_DATA_PATHS}" \
-  --indices_paths_train "[]" \
-  --indices_paths_test "${FINETUNE_TEST_INDICES_PATHS}" \
-  --indices_paths_anomaly_for_sample "[]" \
-  --min_infill_length ${MIN_LEN_ANOMALY} \
-  --max_infill_length ${MAX_LEN_ANOMALY} \
-  \
-  --lr 1e-4 \
-  --batch_size 64 \
-  --max_epochs 2000 \
-  --grad_clip_norm 1.0 \
-  --grad_accum_steps 1 \
-  --early_stop "true" \
-  --patience 50 \
-  \
-  --wandb_project "none" \
-  --wandb_run "none" \
-  \
-  --ckpt_dir "" \
-  --pretrained_ckpt "none" \
-  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
-  \
-  --generated_path "${FINETUNE_CKPT}/posterior_impute_samples.pth" \
-  \
-  --gpu_id ${GPU_ID}
+#python dsp_flow.py \
+#  --what_to_do "posterior_impute_sample" \
+#  \
+#  --seq_len ${LEN_WHOLE} \
+#  --data_type ${DATA_TYPE} \
+#  --feature_size 1 \
+#  --one_channel 1 \
+#  \
+#  --n_layer_enc 4 \
+#  --n_layer_dec 4 \
+#  --d_model 64 \
+#  --n_heads 4 \
+#  \
+#  --raw_data_paths_train "${DATA_PATHS}" \
+#  --raw_data_paths_test "${TEST_DATA_PATHS}" \
+#  --indices_paths_train "${NORMAL_INDICES_FOR_SAMPLE}" \
+#  --indices_paths_test "[]" \
+#  --indices_paths_anomaly_for_sample "${ANOMALY_INDICES_FOR_SAMPLE}" \
+#  --min_infill_length ${MIN_LEN_ANOMALY} \
+#  --max_infill_length ${MAX_LEN_ANOMALY} \
+#  \
+#  --lr 1e-4 \
+#  --batch_size 64 \
+#  --max_epochs 2000 \
+#  --grad_clip_norm 1.0 \
+#  --grad_accum_steps 1 \
+#  --early_stop "true" \
+#  --patience 50 \
+#  \
+#  --wandb_project "none" \
+#  --wandb_run "none" \
+#  \
+#  --ckpt_dir ${FINETUNE_CKPT} \
+#  --pretrained_ckpt "none" \
+#  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
+#  \
+#  --generated_path "" \
+#  \
+#  --gpu_id ${GPU_ID}
+#
+#
+#
+#python dsp_flow.py \
+#  --what_to_do "anomaly_evaluate" \
+#  \
+#  --seq_len ${LEN_WHOLE} \
+#  --data_type ${DATA_TYPE} \
+#  --feature_size 1 \
+#  --one_channel 1 \
+#  \
+#  --n_layer_enc 4 \
+#  --n_layer_dec 4 \
+#  --d_model 64 \
+#  --n_heads 4 \
+#  \
+#  --raw_data_paths_train "${DATA_PATHS}" \
+#  --raw_data_paths_test "${TEST_DATA_PATHS}" \
+#  --indices_paths_train "[]" \
+#  --indices_paths_test "${FINETUNE_TEST_INDICES_PATHS}" \
+#  --indices_paths_anomaly_for_sample "[]" \
+#  --min_infill_length ${MIN_LEN_ANOMALY} \
+#  --max_infill_length ${MAX_LEN_ANOMALY} \
+#  \
+#  --lr 1e-4 \
+#  --batch_size 64 \
+#  --max_epochs 2000 \
+#  --grad_clip_norm 1.0 \
+#  --grad_accum_steps 1 \
+#  --early_stop "true" \
+#  --patience 50 \
+#  \
+#  --wandb_project "none" \
+#  --wandb_run "none" \
+#  \
+#  --ckpt_dir "" \
+#  --pretrained_ckpt "none" \
+#  --vqvae_ckpt "${VQVAE_CKPT}/vqvae.pt" \
+#  \
+#  --generated_path "${FINETUNE_CKPT}/posterior_impute_samples.pth" \
+#  \
+#  --gpu_id ${GPU_ID}
