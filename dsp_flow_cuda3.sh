@@ -5,6 +5,7 @@ MAX_LEN_ANOMALY=193
 MIN_LEN_ANOMALY=190
 GPU_ID=3
 
+DATA_TYPE="ercot"
 WANDB_PROJECT="dsp_flow_ercot"
 
 VQVAE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/vqvae_save_path"
@@ -19,8 +20,6 @@ FINETUNE_TRAIN_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/coast_ano
 FINETUNE_TEST_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/north_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/scent_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/south_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/west_anomaly.jsonl"]'
 
 
-
-# todo: need to change ANOMALY_INDICES_FOR_SAMPLE I think
 ANOMALY_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/anomaly_segments_coast.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_east.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_fwest.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_ncent.jsonl"]'
 NORMAL_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/coast_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_1000.jsonl"]'
 
@@ -46,6 +45,7 @@ python dsp_flow.py \
   --what_to_do "no_context_pretrain" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -87,6 +87,7 @@ python dsp_flow.py \
   --what_to_do "imputation_finetune" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -127,6 +128,7 @@ python dsp_flow.py \
   --what_to_do "posterior_impute_sample" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -168,6 +170,7 @@ python dsp_flow.py \
   --what_to_do "anomaly_evaluate" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \

@@ -2,6 +2,10 @@ from Trainers import DSPFlowTrainer
 from generation_models import DSPFlow
 from dataset_utils import ImputationNormalECGDataset, NoContextAnomalyECGDataset
 from dataset_utils import ImputationECGDataset, NoContextNormalECGDataset
+
+from dataset_utils import ImputationNormalERCOTDataset, NoContextNormalERCOTDataset
+from dataset_utils import ImputationERCOTDataset, NoContextNormalERCOTDataset
+
 import argparse
 import torch
 import json
@@ -47,6 +51,7 @@ def get_args():
     )
 
     """time series general parameters"""
+    parser.add_argument("--data_type", type=str, required=True)
     parser.add_argument("--seq_len", type=int, required=True)
     parser.add_argument("--feature_size", type=int, required=True)
     parser.add_argument("--one_channel", type=int, required=True)
@@ -185,21 +190,41 @@ def imputation_finetune(args):
         model.load_state_dict(pretrained_state_dict)
         model.freeze_proto_mlp()
 
-    train_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        max_infill_length=args.max_infill_length,
-    )
 
-    val_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_test,
-        indices_paths=args.indices_paths_test,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        train_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+
+        val_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_test,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        train_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+
+        val_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_test,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"data_type {args.data_type} not supported")
 
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
@@ -259,14 +284,26 @@ def no_context_pretrain(args):
         vqvae_ckpt=args.vqvae_ckpt
     )
 
-    full_set = NoContextNormalECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        full_set = NoContextNormalECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        full_set = NoContextNormalERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"{args.data_type} is not supported")
 
 
     N = len(full_set)
@@ -339,14 +376,26 @@ def no_context_sample(args):
     model.to(device=device)
     model.eval()
 
-    train_set = NoContextNormalECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        train_set = NoContextNormalECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        train_set = NoContextNormalERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"{args.data_type} is not supported.")
 
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
@@ -395,14 +444,27 @@ def no_context_no_code_pretrain(args):
         vqvae_ckpt=args.vqvae_ckpt
     )
 
-    train_set = NoContextNormalECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        min_infill_length=args.min_infill_length,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        train_set = NoContextNormalECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    elif args.data_type == "ercot":
+        train_set = NoContextNormalERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            min_infill_length=args.min_infill_length,
+            max_infill_length=args.max_infill_length,
+        )
+    else:
+        raise ValueError(f"{args.data_type} is not supported.")
+
 
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
@@ -467,21 +529,44 @@ def no_code_imputation_finetune(args):
         model.load_state_dict(pretrained_state_dict)
         model.freeze_proto_mlp()
 
-    train_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_train,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        max_infill_length=args.max_infill_length,
-    )
+    if args.data_type == "ecg":
+        train_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
 
-    val_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
-        indices_paths=args.indices_paths_test,
-        seq_len=args.seq_len,
-        one_channel=args.one_channel,
-        max_infill_length=args.max_infill_length,
-    )
+        val_set = ImputationECGDataset(
+            raw_data_paths=args.raw_data_paths_test,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+
+    elif args.data_type == "ercot":
+        train_set = ImputationERCOTDataset(
+            raw_data_paths=args.raw_data_paths_train,
+            indices_paths=args.indices_paths_train,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+
+        val_set = ImputationERCOTDataset(
+            raw_data_paths=args.raw_data_paths_test,
+            indices_paths=args.indices_paths_test,
+            seq_len=args.seq_len,
+            one_channel=args.one_channel,
+            max_infill_length=args.max_infill_length,
+        )
+
+    else:
+        raise ValueError(f"{args.data_type} is not supported.")
+
+
 
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,

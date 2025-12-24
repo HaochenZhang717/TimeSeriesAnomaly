@@ -5,6 +5,7 @@ MAX_LEN_ANOMALY=800
 MIN_LEN_ANOMALY=180
 GPU_ID=2
 
+DATA_TYPE="ecg"
 WANDB_PROJECT="dsp_flow_mitdb"
 #VQVAE_CKPT="/root/tianyi/vqvae_save_path/vqvae_1d.pt"
 #PRETRAIN_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
@@ -46,6 +47,7 @@ python dsp_flow.py \
   --what_to_do "no_context_pretrain" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -87,6 +89,7 @@ python dsp_flow.py \
   --what_to_do "imputation_finetune" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -127,6 +130,7 @@ python dsp_flow.py \
   --what_to_do "posterior_impute_sample" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
@@ -168,6 +172,7 @@ python dsp_flow.py \
   --what_to_do "anomaly_evaluate" \
   \
   --seq_len ${LEN_WHOLE} \
+  --data_type ${DATA_TYPE} \
   --feature_size 1 \
   --one_channel 1 \
   \
