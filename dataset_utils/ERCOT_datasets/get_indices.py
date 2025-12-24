@@ -883,6 +883,19 @@ if __name__ == "__main__":
         segments = get_anomaly_segments(anomaly_label, anomaly_type=1)
         print(name)
         print(f"总共有 {len(segments)} 段 anomaly")
+        segments_info_list = []
+        for segment in segments:
+            segments_info_list.append(
+                {
+                    "start": int(segment[0]),
+                    "end": int(segment[1]),
+                }
+            )
+
+        with open(f"./indices/anomaly_segments_{name}.jsonl", "w") as f:
+            for item in segments_info_list:
+                f.write(json.dumps(item) + "\n")
+
         windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
             signal=raw_signal,
             labels=anomaly_label,

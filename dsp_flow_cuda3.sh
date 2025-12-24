@@ -1,45 +1,45 @@
 export hucfg_t_sampling=logitnorm
 LR=1e-4
 LEN_WHOLE=1000
-MAX_LEN_ANOMALY=800
-MIN_LEN_ANOMALY=180
-GPU_ID=2
+MAX_LEN_ANOMALY=193
+MIN_LEN_ANOMALY=190
+GPU_ID=3
 
-WANDB_PROJECT="dsp_flow_mitdb"
-#VQVAE_CKPT="/root/tianyi/vqvae_save_path/vqvae_1d.pt"
-#PRETRAIN_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/no_context_pretrain_ckpt"
-#FINETUNE_CKPT="/root/tianyi/TSA-ckpts/dsp_flow/106npz/impute_finetune_ckpt_lr${LR}"
+WANDB_PROJECT="dsp_flow_ercot"
 
-VQVAE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/vqvae_save_path"
-PRETRAIN_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/no_context_pretrain_ckpt"
-FINETUNE_CKPT="/root/tianyi/formal_experiment/mitdb/dsp_flow/impute_finetune_ckpt_lr${LR}"
+VQVAE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/vqvae_save_path"
+PRETRAIN_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/no_context_pretrain_ckpt"
+FINETUNE_CKPT="/root/tianyi/formal_experiment/ercot/dsp_flow/impute_finetune_ckpt_lr${LR}"
 
 
-DATA_PATHS='["./dataset_utils/ECG_datasets/raw_data/106.npz"]'
-TEST_DATA_PATHS='["./dataset_utils/ECG_datasets/raw_data/106.npz"]'
-PRETRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl"]'
-FINETUNE_TRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_train.jsonl"]'
-FINETUNE_TEST_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/V_test.jsonl"]'
-ANOMALY_INDICES_FOR_SAMPLE='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/anomaly_segments_with_prototype_train.jsonl"]'
-NORMAL_INDICES_FOR_SAMPLE='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_1000.jsonl"]'
+DATA_PATHS='["./dataset_utils/ERCOT_datasets/raw_data/coast.npy", "./dataset_utils/ERCOT_datasets/raw_data/east.npy", "./dataset_utils/ERCOT_datasets/raw_data/fwest.npy", "./dataset_utils/ERCOT_datasets/raw_data/ncent.npy"]'
+TEST_DATA_PATHS='["./dataset_utils/ERCOT_datasets/raw_data/north.npy", "./dataset_utils/ERCOT_datasets/raw_data/scent.npy", "./dataset_utils/ERCOT_datasets/raw_data/south.npy", "./dataset_utils/ERCOT_datasets/raw_data/west.npy"]'
+PRETRAIN_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/coast_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_200.jsonl"]'
+FINETUNE_TRAIN_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/coast_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_anomaly.jsonl"]'
+FINETUNE_TEST_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/north_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/scent_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/south_anomaly.jsonl", "./dataset_utils/ERCOT_datasets/indices/west_anomaly.jsonl"]'
+
+
+
+# todo: need to change ANOMALY_INDICES_FOR_SAMPLE I think
+ANOMALY_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/anomaly_segments_coast.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_east.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_fwest.jsonl", "./dataset_utils/ERCOT_datasets/indices/anomaly_segments_ncent.jsonl"]'
+NORMAL_INDICES_FOR_SAMPLE='["./dataset_utils/ERCOT_datasets/indices/coast_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_1000.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_1000.jsonl"]'
 
 #VQVAE Train Parameters
-#VQVAE_TRAIN_INDICES_PATHS="[../dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/mixed.jsonl]"
-VQVAE_TRAIN_INDICES_PATHS='["./dataset_utils/ECG_datasets/indices/slide_windows_106npz/train/normal_800.jsonl"]'
+VQVAE_TRAIN_INDICES_PATHS='["./dataset_utils/ERCOT_datasets/indices/coast_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/east_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/fwest_normal_200.jsonl", "./dataset_utils/ERCOT_datasets/indices/ncent_normal_200.jsonl"]'
 CODE_DIM=8
 CODE_LEN=4
 NUM_CODES=500
 
-#python mini_runnable_vqvae.py \
-#  --max_seq_len ${MAX_LEN_ANOMALY} \
-#  --data_paths ${DATA_PATHS} \
-#  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
-#  --data_type "ecg" \
-#  --gpu_id ${GPU_ID} \
-#  --save_dir ${VQVAE_CKPT} \
-#  --code_dim ${CODE_DIM} \
-#  --code_len ${CODE_LEN} \
-#  --num_codes ${NUM_CODES}
+python mini_runnable_vqvae.py \
+  --max_seq_len ${MAX_LEN_ANOMALY} \
+  --data_paths ${DATA_PATHS} \
+  --indices_paths ${VQVAE_TRAIN_INDICES_PATHS}\
+  --data_type "ercot" \
+  --gpu_id ${GPU_ID} \
+  --save_dir ${VQVAE_CKPT} \
+  --code_dim ${CODE_DIM} \
+  --code_len ${CODE_LEN} \
+  --num_codes ${NUM_CODES}
 
 
 python dsp_flow.py \

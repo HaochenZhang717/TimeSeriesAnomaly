@@ -8,6 +8,8 @@ import json
 import os
 import numpy as np
 from evaluation_utils import calculate_robustTAD
+from torch.utils.data import Subset
+
 
 
 def dict_collate_fn(batch):
@@ -57,6 +59,7 @@ def get_args():
 
     """data parameters"""
     parser.add_argument("--raw_data_paths_train", type=json.loads, required=True)
+    parser.add_argument("--raw_data_paths_test", type=json.loads, required=True)
     parser.add_argument("--indices_paths_train", type=json.loads, required=True)
     parser.add_argument("--indices_paths_test", type=json.loads, required=True)
     parser.add_argument("--indices_paths_anomaly_for_sample", type=json.loads, default="none")
@@ -191,7 +194,7 @@ def imputation_finetune(args):
     )
 
     val_set = ImputationECGDataset(
-        raw_data_paths=args.raw_data_paths_train,
+        raw_data_paths=args.raw_data_paths_test,
         indices_paths=args.indices_paths_test,
         seq_len=args.seq_len,
         one_channel=args.one_channel,
@@ -256,7 +259,7 @@ def no_context_pretrain(args):
         vqvae_ckpt=args.vqvae_ckpt
     )
 
-    train_set = NoContextNormalECGDataset(
+    full_set = NoContextNormalECGDataset(
         raw_data_paths=args.raw_data_paths_train,
         indices_paths=args.indices_paths_train,
         seq_len=args.seq_len,
@@ -265,13 +268,25 @@ def no_context_pretrain(args):
         max_infill_length=args.max_infill_length,
     )
 
+
+    N = len(full_set)
+    indices = np.arange(N)
+
+    split = int(0.8 * N)
+    train_idx = indices[:split]
+    val_idx = indices[split:]
+
+    train_set = Subset(full_set, train_idx)
+    val_set = Subset(full_set, val_idx)
+
+
     train_loader = torch.utils.data.DataLoader(
         train_set, batch_size=args.batch_size,
         shuffle=True, drop_last=True,
         collate_fn = dict_collate_fn,
     )
     val_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=args.batch_size,
+        val_set, batch_size=args.batch_size,
         shuffle=False, drop_last=False,
         collate_fn=dict_collate_fn,
     )
