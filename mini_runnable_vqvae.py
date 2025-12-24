@@ -743,8 +743,9 @@ def extract_code_segments(
     code_dim,
     num_codes,
     model_path,
-    raw_data_path,
-    indices_path,
+    raw_data_paths,
+    indices_paths,
+    data_type,
     one_channel,
     device,
     save_path,
@@ -776,10 +777,11 @@ def extract_code_segments(
     code_segments = defaultdict(list)
 
     dataset = AnomalyDataset(
-        raw_data_path=raw_data_path,
-        indices_path=indices_path,
+        raw_data_paths=raw_data_paths,
+        indices_paths=indices_paths,
         one_channel=one_channel,
         max_length=max_length,
+        data_type=data_type,
     )
 
     loader = DataLoader(
@@ -943,37 +945,57 @@ if __name__ == "__main__":
     #     save_path="/root/tianyi/vqvae_save_path/vqvae_1d.pt",
     # )
 
-    cfg = TrainConfig(
-        encoder_channels=(16, 16, 32, 32, 64, 64),
-        decoder_channels=(64, 64, 32, 32, 16, 16),
-        down_ratio=2,
-        up_ratio=2,
-        max_length=args.max_seq_len,
+    # cfg = TrainConfig(
+    #     encoder_channels=(16, 16, 32, 32, 64, 64),
+    #     decoder_channels=(64, 64, 32, 32, 16, 16),
+    #     down_ratio=2,
+    #     up_ratio=2,
+    #     max_length=args.max_seq_len,
+    #
+    #     raw_data_paths=args.data_paths,
+    #     indices_paths=args.indices_paths,
+    #     one_channel=True,
+    #     data_type=args.data_type,
+    #
+    #     batch_size=64,
+    #     epochs=50,
+    #     lr=1e-3,
+    #
+    #     hidden=64,
+    #     code_dim=args.code_dim,
+    #     code_len=args.code_len,
+    #     num_codes=args.num_codes,
+    #     beta=0.25,
+    #
+    #     recon_loss="mse",
+    #     vq_loss_weight=1.0,
+    #     device=f"cuda:{args.gpu_id}",
+    #     # device="cpu",
+    #     save_path=args.save_dir,
+    #
+    # )
+    #
+    # model = train_vqvae(cfg)
 
+    extract_code_segments(
+        in_channels=1,
+        code_dim=args.code_dim,
+        num_codes=args.num_codes,
+        model_path=f"{args.save_dir}/vqvae.pt",
         raw_data_paths=args.data_paths,
         indices_paths=args.indices_paths,
-        one_channel=True,
         data_type=args.data_type,
-
-        batch_size=64,
-        epochs=50,
-        lr=1e-3,
-
-        hidden=64,
-        code_dim=args.code_dim,
+        one_channel=True,
+        device="cuda:7",
+        save_path=f"{args.save_dir}/code_segments.pt",
+        down_ratio=2,
+        up_ratio=2,
+        max_length=100,
+        encoder_channels=(16, 16, 32, 32, 64, 64),
+        decoder_channels=(64, 64, 32, 32, 16, 16),
         code_len=args.code_len,
-        num_codes=args.num_codes,
-        beta=0.25,
-
-        recon_loss="mse",
-        vq_loss_weight=1.0,
-        device=f"cuda:{args.gpu_id}",
-        # device="cpu",
-        save_path=args.save_dir,
-
+        seq_len=args.seq_len,
     )
-
-    model = train_vqvae(cfg)
 
     # extract_code_segments(
     #     in_channels=1,
