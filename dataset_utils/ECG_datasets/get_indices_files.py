@@ -460,16 +460,10 @@ def build_single_ts_train_val(
     # 映射表
     name_map = {
         0: "normal",
-        1: "V",
-        2: "A",
-        3: "F",
-        4: "L",
-        5: "R",
-        6: "slash"
     }
 
     # 初始化全局统计
-    global_windows = {k: [] for k in range(0, 7)}
+    global_windows = {k: [] for k in range(0, 1)}
 
 
     # --- 遍历每个 record ---
@@ -488,44 +482,50 @@ def build_single_ts_train_val(
     )
 
     # 汇总
-    for k in range(0, 7):
+    for k in range(0, 1):
         global_windows[k].extend(per_record[k])
 
 
     # ----------- 开始写入 train/validation 文件 ------------
-    train_dir = os.path.join(output_dir, "train")
-    val_dir = os.path.join(output_dir, "validation")
-    os.makedirs(train_dir, exist_ok=True)
-    os.makedirs(val_dir, exist_ok=True)
+    # train_dir = os.path.join(output_dir, "train")
+    # val_dir = os.path.join(output_dir, "validation")
+    # os.makedirs(train_dir, exist_ok=True)
+    # os.makedirs(val_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
 
     stats = {}
 
     for k in range(0, 1):
-        fname = f"{name_map[k]}.jsonl"
+        fname = f"{name_map[k]}_{window_size}.jsonl"
         windows = global_windows[k]
 
         # split
-        split_idx = int(len(windows) * train_ratio)
-        train_list = windows[:split_idx]
-        val_list = windows[split_idx:]
+        # split_idx = int(len(windows) * train_ratio)
+        # train_list = windows[:split_idx]
+        # val_list = windows[split_idx:]
+
+        with open(os.path.join(output_dir, fname), "w") as f:
+            for item in windows:
+                f.write(json.dumps(item) + "\n")
 
         # 写 train
-        with open(os.path.join(train_dir, fname), "w") as f:
-            for item in train_list:
-                f.write(json.dumps(item) + "\n")
+        # with open(os.path.join(train_dir, fname), "w") as f:
+        #     for item in train_list:
+        #         f.write(json.dumps(item) + "\n")
 
         # 写 val
-        with open(os.path.join(val_dir, fname), "w") as f:
-            for item in val_list:
-                f.write(json.dumps(item) + "\n")
+        # with open(os.path.join(val_dir, fname), "w") as f:
+        #     for item in val_list:
+        #         f.write(json.dumps(item) + "\n")
 
         stats[k] = {
             "total": len(windows),
-            "train": len(train_list),
-            "val": len(val_list)
+            # "train": len(train_list),
+            # "val": len(val_list)
         }
 
-        print(f"{fname:12s} total={len(windows):6d}  train={len(train_list):6d}  val={len(val_list):6d}")
+        print(f"{fname:12s} total={len(windows):6d}")
+        # print(f"{fname:12s} total={len(windows):6d}  train={len(train_list):6d}  val={len(val_list):6d}")
 
     return stats
 
@@ -680,7 +680,7 @@ def extract_windows_containing_segments(
 
     if cluster_ids is not None:
         for (seg_start, seg_end), cluster_id in zip(segments, cluster_ids):
-
+            print(seg_start, seg_end)
             earliest = seg_end - window_size + 1
             latest = seg_start
 
@@ -702,8 +702,8 @@ def extract_windows_containing_segments(
                 if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
                     continue
 
-                if not has_exactly_one_anomaly_segment(label_win):
-                    continue
+                # if not has_exactly_one_anomaly_segment(label_win):
+                #     continue
 
                 anomaly_ratio = label_win.sum() / window_size
 
@@ -773,8 +773,8 @@ def extract_windows_containing_segments(
                 if not np.array_equal(np.unique(label_win), np.array([0, anomaly_type])):
                     continue
 
-                if not has_exactly_one_anomaly_segment(label_win):
-                    continue
+                # if not has_exactly_one_anomaly_segment(label_win):
+                #     continue
 
                 anomaly_ratio = label_win.sum() / window_size
 
@@ -931,45 +931,121 @@ if __name__ == "__main__":
     #         # print(min(lengths))
     #     print("-"*80)
 
-    name = 228
-    print(name)
-    raw_data = np.load(f"./raw_data/{name}.npz")
-    raw_signal = raw_data["signal"]
-    anomaly_label = raw_data["anomaly_label"]
 
+    raw_data_names = [
+        "./raw_Data_tsbad/176_MITDB_id_7_Medical_tr_6232_1st_6332", # anomaly_length: 192, 611
+        "./raw_Data_tsbad/245_SVDB_id_9_Medical_tr_12607_1st_12707", # anomaly_length: 82, 458
+        "./raw_Data_tsbad/219_LTDB_id_4_Medical_tr_3618_1st_3718" # anomaly_length: 94, 439
+    ]
+    indices_names = [
+        "./indices_tsbad/176_MITDB_id_7_Medical_tr_6232_1st_6332",
+        "./indices_tsbad/245_SVDB_id_9_Medical_tr_12607_1st_12707",
+        "./indices_tsbad/219_LTDB_id_4_Medical_tr_3618_1st_3718"
+    ]
 
-    stats = build_single_ts_train_val(
-        npz_file=f"./raw_data/{name}.npz",
-        output_dir=f"./indices/slide_windows_{name}npz",
-        window_size=1000,
-        stride=1,
-        train_ratio=0.99,
-        max_anomaly_ratio=0.2
-    )
+    for raw_data_name, indices_name in zip(raw_data_names, indices_names):
+        print("---")
+        print(raw_data_name)
+        raw_data = np.load(f"{raw_data_name}.npz")
+        raw_signal = raw_data["signal"]
+        anomaly_label = raw_data["anomaly_label"]
 
-
-    anomaly_type_maps = {'V': 1}
-
-    for k, v in anomaly_type_maps.items():
-        segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
-
-        print(f"总共有 {len(segments)} 段 anomaly")
-        lengths = []
-        for i, (s, e) in enumerate(segments):
-            print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
-            lengths.append(e - s + 1)
-        print(max(lengths))
-        print(min(lengths))
-
-        windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
-            signal=raw_signal,
-            labels=anomaly_label,
-            segments=segments,
-            cluster_ids=None,
+        stats = build_single_ts_train_val(
+            npz_file=f"{raw_data_name}.npz",
+            output_dir=indices_name,
             window_size=1000,
-            length_range=(66, 608),  # 调这个
-            step=100,
-            jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
-            anomaly_type=v
+            stride=4,
+            train_ratio=0.99,
+            max_anomaly_ratio=0.2
         )
+
+        stats = build_single_ts_train_val(
+            npz_file=f"{raw_data_name}.npz",
+            output_dir=indices_name,
+            window_size=700,
+            stride=4,
+            train_ratio=0.99,
+            max_anomaly_ratio=0.2
+        )
+
+
+        anomaly_type_maps = {'V': 1}
+
+        for k, v in anomaly_type_maps.items():
+            segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+
+            segments_info_list = []
+            for segment in segments:
+                segments_info_list.append(
+                    {
+                        "start": int(segment[0]),
+                        "end": int(segment[1]),
+                    }
+                )
+            with open(f"{indices_name}/anomaly_segments.jsonl", "w") as f:
+                for i, item in enumerate(segments_info_list):
+                    f.write(json.dumps(item) + "\n")
+
+
+            print(f"总共有 {len(segments)} 段 anomaly")
+            lengths = []
+            for i, (s, e) in enumerate(segments):
+                print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
+                lengths.append(e - s + 1)
+            print(max(lengths))
+            print(min(lengths))
+
+            windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+                signal=raw_signal,
+                labels=anomaly_label,
+                segments=segments,
+                cluster_ids=None,
+                window_size=1000,
+                length_range=(66, 700),  # 调这个
+                step=100,
+                jsonl_path=f"{indices_name}/{k}.jsonl",
+                anomaly_type=v
+            )
+
+    # name = 228
+    # print(name)
+    # raw_data = np.load(f"./raw_data/{name}.npz")
+    # raw_signal = raw_data["signal"]
+    # anomaly_label = raw_data["anomaly_label"]
+    #
+    #
+    # stats = build_single_ts_train_val(
+    #     npz_file=f"./raw_data/{name}.npz",
+    #     output_dir=f"./indices/slide_windows_{name}npz",
+    #     window_size=1000,
+    #     stride=1,
+    #     train_ratio=0.99,
+    #     max_anomaly_ratio=0.2
+    # )
+    #
+    #
+    # anomaly_type_maps = {'V': 1}
+    #
+    # for k, v in anomaly_type_maps.items():
+    #     segments = get_anomaly_segments(anomaly_label, anomaly_type=v)
+    #
+    #     print(f"总共有 {len(segments)} 段 anomaly")
+    #     lengths = []
+    #     for i, (s, e) in enumerate(segments):
+    #         print(f"Segment {i}: start = {s}, end = {e}, length = {e - s + 1}")
+    #         lengths.append(e - s + 1)
+    #     print(max(lengths))
+    #     print(min(lengths))
+    #
+    #     windows, window_labels, starts, min_anomaly_length, max_anomaly_length = extract_windows_containing_segments(
+    #         signal=raw_signal,
+    #         labels=anomaly_label,
+    #         segments=segments,
+    #         cluster_ids=None,
+    #         window_size=1000,
+    #         length_range=(66, 608),  # 调这个
+    #         step=100,
+    #         jsonl_path=f"./indices/slide_windows_{name}npz/train/{k}.jsonl",
+    #         anomaly_type=v
+    #     )
 
