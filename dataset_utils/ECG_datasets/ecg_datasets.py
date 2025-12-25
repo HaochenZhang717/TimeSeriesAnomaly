@@ -361,9 +361,6 @@ class ImputationNormalECGDataset(Dataset):
                 self.global_index.append((region_id, i))
 
 
-
-
-
     def __getitem__(self, index):
         which_list, which_index = self.global_index[index]
 
